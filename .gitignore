@@ -1,0 +1,39 @@
+# Entornos virtuales
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Pruebas
+.pytest_cache/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Ficheros generados al ejecutar los listados
+**/datos/resumen.json
+**/datos/registro.txt
+**/datos/informe*.csv
+**/datos/informe*.json
+**/graficos/
+**/datos/*.db
+**/datos/ventas_grandes.*
+**/spark-warehouse/
+**/modelos/*.joblib
+**/datos/catalogo.json
+**/salida/
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+
+# Sitio web generado (lo construye GitHub Actions)
+docs/
+site/
