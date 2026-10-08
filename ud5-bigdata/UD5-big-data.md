@@ -16,6 +16,7 @@
 - [Práctica de la unidad · Hito 4 del proyecto integrador](#práctica-de-la-unidad--hito-4-del-proyecto-integrador)
 - [Resumen de la unidad](#resumen-de-la-unidad)
 - [Bibliografía de la UD5](#bibliografía-de-la-ud5)
+- [Continuar](#continuar)
 
 ## Presentación de la unidad
 
@@ -182,6 +183,10 @@ Leer 2 columnas del Parquet: 0.03 s
 
 Siete veces menos espacio y treinta veces menos tiempo si solo necesitas dos columnas. La razón es que Parquet es **columnar**: guarda juntos todos los valores de una misma columna, lo que permite comprimir mucho mejor y leer solo lo que pides. Además conserva los tipos, así que no hay que volver a decirle que `fecha` es una fecha ([Apache Parquet](https://parquet.apache.org/docs/)).
 
+![La diferencia está en cómo se guardan los datos en el disco, y de ahí salen el tamaño y la velocidad.](figuras/csv-vs-parquet.svg)
+
+*Figura 5.1. La diferencia está en cómo se guardan los datos en el disco, y de ahí salen el tamaño y la velocidad.*
+
 | Formato | Úsalo para |
 | --- | --- |
 | CSV | Intercambiar con personas y con Excel. Nunca como almacén de trabajo |
@@ -237,6 +242,10 @@ for trozo in pd.read_csv(RUTA, sep=";", decimal=",", chunksize=200_000,
 ```
 
 `chunksize` convierte `read_csv` en un iterador: en cada vuelta hay en memoria 200.000 filas, no un millón. El patrón es el mismo que el de los generadores de la UD2, y es el que permite que este bucle funcione igual con un fichero de 50 GB. Combínalo con `usecols`: las columnas que no lees no ocupan nada.
+
+![Cada trozo se agrega y se descarta: la memoria no crece con el tamaño del fichero.](figuras/lectura-por-trozos.svg)
+
+*Figura 5.2. Cada trozo se agrega y se descarta: la memoria no crece con el tamaño del fichero.*
 
 > [!IMPORTANT]
 > No todas las operaciones se pueden hacer por trozos. Sumas, recuentos, máximos y mínimos sí, porque son **agregables**. La mediana exacta o un `sort` global, no: hay que recurrir a herramientas que gestionen el desbordamiento a disco, como las de los dos apartados siguientes.
@@ -326,6 +335,10 @@ Si ya sabes SQL de la UD4, esta es la vía más rápida para explorar ficheros g
 El modelo que hizo posible el Big Data moderno lo publicaron Dean y Ghemawat en 2004: repartir el trabajo en dos fases, **map** (transformar cada dato de forma independiente en pares clave-valor) y **reduce** (combinar los valores de cada clave), de modo que el sistema pueda ejecutar el *map* en cientos de máquinas a la vez y tolerar que alguna falle.
 
 Ese `groupby("ciudad")["importe"].sum()` que escribes en pandas es exactamente un map (calcular el importe de cada venta) seguido de un reduce (sumar por ciudad). La diferencia es dónde se ejecuta.
+
+![El map se ejecuta en paralelo sobre cada bloque y el reduce combina los resultados por clave.](figuras/map-reduce.svg)
+
+*Figura 5.3. El map se ejecuta en paralelo sobre cada bloque y el reduce combina los resultados por clave.*
 
 ### Spark
 
@@ -496,3 +509,11 @@ Todas las fuentes web se consultaron el 28 de septiembre de 2026.
 - Polars. *User guide*. <https://docs.pola.rs/>
 - DuckDB. *Documentation*. <https://duckdb.org/docs/>
 - pandas development team. *Scaling to large datasets*. <https://pandas.pydata.org/docs/user_guide/scale.html>
+
+---
+
+## Continuar
+
+| ← Unidad anterior | Índice | Unidad siguiente → |
+| :--- | :---: | ---: |
+| [UD4 · SQL y NoSQL](../ud4-bd/UD4-sql-y-nosql.md) | [Índice del módulo](../README.md) | [UD6 · Machine Learning](../ud6-ml/UD6-machine-learning.md) |

@@ -1,0 +1,157 @@
+/* ===========================================================================
+   Ajustes propios del sitio de «Python aplicado a la Inteligencia Artificial».
+
+   Tres bloques:
+   1. Índice lateral «En esta unidad»: fijo a la derecha y con el apartado
+      actual coloreado mientras se desplaza la página.
+   2. Buscador de la cabecera: más ancho, para que se vea como una barra de
+      búsqueda de los apuntes.
+   3. Figuras, pies de figura y pie de navegación entre unidades.
+   =========================================================================== */
+
+:root {
+  --indice-activo: #3f51b5;                 /* mismo índigo que el tema */
+  --indice-fondo: rgba(63, 81, 181, 0.1);
+  --indice-titulo: rgba(0, 0, 0, 0.56);
+}
+
+[data-md-color-scheme="slate"] {
+  --indice-activo: #a3b0ff;
+  --indice-fondo: rgba(163, 176, 255, 0.16);
+  --indice-titulo: rgba(255, 255, 255, 0.72);
+}
+
+/* --------------------------------------------------------------------------
+   1. Índice lateral
+   -------------------------------------------------------------------------- */
+
+/* El índice queda pegado arriba y, si la unidad tiene muchos apartados,
+   se desplaza dentro de su propia columna en lugar de cortarse. */
+@media screen and (min-width: 76.25em) {
+  .md-sidebar--secondary {
+    align-self: flex-start;
+    position: sticky;
+    top: 2.4rem;
+  }
+
+  .md-sidebar--secondary .md-sidebar__scrollwrap {
+    max-height: calc(100vh - 5.2rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+
+/* Título «En esta unidad». La sombra del mismo color que el fondo tapa los
+   apartados que pasan por debajo al desplazar el índice. */
+.md-nav--secondary > .md-nav__title {
+  box-shadow: 0 0 0.3rem 0.6rem var(--md-default-bg-color);
+  padding-bottom: 0.5rem;
+  color: var(--indice-titulo);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Todos los apartados reservan el hueco de la barra lateral, para que el
+   texto no se mueva cuando uno de ellos se activa. */
+.md-nav--secondary .md-nav__link {
+  border-left: 0.15rem solid transparent;
+  border-radius: 0 0.1rem 0.1rem 0;
+  transition:
+    background-color 125ms,
+    border-color 125ms,
+    color 125ms;
+}
+
+/* Apartado que se está leyendo: fondo, barra lateral y negrita. */
+.md-nav--secondary .md-nav__link--active,
+.md-nav--secondary .md-nav__link--active code {
+  background-color: var(--indice-fondo);
+  border-left-color: var(--indice-activo);
+  color: var(--indice-activo);
+  font-weight: 700;
+}
+
+/* Apartados ya leídos: algo más apagados, para ver por dónde se va. */
+.md-nav--secondary .md-nav__link--passed,
+.md-nav--secondary .md-nav__link--passed code {
+  opacity: 0.68;
+}
+
+.md-nav--secondary .md-nav__link:hover {
+  color: var(--indice-activo);
+}
+
+/* --------------------------------------------------------------------------
+   2. Barra de búsqueda de la cabecera
+   -------------------------------------------------------------------------- */
+
+@media screen and (min-width: 60em) {
+  .md-search__inner {
+    width: 18rem;
+  }
+
+  .md-search__form {
+    border-radius: 0.2rem;
+  }
+
+  .md-search__form:hover {
+    background-color: rgba(255, 255, 255, 0.24);
+  }
+}
+
+@media screen and (min-width: 60em) and (max-width: 76.234375em) {
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__inner {
+    width: 26rem;
+  }
+}
+
+@media screen and (min-width: 76.25em) {
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__inner {
+    width: 36rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Figuras y pie de navegación
+   -------------------------------------------------------------------------- */
+
+/* Las figuras son SVG con fondo propio: se centran y se limitan en ancho. */
+.md-typeset img[src$=".svg"] {
+  display: block;
+  margin: 1.2em auto 0.4em;
+  max-width: 100%;
+}
+
+/* Pie de figura: el párrafo en cursiva que sigue a cada figura. */
+.md-typeset p > em:only-child {
+  color: var(--md-default-fg-color--light);
+  display: block;
+  font-size: 0.78em;
+  text-align: center;
+}
+
+/* Tabla de navegación entre unidades, al final de cada apartado «Continuar».
+   Material envuelve las tablas en .md-typeset__scrollwrap con JavaScript, así
+   que el selector contempla las dos formas. */
+.md-typeset h2#continuar + .md-typeset__scrollwrap,
+.md-typeset h2#continuar + .md-typeset__scrollwrap .md-typeset__table {
+  display: block;
+  width: 100%;
+}
+
+.md-typeset h2#continuar + table,
+.md-typeset h2#continuar + .md-typeset__scrollwrap table {
+  display: table;
+  width: 100%;
+}
+
+.md-typeset h2#continuar + table th,
+.md-typeset h2#continuar + .md-typeset__scrollwrap th {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

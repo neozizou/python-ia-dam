@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 300" width="860" height="300" role="img" aria-label="Programar frente a aprender de los datos">
+  <title>Programar frente a aprender de los datos</title>
+  <defs>
+    <marker id="punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+            markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+  <rect width="860" height="300" rx="14" fill="#ffffff" stroke="#c7cedb"/>
+  <rect x="20" y="20" width="400" height="125" rx="10" fill="#f4f6fa" stroke="#c7cedb" stroke-width="1.5"/>
+  <rect x="20" y="160" width="400" height="125" rx="10" fill="#f4f6fa" stroke="#c7cedb" stroke-width="1.5"/>
+  <text x="40" y="48" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#1f2430" text-anchor="start" font-weight="700">Programación clásica</text>
+  <text x="40" y="188" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#1f2430" text-anchor="start" font-weight="700">Machine Learning</text>
+  <rect x="42" y="70" width="100" height="36" rx="10" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5"/>
+  <text x="92.0" y="92.16666666666667" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="500">datos</text>
+  <text x="152" y="94" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" fill="#5b6472" text-anchor="middle" font-weight="400">+</text>
+  <rect x="165" y="70" width="110" height="36" rx="10" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5"/>
+  <text x="220.0" y="92.16666666666667" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="500">reglas</text>
+  <path d="M 282 88 L 310 88" fill="none" stroke="#5b6472" stroke-width="2" marker-end="url(#punta)"/>
+  <rect x="315" y="70" width="90" height="36" rx="10" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5"/>
+  <text x="360.0" y="92.16666666666667" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="500">resultados</text>
+  <rect x="42" y="210" width="100" height="36" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="92.0" y="232.16666666666666" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="500">datos</text>
+  <text x="152" y="234" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" fill="#5b6472" text-anchor="middle" font-weight="400">+</text>
+  <rect x="165" y="210" width="110" height="36" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="220.0" y="232.16666666666666" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="500">resultados</text>
+  <path d="M 282 228 L 310 228" fill="none" stroke="#5b6472" stroke-width="2" marker-end="url(#punta)"/>
+  <rect x="315" y="210" width="90" height="36" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="360.0" y="232.16666666666666" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="500">reglas</text>
+  <text x="42" y="130" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#5b6472" text-anchor="start" font-weight="400">Tú escribes las reglas.</text>
+  <text x="42" y="270" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#5b6472" text-anchor="start" font-weight="400">El modelo las deduce de los ejemplos.</text>
+  <rect x="440" y="20" width="400" height="265" rx="10" fill="#f4f6fa" stroke="#c7cedb" stroke-width="1.5"/>
+  <text x="460" y="48" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#1f2430" text-anchor="start" font-weight="700">Y por eso se parten los datos</text>
+  <rect x="460" y="65" width="360" height="46" rx="10" fill="#e8ecf3" stroke="#8b95a6" stroke-width="1.5"/>
+  <text x="640" y="93" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#1f2430" text-anchor="middle" font-weight="400">conjunto completo</text>
+  <path d="M 600 115 L 560 140" fill="none" stroke="#5b6472" stroke-width="2" marker-end="url(#punta)"/>
+  <path d="M 680 115 L 740 140" fill="none" stroke="#5b6472" stroke-width="2" marker-end="url(#punta)"/>
+  <rect x="460" y="145" width="220" height="70" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="570" y="172" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="700">entrenamiento 80 %</text>
+  <text x="570" y="196" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="#5b6472" text-anchor="middle" font-weight="400">el modelo aprende aquí</text>
+  <rect x="700" y="145" width="120" height="70" rx="10" fill="#fbe9d4" stroke="#d9822b" stroke-width="1.5"/>
+  <text x="760" y="172" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="700">prueba 20 %</text>
+  <text x="760" y="196" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="#5b6472" text-anchor="middle" font-weight="400">no se toca</text>
+  <text x="460" y="245" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#5b6472" text-anchor="start" font-weight="400">La prueba simula los datos futuros: si la usas para decidir algo,</text>
+  <text x="460" y="266" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#d9822b" text-anchor="start" font-weight="400">deja de medir honestamente.</text>
+</svg>

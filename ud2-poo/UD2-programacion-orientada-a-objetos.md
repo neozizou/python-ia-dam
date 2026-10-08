@@ -18,6 +18,7 @@
 - [Práctica de la unidad · Hito 1 del proyecto integrador](#práctica-de-la-unidad--hito-1-del-proyecto-integrador)
 - [Resumen de la unidad](#resumen-de-la-unidad)
 - [Bibliografía de la UD2](#bibliografía-de-la-ud2)
+- [Continuar](#continuar)
 
 ## Presentación de la unidad
 
@@ -93,6 +94,10 @@ print(ana.centro, luis.centro)           # C.E.S. DAM C.E.S. DAM
 - `self` es **explícito** en la definición, pero no se pasa al llamar: `ana.ha_aprobado()` equivale a `Alumno.ha_aprobado(ana)`.
 - Un atributo de clase es único y compartido. Si escribes `ana.centro = "Otro"`, no cambias el de la clase: creas un atributo de instancia que lo tapa solo para `ana`.
 - No hay destructor equivalente a `~Alumno()`. La memoria se libera sola; para liberar recursos se usan gestores de contexto (apartado 2.6).
+
+![Un atributo de clase es único y compartido; los de instancia, uno por objeto.](figuras/modelo-objetos.svg)
+
+*Figura 2.1. Un atributo de clase es único y compartido; los de instancia, uno por objeto.*
 
 > [!NOTE]
 > **Desde C++.** En Python todo es un objeto, incluidas las clases, las funciones y los módulos. No existen `struct`, plantillas ni sobrecarga de métodos por tipo de parámetro: una clase tiene un solo `__init__`, y las variantes se resuelven con valores por defecto o con constructores alternativos (apartado 2.2).
@@ -314,6 +319,10 @@ v = Venta("Granada", 3059.7)
 print(v.a_json())          # {"ciudad": "Granada", "importe": 3059.7}
 print(Venta.__mro__)       # Venta -> ExportableJSONMixin -> Registrable -> object
 ```
+
+![Con herencia múltiple, el MRO fija el orden en el que Python busca cada método.](figuras/herencia-mro.svg)
+
+*Figura 2.2. Con herencia múltiple, el MRO fija el orden en el que Python busca cada método.*
 
 > [!TIP]
 > Un mixin se nombra con el sufijo `Mixin`, no define `__init__` y resuelve una sola cosa. scikit-learn está construido así: sus transformadores heredan de `BaseEstimator` y de `TransformerMixin`, que es quien les regala el método `fit_transform`.
@@ -577,6 +586,10 @@ print(sum(int(u) for u in unidades))      # 19
 > [!TIP]
 > La diferencia entre `[f for f in filas]` y `(f for f in filas)` es enorme con ficheros grandes: los corchetes construyen la lista completa en memoria; los paréntesis no construyen nada hasta que recorres el resultado. En la UD5 usaremos esta idea para tratar volúmenes que no caben en el ordenador.
 
+![Una lista guarda todas las filas a la vez; un generador entrega una y olvida la anterior.](figuras/lista-vs-generador.svg)
+
+*Figura 2.3. Una lista guarda todas las filas a la vez; un generador entrega una y olvida la anterior.*
+
 ### Gestores de contexto
 
 `with` funciona con cualquier objeto que implemente `__enter__` y `__exit__`. Es el equivalente de RAII en C++: garantiza que la liberación ocurre aunque salte una excepción ([docs.python.org, contextlib](https://docs.python.org/3/library/contextlib.html)).
@@ -807,3 +820,11 @@ Todas las fuentes web se consultaron el 21 de septiembre de 2026.
 ### Lectura complementaria
 
 - Vadillo, J. *Aprende Python desde cero a experto*. Licencia CC BY-NC-SA 4.0. <https://github.com/jvadillo/aprende-python-desde-cero-a-experto>. Capítulo 9 (Clases y objetos) para los apartados 2.1 y 2.2, y capítulo 10 (Herencia) para el 2.3.
+
+---
+
+## Continuar
+
+| ← Unidad anterior | Índice | Unidad siguiente → |
+| :--- | :---: | ---: |
+| [UD1 · Python para quien ya programa](../ud1-python/UD1-python-para-quien-ya-programa.md) | [Índice del módulo](../README.md) | [UD3 · Análisis de datos](../ud3-datos/UD3-analisis-de-datos.md) |

@@ -65,7 +65,11 @@ A lo largo del curso cada alumno o equipo trabaja siempre con el mismo conjunto 
 
 ## El sitio web
 
-Los mismos apuntes se publican como sitio web con buscador en <https://neozizou.github.io/python-ia-dam/>.
+Los mismos apuntes se publican como sitio web en <https://neozizou.github.io/python-ia-dam/>, con tres ayudas para estudiar:
+
+- **Barra de búsqueda arriba**, que busca a la vez en las siete unidades y lleva al apartado exacto.
+- **Índice fijo a la derecha**, titulado «En esta unidad», que colorea el apartado que se está leyendo.
+- **Enlaces a la unidad anterior y a la siguiente** al final de cada unidad.
 
 Se construye solo: cada vez que cambia un fichero `.md`, el flujo de trabajo [`publicar-sitio.yml`](.github/workflows/publicar-sitio.yml) prepara la carpeta `docs/` con [`tools/preparar_docs.py`](tools/preparar_docs.py), genera el sitio con MkDocs Material y lo despliega. Las carpetas `docs/` y `site/` no se suben al repositorio: son resultado de la construcción.
 

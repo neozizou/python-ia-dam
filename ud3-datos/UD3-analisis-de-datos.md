@@ -18,12 +18,17 @@
 - [Práctica de la unidad · Hito 2 del proyecto integrador](#práctica-de-la-unidad--hito-2-del-proyecto-integrador)
 - [Resumen de la unidad](#resumen-de-la-unidad)
 - [Bibliografía de la UD3](#bibliografía-de-la-ud3)
+- [Continuar](#continuar)
 
 ## Presentación de la unidad
 
 Es la unidad más larga del módulo: 10 horas. En la UD1 agrupaste ventas por ciudad con un diccionario y veinte líneas de código; aquí lo harás con una línea de pandas sobre 1.200 filas, y el mismo código serviría para 1.200.000. Al final publicarás en internet tu primer panel interactivo.
 
 El orden sigue el ciclo real del dato: cargar, mirar, limpiar, transformar, visualizar, interpretar y comunicar. La limpieza ocupa buena parte de la unidad porque es donde de verdad se va el tiempo en un proyecto de datos.
+
+![El ciclo del dato y el apartado en el que se trabaja cada fase.](figuras/ciclo-del-dato.svg)
+
+*Figura 3.1. El ciclo del dato y el apartado en el que se trabaja cada fase.*
 
 ### Resultado de aprendizaje y criterios de evaluación
 
@@ -122,6 +127,10 @@ Dos detalles que reaparecerán todo el curso:
 ## 3.2 pandas: cargar e inspeccionar
 
 Un `DataFrame` es una tabla: filas con índice y columnas con nombre y tipo. Una columna suelta es una `Series`. Casi todo el trabajo consiste en encadenar operaciones que devuelven nuevos DataFrames ([pandas: 10 minutes to pandas](https://pandas.pydata.org/docs/user_guide/10min.html)).
+
+![Índice, columnas y tipos: las tres cosas que mirar nada más cargar un fichero.](figuras/anatomia-dataframe.svg)
+
+*Figura 3.2. Índice, columnas y tipos: las tres cosas que mirar nada más cargar un fichero.*
 
 **Listado 3.2.** Cargar un CSV y mirarlo por primera vez · [ver fichero](listados/listado_3_02_leer_csv.py)
 
@@ -352,6 +361,10 @@ Sevilla     149      1576  280358.89       1881.60
 
 Compáralo con el listado 1.30, que hacía esto mismo con un diccionario y doce líneas. La sintaxis `nombre=("columna", "función")` da nombres claros a las columnas resultantes ([pandas: Group by](https://pandas.pydata.org/docs/user_guide/groupby.html)).
 
+![groupby divide por clave, aplica la función a cada grupo y combina el resultado.](figuras/groupby.svg)
+
+*Figura 3.3. groupby divide por clave, aplica la función a cada grupo y combina el resultado.*
+
 **Listado 3.10.** Tablas dinámicas y de contingencia · [ver fichero](listados/listado_3_10_pivot.py)
 
 ```python
@@ -382,6 +395,10 @@ semestre = pd.concat([primer_trimestre, segundo_trimestre], ignore_index=True)  
 ```
 
 `how="left"` conserva todas las filas de la izquierda, igual que un `LEFT JOIN`. Contar los nulos que aparecen tras el `merge` es la forma rápida de detectar claves que no casan, casi siempre por diferencias de escritura ([pandas: Merge, join, concatenate](https://pandas.pydata.org/docs/user_guide/merging.html)).
+
+![Un merge con how='left' conserva las filas de la izquierda y deja NaN donde no hay pareja.](figuras/merge.svg)
+
+*Figura 3.4. Un merge con how='left' conserva las filas de la izquierda y deja NaN donde no hay pareja.*
 
 La métrica de euros por habitante cambia por completo el ranking: Málaga factura más en total, pero Jaén y Cádiz facturan mucho más por habitante. Un dato agregado casi nunca significa nada hasta que se normaliza.
 
@@ -710,3 +727,11 @@ Todas las fuentes web se consultaron el 28 de septiembre de 2026.
 ### Lectura complementaria
 
 - McKinney, W. *Python for Data Analysis* (3.ª edición). Edición web gratuita del autor de pandas. <https://wesmckinney.com/book/>
+
+---
+
+## Continuar
+
+| ← Unidad anterior | Índice | Unidad siguiente → |
+| :--- | :---: | ---: |
+| [UD2 · Programación orientada a objetos](../ud2-poo/UD2-programacion-orientada-a-objetos.md) | [Índice del módulo](../README.md) | [UD4 · SQL y NoSQL](../ud4-bd/UD4-sql-y-nosql.md) |

@@ -16,6 +16,7 @@
 - [Entrega final del proyecto integrador](#entrega-final-del-proyecto-integrador)
 - [Resumen de la unidad](#resumen-de-la-unidad)
 - [Bibliografía de la UD7](#bibliografía-de-la-ud7)
+- [Continuar](#continuar)
 
 ## Presentación de la unidad
 
@@ -76,6 +77,10 @@ La metodología clásica del sector, CRISP-DM, describe seis fases que se recorr
 
 Volver atrás no es un fracaso: evaluar suele revelar que faltan datos o que la pregunta estaba mal planteada, y eso devuelve a la primera fase.
 
+![Las seis fases de CRISP-DM, que se recorren en bucle y no en línea recta.](figuras/crisp-dm.svg)
+
+*Figura 7.1. Las seis fases de CRISP-DM, que se recorren en bucle y no en línea recta.*
+
 ### La estructura del repositorio
 
 ```text
@@ -93,6 +98,10 @@ proyecto/
 ```
 
 La regla que ordena todo esto: **los notebooks exploran, los módulos producen**. Un notebook es un cuaderno de laboratorio, perfecto para probar y para enseñar un análisis; pero el código del que dependen la aplicación y el entrenamiento vive en `src/`, donde se puede importar, probar y versionar.
+
+![El paquete concentra la lógica; notebooks, scripts, pruebas y aplicación lo consumen.](figuras/arquitectura-proyecto.svg)
+
+*Figura 7.2. El paquete concentra la lógica; notebooks, scripts, pruebas y aplicación lo consumen.*
 
 ### Reproducibilidad
 
@@ -430,3 +439,11 @@ Todas las fuentes web se consultaron el 28 de septiembre de 2026.
 
 - Mitchell, M. et al. (2019). Model Cards for Model Reporting. *Proceedings of the Conference on Fairness, Accountability, and Transparency (FAT\* '19)*, 220-229.
 - Wirth, R. y Hipp, J. (2000). CRISP-DM: Towards a Standard Process Model for Data Mining. *Proceedings of the 4th International Conference on the Practical Applications of Knowledge Discovery and Data Mining*.
+
+---
+
+## Continuar
+
+| ← Unidad anterior | Índice | Unidad siguiente → |
+| :--- | :---: | ---: |
+| [UD6 · Machine Learning](../ud6-ml/UD6-machine-learning.md) | [Índice del módulo](../README.md) | *Última unidad del módulo* |

@@ -4,6 +4,7 @@ Apuntes de la unidad, 10 h (15/12 – 19/01).
 
 - **[UD6-machine-learning.md](UD6-machine-learning.md)**: los apuntes completos de la unidad.
 - **[listados/](listados/)**: los 17 listados, el generador de datos y `comun.py`
+- **[figuras/](figuras/)**: las figuras de los apuntes, en SVG
 - **[app/](app/)**: la aplicación de predicción con Streamlit
 - **[requirements.txt](requirements.txt)**: las dependencias de la unidad, con versiones fijadas
 

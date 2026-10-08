@@ -14,6 +14,7 @@
 - [Práctica de la unidad · Hito 3 del proyecto integrador](#práctica-de-la-unidad--hito-3-del-proyecto-integrador)
 - [Resumen de la unidad](#resumen-de-la-unidad)
 - [Bibliografía de la UD4](#bibliografía-de-la-ud4)
+- [Continuar](#continuar)
 
 ## Presentación de la unidad
 
@@ -188,6 +189,10 @@ Salida de la medición con 1.200 filas:
 
 Un índice es una estructura ordenada que evita recorrer la tabla entera: el plan pasa de `SCAN` (leer todo) a `SEARCH` (ir directo). Con mil filas apenas se nota; con millones, es la diferencia entre milisegundos y minutos. A cambio, ocupa espacio y ralentiza las escrituras, así que se indexa lo que de verdad se consulta y filtra.
 
+![Sin índice la base de datos recorre todas las filas; con él salta directamente a la que busca.](figuras/indice-scan-search.svg)
+
+*Figura 4.1. Sin índice la base de datos recorre todas las filas; con él salta directamente a la que busca.*
+
 ### Para practicar
 
 1. Añade una restricción `UNIQUE` sobre `id_venta` y comprueba qué ocurre al insertar dos veces la misma venta.
@@ -298,6 +303,10 @@ Con esto ya puedes leer directamente de la MariaDB del ciclo: cambia la URL y el
 | Grafos | Nodos y relaciones | Neo4j | Redes sociales, recomendaciones, fraude |
 
 En este módulo trabajamos la documental, que es la más cercana a lo que ya sabes: un documento es, en la práctica, un diccionario de Python.
+
+![Lo que en SQL son dos tablas y un JOIN, en el modelo documental es un único documento anidado.](figuras/tabla-vs-documento.svg)
+
+*Figura 4.2. Lo que en SQL son dos tablas y un JOIN, en el modelo documental es un único documento anidado.*
 
 ### El modelo documental sin instalar nada
 
@@ -438,6 +447,10 @@ Cuando los datos están repartidos entre varias máquinas, la red puede partirse
 
 De ahí la diferencia de garantías: los sistemas relacionales priorizan las propiedades **ACID** (atomicidad, coherencia, aislamiento y durabilidad), mientras que muchos NoSQL adoptan la **coherencia eventual**: tras una escritura, las réplicas tardan un poco en ponerse de acuerdo, y durante ese rato una lectura puede devolver el valor anterior. Para el saldo de una cuenta bancaria es inaceptable; para el contador de «me gusta» de un vídeo, da igual.
 
+![Ante una partición de red hay que elegir entre coherencia y disponibilidad.](figuras/teorema-cap.svg)
+
+*Figura 4.3. Ante una partición de red hay que elegir entre coherencia y disponibilidad.*
+
 ### Cuándo elegir cada uno
 
 | Elige relacional cuando… | Elige documental cuando… |
@@ -537,3 +550,11 @@ Todas las fuentes web se consultaron el 28 de septiembre de 2026.
 ### Artículos
 
 - Gilbert, S. y Lynch, N. (2002). Brewer's conjecture and the feasibility of consistent, available, partition-tolerant web services. *ACM SIGACT News*, 33(2), 51-59.
+
+---
+
+## Continuar
+
+| ← Unidad anterior | Índice | Unidad siguiente → |
+| :--- | :---: | ---: |
+| [UD3 · Análisis de datos](../ud3-datos/UD3-analisis-de-datos.md) | [Índice del módulo](../README.md) | [UD5 · Big Data](../ud5-bigdata/UD5-big-data.md) |

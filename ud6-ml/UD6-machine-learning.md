@@ -17,6 +17,7 @@
 - [Práctica de la unidad · Hito 5 del proyecto integrador](#práctica-de-la-unidad--hito-5-del-proyecto-integrador)
 - [Resumen de la unidad](#resumen-de-la-unidad)
 - [Bibliografía de la UD6](#bibliografía-de-la-ud6)
+- [Continuar](#continuar)
 
 ## Presentación de la unidad
 
@@ -73,6 +74,10 @@ Machine Learning:       datos + resultados -> reglas (el modelo)
 | Inteligencia artificial | El campo completo: que una máquina haga tareas que asociamos a la inteligencia |
 | Machine Learning | La parte que aprende de datos en lugar de seguir reglas escritas a mano |
 | Deep Learning | La parte del ML que usa redes neuronales profundas; brilla con imagen, audio y texto |
+
+![La diferencia de fondo, y por qué hace falta reservar datos de prueba desde el principio.](figuras/programar-vs-aprender.svg)
+
+*Figura 6.1. La diferencia de fondo, y por qué hace falta reservar datos de prueba desde el principio.*
 
 ### Tipos de aprendizaje
 
@@ -191,6 +196,10 @@ Un `Pipeline` es un objeto con `fit` y `predict` que por dentro encadena pasos: 
 - La validación cruzada y la búsqueda de hiperparámetros lo tratan como un modelo más.
 - Evita la fuga de datos, que es el error que viene ahora.
 
+![Con la preparación dentro del Pipeline, el escalado y la codificación solo aprenden del entrenamiento.](figuras/pipeline-y-fuga.svg)
+
+*Figura 6.2. Con la preparación dentro del Pipeline, el escalado y la codificación solo aprenden del entrenamiento.*
+
 ### Fuga de datos
 
 **Listado 6.5.** Escalar antes de dividir es hacer trampa · [ver fichero](listados/listado_6_05_fuga_datos.py)
@@ -300,6 +309,10 @@ Matriz de confusión (filas: real, columnas: predicho)
 
 Un 84 % de acierto… y el modelo es **inútil**: de 257 devoluciones detecta 10. Como el 84 % de los pedidos no se devuelve, decir siempre «no se devuelve» acierta el 84 %. Esa es la trampa de la exactitud (*accuracy*) con clases desbalanceadas.
 
+![La matriz de confusión del listado 6.8: el 84 % de exactitud esconde un recall del 4 %.](figuras/matriz-confusion.svg)
+
+*Figura 6.3. La matriz de confusión del listado 6.8: el 84 % de exactitud esconde un recall del 4 %.*
+
 | Métrica | Fórmula intuitiva | Responde a |
 | --- | --- | --- |
 | Exactitud | Aciertos entre total | ¿Cuánto acierto en general? Engañosa si hay desbalanceo |
@@ -372,6 +385,10 @@ profundidad 20: entrena 0.78 | prueba 1.97     <- sobreajuste
 ```
 
 El listado genera además `graficos/sobreajuste.png` con las dos curvas. Es **la** imagen del Machine Learning: el error de entrenamiento baja siempre; el de prueba baja, toca fondo y vuelve a subir. El objetivo no es el error mínimo en entrenamiento, sino el mínimo en datos no vistos.
+
+![El mismo conjunto de puntos ajustado con tres profundidades: demasiado rígido, equilibrado y memorizado.](figuras/sobreajuste.svg)
+
+*Figura 6.4. El mismo conjunto de puntos ajustado con tres profundidades: demasiado rígido, equilibrado y memorizado.*
 
 ### Buscar los hiperparámetros
 
@@ -596,3 +613,11 @@ Todas las fuentes web se consultaron el 28 de septiembre de 2026.
 - Pedregosa, F. et al. (2011). Scikit-learn: Machine Learning in Python. *Journal of Machine Learning Research*, 12, 2825-2830.
 - Breiman, L. (2001). Random Forests. *Machine Learning*, 45(1), 5-32.
 - Géron, A. *Hands-On Machine Learning with Scikit-Learn, Keras and TensorFlow* (3.ª edición). Referencia habitual para ampliar; los cuadernos del libro están en <https://github.com/ageron/handson-ml3>.
+
+---
+
+## Continuar
+
+| ← Unidad anterior | Índice | Unidad siguiente → |
+| :--- | :---: | ---: |
+| [UD5 · Big Data](../ud5-bigdata/UD5-big-data.md) | [Índice del módulo](../README.md) | [UD7 · Proyecto y despliegue](../ud7-proyecto/UD7-proyecto-y-despliegue.md) |

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 320" width="840" height="320" role="img" aria-label="merge: el JOIN de pandas">
+  <title>merge: el JOIN de pandas</title>
+  <defs>
+    <marker id="punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+            markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+  <rect width="840" height="320" rx="14" fill="#ffffff" stroke="#c7cedb"/>
+  <text x="30" y="42" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#1f2430" text-anchor="start" font-weight="700">ventas</text>
+  <rect x="30" y="55" width="230" height="120" rx="10" fill="#ffffff" stroke="#2f6fd0" stroke-width="1.5"/>
+  <text x="45" y="80" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#5b6472" text-anchor="start" font-weight="400">ciudad</text>
+  <text x="165" y="80" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#5b6472" text-anchor="start" font-weight="400">importe</text>
+  <text x="45" y="105" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Granada</text>
+  <text x="165" y="105" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">3059.70</text>
+  <text x="45" y="130" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Málaga</text>
+  <text x="165" y="130" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">845.00</text>
+  <text x="45" y="155" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Ronda</text>
+  <text x="165" y="155" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">120.00</text>
+  <text x="300" y="42" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#1f2430" text-anchor="start" font-weight="700">ciudades</text>
+  <rect x="300" y="55" width="230" height="120" rx="10" fill="#ffffff" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="315" y="80" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#5b6472" text-anchor="start" font-weight="400">ciudad</text>
+  <text x="425" y="80" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#5b6472" text-anchor="start" font-weight="400">provincia</text>
+  <text x="315" y="105" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Granada</text>
+  <text x="425" y="105" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Granada</text>
+  <text x="315" y="130" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Málaga</text>
+  <text x="425" y="130" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Málaga</text>
+  <text x="315" y="155" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Sevilla</text>
+  <text x="425" y="155" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Sevilla</text>
+  <rect x="570" y="55" width="250" height="120" rx="10" fill="#f4f6fa" stroke="#c7cedb" stroke-width="1.5"/>
+  <text x="585" y="42" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#1f2430" text-anchor="start" font-weight="700">how = &#x27;left&#x27;</text>
+  <text x="585" y="80" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#5b6472" text-anchor="start" font-weight="400">ciudad</text>
+  <text x="695" y="80" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#5b6472" text-anchor="start" font-weight="400">provincia</text>
+  <text x="585" y="105" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Granada</text>
+  <text x="695" y="105" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Granada</text>
+  <text x="585" y="130" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Málaga</text>
+  <text x="695" y="130" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="start" font-weight="400">Málaga</text>
+  <text x="585" y="155" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#c0392b" text-anchor="start" font-weight="400">Ronda</text>
+  <text x="695" y="155" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#c0392b" text-anchor="start" font-weight="400">NaN</text>
+  <path d="M 265 115 L 295 115" fill="none" stroke="#5b6472" stroke-width="2" marker-end="url(#punta)"/>
+  <path d="M 535 115 L 565 115" fill="none" stroke="#5b6472" stroke-width="2" marker-end="url(#punta)"/>
+  <rect x="30" y="200" width="790" height="100" rx="10" fill="#f4f6fa" stroke="#c7cedb" stroke-width="1.5"/>
+  <rect x="50" y="220" width="90" height="32" rx="10" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5"/>
+  <text x="95.0" y="240.16666666666666" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="500">inner</text>
+  <text x="50" y="272" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="#5b6472" text-anchor="start" font-weight="400">solo las que casan en ambas</text>
+  <rect x="245" y="220" width="90" height="32" rx="10" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5"/>
+  <text x="290.0" y="240.16666666666666" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="500">left</text>
+  <text x="245" y="272" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="#5b6472" text-anchor="start" font-weight="400">todas las de la izquierda</text>
+  <rect x="440" y="220" width="90" height="32" rx="10" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5"/>
+  <text x="485.0" y="240.16666666666666" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="500">right</text>
+  <text x="440" y="272" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="#5b6472" text-anchor="start" font-weight="400">todas las de la derecha</text>
+  <rect x="635" y="220" width="90" height="32" rx="10" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5"/>
+  <text x="680.0" y="240.16666666666666" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="500">outer</text>
+  <text x="635" y="272" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="#5b6472" text-anchor="start" font-weight="400">todas, casen o no</text>
+  <text x="30" y="195" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#c0392b" text-anchor="start" font-weight="400">Contar los NaN que aparecen tras el merge delata las claves que no casan.</text>
+</svg>

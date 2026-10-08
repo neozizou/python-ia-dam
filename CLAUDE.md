@@ -16,8 +16,13 @@ README.md                 índice del módulo (actualizar la columna «Estado» 
 udN-tema/
 ├── UDN-tema.md           apuntes de la unidad (fichero principal)
 ├── README.md             portada de la carpeta: enlaces a los apuntes y al resto
+├── figuras/              figuras SVG de la unidad
 ├── listados/             un fichero .py por listado ejecutable + datos/
 └── proyecto/             proyecto completo cuando la unidad lo necesita
+sitio/
+├── overrides/            plantillas propias de MkDocs Material (título del índice, traducciones)
+└── stylesheets/extra.css estilos propios del sitio
+tools/                    scripts del sitio y de las figuras
 ```
 
 ## Estructura de los apuntes de cada unidad
@@ -28,6 +33,7 @@ udN-tema/
 4. **Práctica de la unidad**, ligada al hito del proyecto integrador, con tabla «CE · evidencias».
 5. **Resumen de la unidad**: tabla «Apartado · Idea clave».
 6. **Bibliografía de la UDN**, con fecha de consulta de las fuentes web.
+7. **Continuar**: tabla de tres columnas con la unidad anterior, el índice del módulo y la siguiente. Las rutas son relativas (`../udN-tema/UDN-tema.md`) para que funcionen en GitHub, y `tools/preparar_docs.py` las traduce a las del sitio.
 
 ## Convenciones de formato
 
@@ -40,6 +46,8 @@ udN-tema/
   - `> [!WARNING]` para errores frecuentes.
   - `> [!IMPORTANT]` para reglas clave.
 - Tablas para comparaciones y referencias; prosa breve, frases de menos de 25 palabras.
+- Figuras: SVG en `udN-tema/figuras/`, generadas por `tools/generar_figuras.py` con los ayudantes de `tools/figuras.py`. Se insertan con `![pie](figuras/nombre.svg)` seguido de `*Figura N.M. Pie.*`, siempre después del texto que explican. Fondo claro propio, para que se lean en modo claro y oscuro.
+- Enunciados de ejercicios: cuando el ejercicio tenga un resultado concreto, el enunciado incluye los datos de ejemplo y la salida esperada en un bloque de código. Un enunciado que no se pueda comprobar solo está mal escrito.
 - Todo dato tomado de la web se cita en línea con un enlace `([Fuente](url))` y se añade a la bibliografía de la unidad. Priorizar documentación oficial.
 
 ## Convenciones del código
@@ -52,6 +60,14 @@ udN-tema/
 ## Sitio web
 
 Los apuntes se publican en GitHub Pages con MkDocs Material. `tools/preparar_docs.py` copia cada fichero a `docs/` y reescribe los enlaces: los enlaces entre páginas apuntan a su ruta del sitio y los enlaces a código apuntan a GitHub. Al añadir una unidad hay que registrarla en `PAGINAS` y `ENLACES_INTERNOS` de ese script y en el `nav` de `mkdocs.yml`. Las alertas de GitHub (`> [!TIP]`) se traducen a avisos de Material mediante `tools/hooks_alertas.py`, así que se escriben una sola vez, en el formato de GitHub.
+
+La carpeta `sitio/` contiene lo que personaliza el tema y **no** se copia a `docs/` salvo los estilos:
+
+- `sitio/overrides/partials/toc.html`: titula «En esta unidad» el índice de la derecha en las páginas `udN`.
+- `sitio/overrides/partials/languages/custom.html`: textos propios del buscador; lo que no esté ahí se toma del español del tema. Lo activa `theme.language: custom`.
+- `sitio/stylesheets/extra.css`: índice lateral fijo con el apartado actual coloreado, buscador más ancho, figuras centradas y pie de navegación. `preparar_docs.py` lo copia a `docs/stylesheets/`.
+
+`docs/` y `site/` se generan y están en `.gitignore`: nunca se editan a mano.
 
 ## Flujo de trabajo
 

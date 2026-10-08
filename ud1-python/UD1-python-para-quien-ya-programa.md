@@ -18,6 +18,7 @@
 - [Práctica de la unidad · Hito 0 del proyecto integrador](#práctica-de-la-unidad--hito-0-del-proyecto-integrador)
 - [Resumen de la unidad](#resumen-de-la-unidad)
 - [Bibliografía de la UD1](#bibliografía-de-la-ud1)
+- [Continuar](#continuar)
 
 ## Presentación de la unidad
 
@@ -73,7 +74,7 @@ Los fragmentos que empiezan por `>>>` son sesiones del intérprete interactivo y
 
 - **Listado 1.x**: código completo que puedes copiar y ejecutar. El enlace «ver fichero» abre su versión en `listados/`.
 - **Desde C++**: comparación directa con lo que ya conoces, para evitar los errores típicos de quien cambia de lenguaje.
-- **Para practicar**: ejercicios cortos al final de cada apartado. Los marcados con (A) son de trabajo autónomo.
+- **Para practicar**: ejercicios cortos al final de cada apartado. Los marcados con (A) son de trabajo autónomo. Cuando el enunciado lo necesita, incluye los **datos de ejemplo** con los que debes probarlo y el **resultado esperado**: tu programa tiene que producir exactamente eso.
 - Los nombres de ficheros, órdenes de terminal y fragmentos de código dentro del texto aparecen en `fuente monoespaciada`.
 
 ## 1.1 El ecosistema Python
@@ -244,6 +245,10 @@ En Python no se declaran tipos: una variable es un **nombre que apunta a un obje
 > [!NOTE]
 > **Desde C++.** En C++, `int edad;` reserva una caja de memoria que solo admite enteros. En Python, `edad` es una etiqueta que puedes despegar y pegar en cualquier objeto. Eso no significa que Python sea «débil» con los tipos: no mezcla tipos incompatibles por su cuenta.
 
+![Las variables de Python son etiquetas que se pegan a objetos, no cajas con un tipo fijo.](figuras/variables-etiquetas.svg)
+
+*Figura 1.1. Las variables de Python son etiquetas que se pegan a objetos, no cajas con un tipo fijo.*
+
 **Listado 1.6.** Tipado dinámico pero fuerte
 
 ```python
@@ -371,7 +376,12 @@ print(f"{nombre:<10} {precio:>8.2f} € x {stock:>3} = {precio * stock:>9.2f} �
 ### Para practicar
 
 1. Predice el resultado y compruébalo en el intérprete: `7 / 2`, `7 // 2`, `-7 // 2`, `-7 % 3`, `2 ** 0.5`, `round(2.5)`, `round(3.5)`.
-2. Escribe `conversor.py`, que pida una temperatura en grados Celsius y muestre su equivalente en Fahrenheit con un decimal.
+2. Escribe `conversor.py`, que pida una temperatura en grados Celsius y muestre su equivalente en Fahrenheit con un decimal. La fórmula es `F = C * 9 / 5 + 32`.
+
+   ```text
+   Temperatura en °C: 25
+   25.0 °C son 77.0 °F
+   ```
 3. A partir de `"  garcía lópez, ana  "`, obtén y muestra `"Ana García López"` usando solo métodos de `str`.
 4. (A) Lee el capítulo 15 del tutorial y explica con tus palabras por qué `0.1 + 0.2 != 0.3`. ¿Qué consecuencias tiene al comparar importes en euros?
 
@@ -509,8 +519,26 @@ for n in range(2, 20):
 ### Para practicar
 
 1. Escribe FizzBuzz del 1 al 30: múltiplos de 3 → `Fizz`, de 5 → `Buzz`, de ambos → `FizzBuzz`.
-2. Crea una calculadora con un menú que se repita hasta que el usuario escriba `salir`. Usa `while True` y `match` para las órdenes `suma a b`, `resta a b` y `salir`.
-3. Dadas `nombres = ["Ana", "Luis", "Eva"]` y `notas = [6.5, 4.0, 9.1]`, muestra cada alumno con su posición y su nota, y cuenta cuántos han aprobado.
+2. Crea una calculadora con un menú que se repita hasta que el usuario escriba `salir`. Usa `while True` y `match` para las órdenes `suma a b`, `resta a b` y `salir`. Recuerda que `input()` devuelve texto: hay que convertir los dos números.
+
+   ```text
+   Orden: suma 3 4
+   7.0
+   Orden: resta 10 2.5
+   7.5
+   Orden: multiplica 2 3
+   Orden desconocida: multiplica 2 3
+   Orden: salir
+   Hasta luego
+   ```
+3. Dadas `nombres = ["Ana", "Luis", "Eva"]` y `notas = [6.5, 4.0, 9.1]`, muestra cada alumno con su posición y su nota, y cuenta cuántos han aprobado. Pista: `enumerate` y `zip` a la vez.
+
+   ```text
+   1. Ana   6.5
+   2. Luis  4.0
+   3. Eva   9.1
+   Aprobados: 2 de 3
+   ```
 4. (A) Reescribe este bucle de C++ de forma pythónica, sin manejar el índice a mano:
 
 ```cpp
@@ -661,7 +689,20 @@ Las funciones que reciben o devuelven otras funciones, y los decoradores que se 
 
 1. Escribe `es_primo(n: int) -> bool` con su docstring y úsala para listar los primos menores que 50.
 2. Escribe `normalizar(texto: str, *, mayusculas: bool = False) -> str`, que quite espacios al principio y al final, reduzca los espacios repetidos a uno y, si se pide, pase a mayúsculas. Pista: `split()` sin argumentos y `join`.
-3. Amplía `estadisticas` para que devuelva también la mediana. Pista: `sorted(valores)`.
+
+   ```python
+   normalizar("  hola    mundo  ")                    # 'hola mundo'
+   normalizar("  hola    mundo  ", mayusculas=True)   # 'HOLA MUNDO'
+   normalizar("DAM")                                  # 'DAM'
+   ```
+3. Amplía `estadisticas` para que devuelva también la mediana: el valor central de los datos ordenados, o la media de los dos centrales si hay un número par de valores. Pista: `sorted(valores)` y `len(valores) % 2`.
+
+   ```python
+   estadisticas([4.5, 7.0, 9.25, 6.0])    # (4.5, 9.25, 6.6875, 6.5)
+   estadisticas([4.0, 8.0, 6.0])          # (4.0, 8.0, 6.0, 6.0)
+   ```
+
+   El cuarto valor es la mediana: en la primera lista, la media de 6.0 y 7.0.
 4. (A) Sin ejecutarlo, explica qué imprime la versión incorrecta del listado 1.20 si llamamos `anadir_mal(3, [])` y después `anadir_mal(4)`. Compruébalo después.
 
 ## 1.5 Estructuras de datos
@@ -676,6 +717,10 @@ Python trae cuatro colecciones integradas que cubren casi todas las necesidades:
 | Conjunto `set` | `{1, 2}` | No | Sí | No | `std::unordered_set` |
 
 A diferencia de C++, una misma colección puede contener objetos de tipos distintos, aunque en la práctica conviene que sean homogéneos.
+
+![Las cuatro colecciones integradas y los rasgos que deciden cuál usar en cada caso.](figuras/estructuras-datos.svg)
+
+*Figura 1.2. Las cuatro colecciones integradas y los rasgos que deciden cuál usar en cada caso.*
 
 ### Listas
 
@@ -725,6 +770,10 @@ matriz[0][0] = 9                        # [[9, 0, 0], [0, 0, 0]]
 ```
 
 `copy()` hace una copia **superficial**: si la lista contiene otras listas, estas se siguen compartiendo. Para copiar estructuras anidadas completas está `copy.deepcopy()`.
+
+![Asignar crea un segundo nombre para el mismo objeto; copiar crea un objeto nuevo.](figuras/alias-y-copia.svg)
+
+*Figura 1.3. Asignar crea un segundo nombre para el mismo objeto; copiar crea un objeto nuevo.*
 
 ### Tuplas
 
@@ -855,8 +904,39 @@ Fíjate en lo que hemos hecho: agrupar, agregar, ordenar y buscar el máximo. So
 ### Para practicar
 
 1. A partir de `ventas` (listado 1.30), calcula las unidades vendidas por producto y el importe medio por venta.
+
+   ```text
+   {'portátil': 4, 'ratón': 10, 'monitor': 6}
+   Importe medio por venta: 960.92 €
+   ```
 2. Con una comprensión, obtén la lista de ciudades distintas ordenada alfabéticamente. Hazlo después con un conjunto. ¿Qué diferencia hay?
-3. Dada una lista de tuplas `(alumno, módulo, nota)`, construye un diccionario `{alumno: [notas]}` y, a partir de él, otro con la media de cada alumno.
+3. **Notas por alumno.** Partiendo de esta lista de tuplas, en la que cada tupla es `(alumno, módulo, nota)`:
+
+   ```python
+   datos = [
+       ("Ana", "Programación", 8),
+       ("Luis", "Programación", 6),
+       ("Ana", "Bases de Datos", 9),
+       ("Luis", "Bases de Datos", 7),
+       ("Marta", "Programación", 10),
+   ]
+   ```
+
+   Construye **dos** diccionarios, uno a partir del otro:
+
+   a) Uno que agrupe todas las notas de cada alumno, en el orden en que aparecen:
+
+   ```python
+   {'Ana': [8, 9], 'Luis': [6, 7], 'Marta': [10]}
+   ```
+
+   b) Y otro, construido a partir del anterior, con la media de cada alumno:
+
+   ```python
+   {'Ana': 8.5, 'Luis': 6.5, 'Marta': 10.0}
+   ```
+
+   Puedes resolverlo con un bucle y un condicional, o con `dict.get` y `setdefault` (listado 1.27). El módulo no interviene en el resultado: está en los datos para que practiques a quedarte solo con lo que necesitas.
 4. (A) Explica por qué `[[0] * 3] * 2` crea filas compartidas. Dibuja las etiquetas y los objetos.
 
 ## 1.6 Ficheros: texto, CSV y JSON
@@ -1025,7 +1105,13 @@ print(f"Ciudad con más ventas: {ciudad} ({total:.2f} €)")
 
 1. Ejecuta el listado 1.33 desde la carpeta `listados/` y comprueba el JSON generado. ¿Por qué no aparece Sevilla?
 2. Amplía el programa para que genere también `datos/informe.csv` con las columnas `ciudad` y `total`, ordenado de mayor a menor, usando `csv.DictWriter` con `;` como separador.
-3. Escribe una función `contar_lineas(ruta: Path, texto: str) -> int` que devuelva cuántas líneas de un fichero contienen un texto dado, sin cargar el fichero entero en memoria.
+3. Escribe una función `contar_lineas(ruta: Path, texto: str) -> int` que devuelva cuántas líneas de un fichero contienen un texto dado, sin cargar el fichero entero en memoria. Pruébala con el `datos/registro.txt` que genera el listado 1.32.
+
+   ```python
+   contar_lineas(Path("datos/registro.txt"), "ERROR")     # 1
+   contar_lineas(Path("datos/registro.txt"), "proceso")   # 2
+   contar_lineas(Path("datos/registro.txt"), "zzz")       # 0
+   ```
 4. (A) Abre `ventas.csv` con Excel o LibreOffice y guárdalo como «CSV UTF-8». Léelo con `encoding="utf-8"` y después con `"utf-8-sig"`, e imprime las claves de la primera fila. Explica la diferencia.
 
 ## 1.7 Errores, excepciones y depuración
@@ -1068,6 +1154,10 @@ ZeroDivisionError: division by zero
 ```
 
 Se lee **de abajo arriba**. La última línea dice qué pasó (`ZeroDivisionError`) y por qué. Justo encima está la línea exacta, con marcas que señalan la operación culpable. Más arriba aparece la cadena de llamadas que llevó hasta allí.
+
+![Las tres preguntas que responde un traceback, en el orden en que conviene leerlas.](figuras/traceback.svg)
+
+*Figura 1.4. Las tres preguntas que responde un traceback, en el orden en que conviene leerlas.*
 
 ### Las excepciones más frecuentes
 
@@ -1199,7 +1289,16 @@ En los notebooks, cada celda tiene una opción para ejecutarla línea a línea o
 ### Para practicar
 
 1. Provoca a propósito cada excepción de la tabla en el intérprete. Anota la última línea del *traceback* de cada una.
-2. Reescribe el listado 1.14 con `try`/`except ValueError` en lugar de `isdigit()`.
+2. Reescribe el listado 1.14 con `try`/`except ValueError` en lugar de `isdigit()`. Comprueba que, además de rechazar `"abc"` y `"150"`, ahora detecta correctamente que `"-5"` es un número y lo rechaza por estar fuera de rango, cosa que la versión con `isdigit()` no distinguía.
+
+   ```text
+   Edad (0-120): abc
+   Eso no es un número, inténtalo de nuevo.
+   Edad (0-120): -5
+   La edad debe estar entre 0 y 120.
+   Edad (0-120): 20
+   Edad registrada: 20
+   ```
 3. Pon un punto de interrupción condicional dentro del bucle de `leer_ventas` que se detenga en la línea 5 del CSV. Inspecciona `fila` en el panel de variables.
 4. (A) Amplía `leer_ventas` para que descarte también las filas con precio o unidades menores o iguales que cero. Usa `raise ValueError` dentro del `try` y registra el motivo en el aviso.
 
@@ -1557,3 +1656,11 @@ Todas las fuentes web se consultaron el 21 de septiembre de 2026.
 - Gobierno de España. *datos.gob.es*, catálogo nacional de datos abiertos. <https://datos.gob.es>
 - University of California, Irvine. *UCI Machine Learning Repository*. <https://archive.ics.uci.edu>
 - Kaggle. *Datasets*. <https://www.kaggle.com/datasets>
+
+---
+
+## Continuar
+
+| ← Unidad anterior | Índice | Unidad siguiente → |
+| :--- | :---: | ---: |
+| *Primera unidad del módulo* | [Índice del módulo](../README.md) | [UD2 · Programación orientada a objetos](../ud2-poo/UD2-programacion-orientada-a-objetos.md) |

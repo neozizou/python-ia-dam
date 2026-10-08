@@ -9,7 +9,8 @@ use_directory_urls: true
 
 theme:
   name: material
-  language: es
+  language: custom          # sitio/overrides/partials/languages/custom.html
+  custom_dir: sitio/overrides
   icon:
     repo: fontawesome/brands/github
   palette:
@@ -35,7 +36,11 @@ theme:
     - toc.follow
     - search.suggest
     - search.highlight
+    - search.share
     - content.code.copy
+
+extra_css:
+  - stylesheets/extra.css
 
 markdown_extensions:
   - admonition
