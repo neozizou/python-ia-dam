@@ -22,13 +22,11 @@
 
 ## Presentación de la unidad
 
-Es la unidad más larga del módulo: 10 horas. En la UD1 agrupaste ventas por ciudad con un diccionario y veinte líneas de código; aquí lo harás con una línea de pandas sobre 1.200 filas, y el mismo código serviría para 1.200.000. Al final publicarás en internet tu primer panel interactivo.
+Es la unidad más larga del módulo: 10 horas. En la UD1 recorriste las 100.995 filas del fichero de jugadores con el módulo `csv` y un puñado de diccionarios, y tardaste medio segundo. Funcionaba. El problema no era la velocidad: era que contar jugadores por país te costó quince líneas, y calcular la media por país, dos diccionarios.
 
-El orden sigue el ciclo real del dato: cargar, mirar, limpiar, transformar, visualizar, interpretar y comunicar. La limpieza ocupa buena parte de la unidad porque es donde de verdad se va el tiempo en un proyecto de datos.
+Aquí eso pasa a ser una línea. Pero el cambio importante no es escribir menos código, sino poder hacerte preguntas que antes no compensaba responder. Cuando agrupar cuesta una línea, agrupas por todo; y de ahí salen los hallazgos.
 
-![El ciclo del dato y el apartado en el que se trabaja cada fase.](figuras/ciclo-del-dato.svg)
-
-*Figura 3.1. El ciclo del dato y el apartado en el que se trabaja cada fase.*
+La unidad va en ese orden: cargar, mirar, limpiar, transformar, dibujar, interpretar y publicar. Termina con una aplicación web funcionando en internet, que es donde acaba de verdad un análisis: no en un cuaderno que solo abres tú.
 
 ### Resultado de aprendizaje y criterios de evaluación
 
@@ -36,12 +34,12 @@ El orden sigue el ciclo real del dato: cargar, mirar, limpiar, transformar, visu
 
 | CE | Criterio de evaluación | Apartados |
 | --- | --- | --- |
-| 2a | Carga, limpia y estructura conjuntos de datos con bibliotecas de Python | 3.1, 3.2, 3.3, 3.4, 3.5 |
-| 2b | Representa gráficamente los datos para facilitar su interpretación | 3.6 |
-| 2c | Realiza análisis exploratorios para identificar patrones y tendencias | 3.7 |
-| 2e | Interpreta los resultados del análisis para apoyar la toma de decisiones | 3.7, 3.8 |
+| 2a | Gestiona conjuntos de datos para su carga, limpieza y estructuración | 3.2, 3.3, 3.4, 3.5 |
+| 2b | Genera representaciones visuales aplicando principios de análisis gráfico | 3.6 |
+| 2c | Realiza análisis exploratorio identificando patrones y tendencias | 3.7 |
+| 2e | Interpreta los resultados para la toma de decisiones | 3.7, 3.8 |
 
-El criterio 2d, consultas a bases de datos, se trabaja en la UD4.
+El criterio 2d, sobre consultas en bases de datos, se trabaja en la UD4.
 
 ### Temporalización
 
@@ -59,640 +57,1205 @@ El lunes 02/11 es festivo.
 
 ### Antes de empezar: instalar las dependencias
 
-Con el entorno virtual del proyecto activado (apartado 1.1):
+Con el entorno virtual del módulo activado:
 
 ```bash
-python -m pip install -r ud3-datos/requirements.txt
+pip install pandas numpy matplotlib seaborn streamlit pyarrow
 ```
 
-El fichero fija las versiones con las que están probados todos los listados:
+`pyarrow` no se usa directamente: es lo que permite a pandas leer y escribir ficheros Parquet, que aparecen en el apartado 3.5.
 
-```text
-numpy==2.4.4
-pandas==3.0.2
-matplotlib==3.10.8
-seaborn==0.13.2
-streamlit==1.64.0
-openpyxl==3.1.5
-pyarrow==25.0.1
-```
+### Qué datos vamos a usar
 
-> [!NOTE]
-> **pandas 3.** Desde la versión 3.0, las columnas de texto tienen el tipo `str` en lugar del antiguo `object`. Si consultas tutoriales anteriores a 2026 verás `object` en las salidas de `dtypes` e `info()`. Es el mismo contenido con un nombre mejor.
+El mismo fichero de siempre, `datos-comunes/jugadores.csv`, con las valoraciones de FIFA 15 a FIFA 20. Si no lo has mirado todavía, su página de referencia está aquí: **[El conjunto de datos del curso](../datos-comunes/README.md)**.
+
+Hay un segundo fichero, pequeño, que aparece en el apartado de uniones: `datos-comunes/posiciones.csv`, con las 15 posiciones, su nombre en español y la línea del campo a la que pertenecen.
 
 ### Cómo usar esta carpeta
 
 | Carpeta | Contenido |
 | --- | --- |
-| [`listados/`](listados/) | Los 20 listados de la unidad. `comun.py` reúne la carga y la limpieza que reutilizan los listados a partir del 3.11 |
-| [`listados/datos/`](listados/datos/) | `ventas_2026.csv` (1.215 filas, con suciedad deliberada) y `ciudades.csv` |
-| [`app/`](app/) | La aplicación Streamlit completa, lista para desplegar |
+| [`listados/`](listados/) | Los listados de la unidad. `comun.py` concentra la carga y la limpieza |
+| [`app/`](app/) | La aplicación de Streamlit lista para desplegar |
+| [`figuras/`](figuras/) | Las figuras de los apuntes |
 
-El fichero de datos lo genera [`generar_datos.py`](listados/generar_datos.py), por si quieres cambiar su tamaño o la cantidad de errores que contiene.
+Los listados se ejecutan desde `ud3-datos/listados/`:
+
+```bash
+cd ud3-datos/listados
+python listado_3_09_groupby.py
+streamlit run listado_3_20_panel_streamlit.py
+```
+
+Los gráficos se guardan en `listados/graficos/`, que no se sube al repositorio: se regenera ejecutando los listados.
 
 ## 3.1 NumPy: el motor que hay debajo
 
-pandas está construido sobre NumPy, así que conviene entender la idea básica: un **array** es una secuencia homogénea y de tamaño fijo sobre la que las operaciones se aplican a todos los elementos a la vez, sin bucles. Eso se llama **vectorización** ([NumPy: the absolute basics for beginners](https://numpy.org/doc/stable/user/absolute_beginners.html)).
+pandas está construido sobre NumPy, así que conviene entender qué aporta NumPy antes de usar pandas. Y lo que aporta se resume en una idea: **operar sobre muchos números a la vez en lugar de uno a uno**.
 
-**Listado 3.1.** Vectorización frente a bucles · [ver fichero](listados/listado_3_01_numpy.py)
+Una lista de Python guarda referencias a objetos, cada uno en un sitio distinto de la memoria, y cada uno con su tipo. Sumar dos listas elemento a elemento obliga a recorrerlas, mirar el tipo de cada par y llamar a la suma correspondiente. Un `array` de NumPy guarda los números **del mismo tipo, uno detrás de otro**, y la suma se hace en código compilado sin volver a Python en cada vuelta. A eso se le llama **vectorización**.
+
+**Listado 3.1.** El array y la vectorización · [ver fichero](listados/listado_3_01_numpy.py)
 
 ```python
 import numpy as np
 
-precios = np.array([899.90, 180.00, 25.00, 12.50])
-unidades = np.array([3, 2, 10, 5])
+medias = np.array([94, 93, 91, 91, 89])
+print("array:", medias, "· tipo de los datos:", medias.dtype)
 
-importes = precios * unidades          # operación elemento a elemento, sin bucle
-print(importes)                        # [2699.7  360.    250.     62.5]
-print(importes.sum(), importes.mean(), importes.max())
-print(importes[importes > 300])        # máscara booleana: filtra sin bucle
+# Las operaciones se aplican a todos los elementos a la vez.
+print("medias + 1:   ", medias + 1)
+print("medias > 90:  ", medias > 90)
+print("solo los > 90:", medias[medias > 90])     # máscara booleana
+
+print(f"media {medias.mean():.1f} · máximo {medias.max()} · desviación {medias.std():.2f}")
 ```
 
-El listado completo compara el tiempo de multiplicar cinco millones de números con un bucle de Python y con NumPy. La diferencia es de un orden de magnitud, y crece con el tamaño: NumPy guarda los datos en un bloque contiguo de memoria y ejecuta el cálculo en código compilado.
+```text
+array: [94 93 91 91 89] · tipo de los datos: int64
+
+medias + 1:    [95 94 92 92 90]
+medias > 90:   [ True  True  True  True False]
+solo los > 90: [94 93 91 91]
+
+media 91.6 · máximo 94 · desviación 1.74
+```
+
+Fíjate en `medias > 90`. No devuelve `True` o `False`: devuelve **un array de booleanos, uno por elemento**. Y ese array se puede usar entre corchetes para quedarse solo con los elementos donde vale `True`. A eso se le llama **máscara booleana**, y es exactamente la forma en que filtrarás filas en pandas durante el resto del curso. Si entiendes esto, el apartado 3.3 no te costará nada.
+
+¿Y cuánto más rápido es? Depende de la operación, y conviene medirlo en lugar de repetir que «NumPy es rapidísimo».
+
+```text
+Dos millones de valoraciones:
+  media                lista   14.7 ms · NumPy   1.6 ms ·    9 veces más rápido
+  cuántas pasan de 85  lista   59.2 ms · NumPy   4.5 ms ·   13 veces más rápido
+```
+
+Entre nueve y trece veces, en este caso. Hay operaciones donde la diferencia es mucho mayor y otras donde apenas se nota, porque el cuello de botella pasa a ser la memoria. Pero hay una segunda ventaja que no se mide en milisegundos: escribir `array.mean()` en lugar de un bucle con un acumulador. Es esa legibilidad la que hace posible el código de pandas que viene a continuación.
 
 > [!NOTE]
-> **Desde C++.** Un array de NumPy es lo más parecido a un `std::vector<double>` con operaciones aritméticas ya definidas. La diferencia con una lista de Python es que la lista guarda punteros a objetos dispersos por la memoria; el array, los números en bruto y seguidos.
-
-Dos detalles que reaparecerán todo el curso:
-
-- **`NaN`** (*not a number*) representa un valor ausente en columnas numéricas. Cualquier operación con `NaN` da `NaN`, por eso existen `np.nansum`, y en pandas casi todas las funciones lo ignoran por defecto.
-- Las **máscaras booleanas** (`array[array > 300]`) son la forma de filtrar en NumPy y en pandas.
+> **Desde C++.** Un `array` de NumPy es lo más parecido a un `std::vector<double>` que hay en Python: memoria contigua, un solo tipo, tamaño fijo. La diferencia es que en NumPy las operaciones aritméticas están sobrecargadas para trabajar sobre el vector entero, algo que en C++ tendrías que escribir tú o buscar en una biblioteca como Eigen.
 
 ### Para practicar
 
-1. Crea un array con las notas `[6.5, 4.0, 9.1, 7.25, 5.0]` y calcula media, desviación típica (`std`) y cuántas superan la media.
-2. Con `np.arange(1, 13)`, obtén el array de los meses y, con una máscara, quédate con los del segundo semestre.
-3. (A) Repite la comparación de tiempos del listado 3.1 con 50 millones de elementos. ¿Crece la ventaja de NumPy?
+1. Crea un array con las valoraciones `[94, 66, 48, 72, 88]` y obtén, sin bucles: cuántas superan 70, la media de las que superan 70 y la diferencia de cada una respecto a la media general.
+
+   ```text
+   Superan 70: 3
+   Media de esas: 84.67
+   Diferencias: [ 20.4  -7.6 -25.6  -1.6  14.4]
+   ```
+
+2. Comprueba qué pasa al crear `np.array([94, 66, "alto"])`. Mira el `dtype` resultante y explica en una línea por qué un array no puede mezclar tipos como sí hace una lista.
+
+3. (A) Mide con el método del listado 3.1 cuánto tarda en ordenar un millón de números una lista (`sorted`) y un array (`np.sort`). Anota el resultado y explica si la diferencia es la que esperabas.
 
 ## 3.2 pandas: cargar e inspeccionar
 
-Un `DataFrame` es una tabla: filas con índice y columnas con nombre y tipo. Una columna suelta es una `Series`. Casi todo el trabajo consiste en encadenar operaciones que devuelven nuevos DataFrames ([pandas: 10 minutes to pandas](https://pandas.pydata.org/docs/user_guide/10min.html)).
+Un **DataFrame** es una tabla: filas, columnas con nombre y un tipo por columna. Una **Series** es una sola columna. Casi todo lo que hagas a partir de ahora consiste en transformar un DataFrame en otro.
 
-![Índice, columnas y tipos: las tres cosas que mirar nada más cargar un fichero.](figuras/anatomia-dataframe.svg)
+![Un DataFrame con sus partes señaladas: el índice a la izquierda, los nombres de las columnas arriba, el tipo de cada columna, y una celda cualquiera. Al lado, una Series, que es una sola columna con su índice.](figuras/anatomia-dataframe.svg)
 
-*Figura 3.2. Índice, columnas y tipos: las tres cosas que mirar nada más cargar un fichero.*
+*Figura 3.1. Las partes de un DataFrame. El índice es lo que más confunde al principio: no es un número de fila, es una etiqueta.*
 
-**Listado 3.2.** Cargar un CSV y mirarlo por primera vez · [ver fichero](listados/listado_3_02_leer_csv.py)
+### Cargar con los parámetros adecuados
+
+`read_csv` tiene más de cincuenta parámetros. En la práctica se usan cuatro o cinco, pero elegirlos bien ahorra mucha limpieza después.
+
+**Listado 3.2.** Cargar el fichero de tres maneras · [ver fichero](listados/listado_3_02_leer_csv.py)
 
 ```python
-from pathlib import Path
-
 import pandas as pd
 
-ruta = Path("datos") / "ventas_2026.csv"
+RUTA = Path(__file__).resolve().parents[2] / "datos-comunes" / "jugadores.csv"
 
-ventas = pd.read_csv(
-    ruta,
-    sep=";",                    # separador español
-    decimal=",",                # coma decimal: 809,91 -> 809.91
-    parse_dates=["fecha"],      # convierte la columna a fechas
-    encoding="utf-8",
-)
+# La lectura mínima: pandas deduce separador, tipos y cabecera.
+jugadores = pd.read_csv(RUTA)
+print("Filas y columnas:", jugadores.shape)
+print("Memoria:", f"{jugadores.memory_usage(deep=True).sum() / 1024**2:.1f} MB")
 
-print(ventas.shape)             # (1215, 8)
-print(ventas.head(3))
-print(ventas.dtypes)
+# Leer solo lo que hace falta: menos memoria y menos ruido.
+columnas = ["fifa", "short_name", "age", "nationality", "club",
+            "player_positions", "overall", "potential", "value_eur"]
+ligero = pd.read_csv(RUTA, usecols=columnas)
+
+# Las fechas no se convierten solas: hay que pedirlo.
+con_fechas = pd.read_csv(RUTA, usecols=["short_name", "dob", "joined"],
+                         parse_dates=["dob", "joined"])
 ```
 
-En la UD1 escribiste una función para convertir `"809,91"` en `809.91`. Aquí es un parámetro. `read_csv` tiene decenas: `usecols`, `nrows`, `skiprows`, `na_values`, `dtype`, `thousands`, `chunksize`. Antes de programar una limpieza, comprueba si `read_csv` ya la hace.
+```text
+Filas y columnas: (100995, 37)
+Memoria: 82.2 MB
 
-| Función hermana | Formato |
-| --- | --- |
-| `pd.read_excel` | `.xlsx` (necesita `openpyxl`) |
-| `pd.read_json` | JSON |
-| `pd.read_parquet` | Parquet, columnar y comprimido (UD5) |
-| `pd.read_sql` | Resultado de una consulta SQL (UD4) |
+Con usecols: (100995, 9) · 26.7 MB
 
-**Listado 3.3.** Series, DataFrame y primera inspección · [ver fichero](listados/listado_3_03_inspeccion.py)
+Tipos de las fechas:
+short_name               str
+dob           datetime64[us]
+joined        datetime64[us]
+```
+
+Tres cosas que conviene retener:
+
+**`usecols` no es una optimización prematura.** Pasar de 82 a 27 MB en una línea importa cuando el fichero crece, y además evita arrastrar treinta columnas que no vas a mirar. En la UD5 esto será la diferencia entre poder trabajar y no poder.
+
+**Las fechas llegan como texto.** `dob` sin `parse_dates` es una cadena `"1987-06-24"`, con la que no puedes restar ni extraer el mes. Pedirlo al cargar es más cómodo que convertir después.
+
+**`memory_usage(deep=True)`.** Sin `deep=True`, pandas no cuenta lo que ocupan las cadenas de verdad y te da una cifra mucho menor que la real.
+
+### Las seis órdenes con las que se empieza siempre
+
+Antes de calcular nada hay que saber qué hay dentro. Casi todos los errores de análisis vienen de haber supuesto algo sobre los datos que no era cierto, y estas seis respuestas evitan la mayoría.
+
+**Listado 3.3.** Lo primero que se hace con un conjunto de datos nuevo · [ver fichero](listados/listado_3_03_inspeccion.py)
 
 ```python
-print(type(ventas["precio"]), type(ventas[["ciudad", "precio"]]))   # Series, DataFrame
+sol = jugadores[jugadores["fifa"] == 2020]
 
-print(ventas.info())                      # tipos, nulos y memoria
-print(ventas.describe())                  # estadísticos de las columnas numéricas
-print(ventas["producto"].value_counts())  # recuento por categoría
-print(ventas["ciudad"].nunique(), "ciudades distintas")
+print("1. shape:", sol.shape)                 # ¿cuánto hay?
+sol.info()                                    # 2. tipos y huecos
+print(sol.describe())                         # 3. cómo se reparten los números
+print(sol[["nationality", "club"]].describe())  # 4. y los textos
+print(sol["preferred_foot"].value_counts())   # 5. qué valores distintos hay
+print(sol.sample(3, random_state=7))          # 6. una muestra al azar
 ```
 
-Estos cuatro métodos son el primer contacto con cualquier conjunto de datos. `info()` ya te avisa de dos problemas en nuestro fichero: `canal` tiene 1.175 valores no nulos de 1.215, y `unidades` solo 1.154.
+```text
+1. shape: (18278, 37)
 
-| Método | Responde a… |
-| --- | --- |
-| `shape`, `columns`, `dtypes` | ¿Qué tamaño y qué tipos tiene? |
-| `head()`, `tail()`, `sample(5)` | ¿Qué pinta tienen las filas? |
-| `info()` | ¿Cuántos nulos hay y cuánta memoria ocupa? |
-| `describe()` | ¿Cómo se distribuyen las columnas numéricas? |
-| `value_counts()`, `unique()`, `nunique()` | ¿Qué categorías hay y cuántas veces aparecen? |
+3. describe() de las numéricas:
+           age  overall  potential    value_eur
+count  18278.0  18278.0    18278.0      18278.0
+mean      25.3     66.2       71.5    2484037.6
+std        4.7      6.9        6.1    5585481.1
+min       16.0     48.0       49.0          0.0
+25%       22.0     62.0       67.0     325000.0
+50%       25.0     66.0       71.0     700000.0
+75%       29.0     71.0       75.0     2100000.0
+max       42.0     94.0       95.0  105500000.0
+
+4. describe() de las categóricas:
+       nationality          club preferred_foot
+count        18278         18278          18278
+unique         162           698              2
+top        England  FC Barcelona          Right
+freq          1667            33          13960
+```
+
+Ese `describe()` ya tiene dos avisos dentro, si se sabe mirar.
+
+El primero: **`min` de `value_eur` es 0**. Un jugador de FIFA 20 no vale cero euros. Ahí hay algo que explicar, y lo veremos en el apartado 3.4.
+
+El segundo: **la media de `value_eur` es 2,48 millones y la mediana 700.000**. Cuando la media casi cuadruplica a la mediana, la distribución tiene una cola larga hacia arriba y la media deja de describir a nadie. Es un dato sobre la **forma** de los datos, no sobre su centro.
+
+> [!TIP]
+> Usa `sample()` en vez de `head()` para echar un primer vistazo. Los ficheros suelen venir ordenados por algo —aquí, por valoración—, así que `head()` te enseña siempre lo mismo: los diez mejores del mundo, que no se parecen al resto.
 
 ### Para practicar
 
-1. Carga `ventas_2026.csv` sin `decimal=","` y mira el tipo de la columna `precio`. Explica qué ha pasado.
-2. Carga solo las columnas `fecha`, `ciudad` e `importe`… y comprueba que la última no existe. ¿Qué error da `usecols`?
-3. (A) Usa `describe(include="all")` y explica qué significan `unique`, `top` y `freq` en las columnas de texto.
+1. Carga solo las columnas `short_name`, `age`, `overall` y `club` de FIFA 20 y comprueba cuánta memoria ocupa frente al fichero completo.
+
+2. Aplica `describe()` a la columna `age` de cada edición por separado. ¿Está envejeciendo el conjunto de jugadores?
+
+3. (A) Busca en la documentación de pandas qué hacen los parámetros `dtype`, `nrows` y `skiprows` de `read_csv`, y explica en una línea en qué situación usarías cada uno.
 
 ## 3.3 Seleccionar y filtrar
 
-**Listado 3.4.** `loc`, `iloc` y máscaras booleanas · [ver fichero](listados/listado_3_04_seleccion.py)
+La confusión más habitual de quien empieza con pandas es mezclar las tres formas de seleccionar. La regla es corta:
+
+| Para… | Se usa | Ejemplo |
+| --- | --- | --- |
+| Elegir columnas | `[]` | `sol["overall"]`, `sol[["short_name", "club"]]` |
+| Filtrar filas por una condición | `[]` con una máscara | `sol[sol["overall"] >= 90]` |
+| Filas y columnas por **nombre** | `.loc` | `sol.loc[sol["age"] < 20, ["short_name", "potential"]]` |
+| Filas y columnas por **posición** | `.iloc` | `sol.iloc[0, :3]` |
+
+**Listado 3.4.** Las tres formas de seleccionar · [ver fichero](listados/listado_3_04_seleccion.py)
 
 ```python
-print(ventas.loc[0, "ciudad"])                 # por etiqueta: fila 0, columna ciudad
-print(ventas.iloc[0, 2])                       # por posición: fila 0, columna 2
-print(ventas.loc[:4, ["ciudad", "precio"]])    # rebanada de filas y columnas
+# Una columna es una Series; dos o más, un DataFrame.
+print("Una columna ->", type(sol["overall"]).__name__)      # Series
+print("Varias      ->", type(sol[["short_name", "overall"]]).__name__)  # DataFrame
 
-caras = ventas["precio"] > 500                 # una Series de True/False
-print(caras.sum(), "ventas de más de 500 €")   # 218
-print(ventas[caras].head(3))
+# Varias condiciones: paréntesis obligatorios, y & | en lugar de and / or.
+jovenes_promesa = sol[(sol["age"] <= 21) & (sol["potential"] >= 85)]
 
-# Varias condiciones: & (y), | (o), ~ (no). Cada una entre paréntesis
-granada_online = ventas[(ventas["ciudad"] == "Granada") & (ventas["canal"] == "online")]
+# .loc: filas por condición, columnas por nombre, en una sola orden.
+sol.loc[sol["nationality"] == "Spain", ["short_name", "club", "overall"]]
 
-andalucia_oriental = ventas[ventas["ciudad"].isin(["Granada", "Jaén", "Almería"])]
-print(len(ventas[ventas["precio"].between(100, 200)]))
-print(len(ventas.query("precio > 500 and canal == 'tienda'")))   # alternativa legible
+# isin evita escribir una cadena de condiciones con |.
+sol[sol["club"].isin(["FC Barcelona", "Real Madrid", "Atlético Madrid"])]
+
+# between, para rangos.
+sol[sol["age"].between(34, 40)]
+```
+
+```text
+Jugadores con media 90 o más: 10
+Menores de 22 con potencial 85+: 170
+   short_name  age                club  overall  potential
+    K. Mbappé   20 Paris Saint-Germain       89         95
+   M. de Ligt   19            Juventus       85         93
+   João Félix   19     Atlético Madrid       80         93
+G. Donnarumma   20               Milan       85         92
+    J. Sancho   19   Borussia Dortmund       84         92
+
+Jugadores de los tres grandes: 99
+Entre 34 y 40 años: 898
 ```
 
 > [!WARNING]
-> Usa `&`, `|` y `~`, no `and`, `or` y `not`: estos últimos trabajan con un único valor de verdad y fallan sobre una Series. Y pon cada condición entre paréntesis, porque `&` tiene más prioridad que `==`.
+> Dos errores que vas a cometer, porque los cometemos todos. El primero: `sol[sol["age"] > 30 & sol["overall"] > 80]` falla, porque `&` tiene más prioridad que `>`. Hay que poner paréntesis a cada condición. El segundo: usar `and` en lugar de `&` da `ValueError: The truth value of a Series is ambiguous`, porque `and` espera un único booleano y aquí hay dieciocho mil.
 
-| Quiero… | Escribo |
-| --- | --- |
-| Una columna | `df["ciudad"]` |
-| Varias columnas | `df[["ciudad", "precio"]]` |
-| Filas por etiqueta de índice | `df.loc[10:20]` |
-| Filas por posición | `df.iloc[0:5]` |
-| Filas que cumplen una condición | `df[df["precio"] > 500]` |
-| Filas de una lista de valores | `df[df["ciudad"].isin([...])]` |
-| Un rango de valores | `df[df["precio"].between(100, 200)]` |
+> [!NOTE]
+> **Desde C++.** No hay bucle. `sol[sol["overall"] >= 90]` construye un array de booleanos del tamaño de la tabla y se queda con las filas marcadas, todo en código compilado. Escribir un `for` sobre las filas de un DataFrame funciona, pero es entre diez y cien veces más lento y se considera un error de estilo.
 
 ### Para practicar
 
-1. Obtén las ventas de diciembre con importe superior a 1.000 €. Pista: `ventas["fecha"].dt.month`.
-2. Cuenta cuántas ventas hay de cada producto en el canal `online`.
-3. (A) Escribe la misma consulta con máscaras y con `query()`. ¿Cuál te parece más legible? ¿Y más fácil de construir dinámicamente desde un filtro de Streamlit?
+1. Obtén los jugadores españoles de FIFA 20 con valoración 85 o más, ordenados de mayor a menor.
+
+   ```text
+   De Gea, Sergio Ramos, Sergio Busquets, Piqué, David Silva
+   ```
+
+2. Cuenta cuántos jugadores tienen `potential` al menos 10 puntos por encima de `overall`. ¿Qué edad media tienen?
+
+3. (A) Escribe la misma selección del ejercicio 1 con `[]` y con `.loc`, y explica en qué caso es obligatorio `.loc`. Pista: prueba a asignar un valor nuevo con las dos formas.
 
 ## 3.4 Limpiar los datos
 
-Es la parte menos vistosa y la más importante: un análisis sobre datos sucios produce conclusiones falsas con una presentación impecable.
+Limpiar no es «dejarlo bonito». Es **tomar decisiones sobre los datos y dejarlas escritas**, porque cada una cambia los resultados y alguien tendrá que poder revisarlas. Este apartado recorre las cuatro decisiones que hay que tomar con este fichero.
 
-### Valores ausentes
+![El ciclo del dato: obtener, limpiar, explorar, modelar y comunicar, con flechas que vuelven hacia atrás porque el proceso no es lineal.](figuras/ciclo-del-dato.svg)
 
-**Listado 3.5.** Detectar y tratar nulos · [ver fichero](listados/listado_3_05_nulos.py)
+*Figura 3.2. La limpieza no es un paso previo que se hace una vez: se vuelve a ella cada vez que el análisis descubre algo.*
 
-```python
-print(ventas.isna().sum())                       # nulos por columna
-print((ventas.isna().mean() * 100).round(1))     # porcentaje
+### Valores ausentes: antes de rellenar, preguntar por qué faltan
 
-sin_unidades = ventas.dropna(subset=["unidades"])          # 1. descartar la fila
-canal_relleno = ventas["canal"].fillna("desconocido")      # 2. valor de relleno
-mediana = ventas["unidades"].median()                      # 3. imputar
-unidades_imputadas = ventas["unidades"].fillna(mediana)
-```
+Rellenar los huecos con la media es la respuesta automática, y casi siempre la equivocada. Un hueco puede significar tres cosas muy distintas: que el dato se perdió, que no se midió, o que **no se aplica**. Solo en el primer caso tiene sentido estimarlo.
 
-La decisión no es técnica, es de criterio ([pandas: Working with missing data](https://pandas.pydata.org/docs/user_guide/missing_data.html)):
-
-| Estrategia | Cuándo | Riesgo |
-| --- | --- | --- |
-| Descartar la fila | Pocos nulos y repartidos al azar | Perder información; sesgar si los nulos no son aleatorios |
-| Rellenar con una categoría | El nulo **significa** algo, como «no consta» | Crear una categoría artificial |
-| Imputar con media o mediana | La columna es numérica y hace falta completa | Reducir la variabilidad real de los datos |
-
-Documenta siempre qué decidiste y por qué: forma parte del análisis.
-
-### Duplicados, texto y tipos
-
-**Listado 3.6.** Duplicados, texto y tipos · [ver fichero](listados/listado_3_06_limpieza.py)
+**Listado 3.5.** Contar los huecos y, sobre todo, entenderlos · [ver fichero](listados/listado_3_05_nulos.py)
 
 ```python
-print(ventas.duplicated().sum(), "filas duplicadas")    # 15
-ventas = ventas.drop_duplicates()
-
-print(sorted(ventas["ciudad"].unique())[:6])    # '  GRANADA ' y 'Granada' conviven
-
-ventas["ciudad"] = ventas["ciudad"].str.strip().str.title()   # métodos .str
-ventas["canal"] = ventas["canal"].fillna("desconocido")
-ventas["unidades"] = ventas["unidades"].fillna(0).astype("int64")
-
-print(ventas["fecha"].dt.year.unique(), ventas["fecha"].dt.month.min())
+nulos = sol.isna().sum()
+print((nulos[nulos > 0] / len(sol) * 100).round(1).sort_values(ascending=False))
 ```
 
-Los accesores `.str` y `.dt` aplican a toda la columna los métodos de cadena y de fecha que ya conoces de la UD1: `str.strip`, `str.lower`, `str.replace`, `str.contains`, `dt.year`, `dt.month`, `dt.dayofweek`. Sin ellos acabarías escribiendo un bucle.
+```text
+gk_kicking              88.9
+gk_reflexes             88.9
+gk_positioning          88.9
+gk_speed                88.9
+gk_diving               88.9
+gk_handling             88.9
+dribbling               11.1
+passing                 11.1
+pace                    11.1
+shooting                11.1
+defending               11.1
+physic                  11.1
+release_clause_eur       7.1
+joined                   7.0
+team_position            1.3
+contract_valid_until     1.3
+```
 
-### Valores atípicos
-
-**Listado 3.7.** Criterio del rango intercuartílico · [ver fichero](listados/listado_3_07_atipicos.py)
+Dos bloques, uno al 88,9 % y otro al 11,1 %. Las cifras suman 100, lo cual no es casualidad. La forma de averiguar qué pasa es mirar **quién** tiene esos huecos:
 
 ```python
-q1 = ventas["unidades"].quantile(0.25)
-q3 = ventas["unidades"].quantile(0.75)
-iqr = q3 - q1
-limite_superior = q3 + 1.5 * iqr
-
-atipicos = ventas[ventas["unidades"] > limite_superior]
-print(f"Q1={q1}  Q3={q3}  IQR={iqr}  límite={limite_superior}")   # límite=18.0
-print(len(atipicos), "ventas atípicas")                            # 10
+sin_pace = sol[sol["pace"].isna()]
+print("Sus posiciones:", sin_pace["player_positions"].value_counts().head(3).to_dict())
 ```
 
-El criterio del rango intercuartílico marca como atípico lo que se aleja más de 1,5 veces el IQR de los cuartiles. En nuestro fichero encuentra diez ventas de entre 200 y 400 unidades.
+```text
+Jugadores sin 'pace': 2036
+Sus posiciones: {'GK': 2036}
+
+Jugadores sin 'gk_diving': 16242
+¿Alguno es portero? False
+
+2036 + 16242 = 18278 = 18278 jugadores
+```
+
+Ahí está la explicación completa. Los 2.036 jugadores sin velocidad son **exactamente** los 2.036 porteros, ni uno más ni uno menos. Y los 16.242 sin valoración de portero son exactamente los jugadores de campo. Los dos grupos no se solapan y suman el total.
+
+No son datos perdidos: son columnas **que no se aplican** a ese jugador. Un portero no tiene un valor de regate porque la pregunta no tiene sentido para él.
 
 > [!IMPORTANT]
-> Un atípico no es necesariamente un error. Puede ser un pedido real de un cliente grande. Antes de eliminar nada, mira las filas, decide con criterio y **escribe la decisión** en el informe. Eliminar en silencio los datos que no encajan es la forma más rápida de mentir con estadística.
+> Si rellenaras `pace` con la media de la columna (67,7), estarías afirmando que los porteros corren como un extremo. Y lo peor es que el programa no se quejaría: te daría un número, y ese número aparecería en tus gráficos y en tu modelo sin que nadie notara nada. Los errores que no dan error son los caros.
+
+Las tres respuestas posibles ante un hueco, y cuándo vale cada una:
+
+| Respuesta | Cuándo | En este fichero |
+| --- | --- | --- |
+| `dropna()` | El dato falta de verdad y la fila no sirve sin él | Al analizar solo jugadores de campo |
+| `fillna(valor)` | El hueco tiene un valor equivalente y conocido | Casi nunca aquí |
+| Dejarlo | El hueco es legítimo y pandas ya lo ignora | **La respuesta correcta en este caso** |
+
+```text
+media de 'pace' ignorando los nulos: 67.7
+media tratando los nulos como cero: 60.2  <- falsa
+```
+
+Esa es la razón de dejarlos: `mean()`, `sum()`, `median()` y `groupby()` **ya ignoran los nulos**. No hay que hacer nada; hay que no hacer nada.
+
+### El agujero de FIFA 15
+
+Hay un segundo problema, y este sí obliga a decidir.
+
+**Listado 3.6.** Las cuatro decisiones de limpieza de este fichero · [ver fichero](listados/listado_3_06_limpieza.py)
+
+```python
+print(jugadores.groupby("fifa")["value_eur"].median().astype(int))
+```
+
+```text
+fifa
+2015         0
+2016    575000
+2017    650000
+2018    700000
+2019    675000
+2020    700000
+```
+
+El valor mediano de 2015 es cero euros. No es que aquel año los futbolistas no valieran nada: **esa edición del dataset no recoge el dato**, en ninguna de sus 15.465 filas, y tampoco trae la cláusula de rescisión.
+
+Esto no se arregla: se decide. Y la decisión de este curso es **quitar FIFA 15 entera** en cuanto se carga el fichero, porque cualquier análisis de dinero que la incluya saldrá mal, y mantener la excepción en la cabeza durante diez horas es pedir un error. Se pierden 15.465 filas y 3.136 jugadores que solo aparecen ahí; a cambio, el resto de la unidad trabaja sobre datos homogéneos.
+
+> [!TIP]
+> Fíjate en el orden: primero se **mide** el problema (una tabla de cinco líneas), después se **decide**, y la decisión se escribe en el código con su porqué. Un `df = df[df.fifa >= 2016]` suelto, sin comentario, es una bomba de relojería para quien lea el código dentro de seis meses, aunque seas tú.
+
+### Duplicados, ceros que son ausencias y texto sucio
+
+```text
+Filas duplicadas enteras: 0
+Duplicados de (edición, jugador): 0
+  Ninguno. Que el mismo jugador salga seis veces es correcto:
+  son seis ediciones, no seis copias.
+```
+
+Comprobar duplicados es obligatorio, pero hay que comprobar los que importan. Aquí, `duplicated()` a secas no encuentra nada, y `duplicated(subset=["fifa", "sofifa_id"])` tampoco: la tabla está bien formada. Que Messi aparezca cinco veces no es un duplicado, es la estructura del fichero.
+
+```text
+Jugadores con value_eur = 0: 250
+  Valor medio contándolos:       2,484,038 €
+  Valor medio sin contarlos:     2,518,485 €
+```
+
+Esos 250 son agentes libres: sin contrato, sin valor asignado. El cero no es un importe, es una ausencia disfrazada de número, y es el peor tipo de dato sucio porque pasa todos los controles. Se convierten en nulos para que pandas los ignore:
+
+```python
+for columna in ("value_eur", "wage_eur"):
+    jugadores[columna] = jugadores[columna].replace(0, pd.NA).astype("Int64")
+```
+
+> [!WARNING]
+> El `.astype("Int64")`, con mayúscula, no es un capricho. El `int64` normal de NumPy **no admite nulos**, así que al meter un `pd.NA` pandas convertiría la columna entera en texto y a partir de ahí `nlargest`, `mean` y las comparaciones fallarían. El `Int64` de pandas es el entero que sí admite ausencias.
+
+Y por último, el texto:
+
+```text
+body_type
+Normal                 10750
+Lean                    6505
+Stocky                  1016
+Messi                      1
+C. Ronaldo                 1
+Neymar                     1
+PLAYER_BODY_TYPE_25        1
+Courtois                   1
+Shaqiri                    1
+Akinfenwa                  1
+```
+
+Siete filas de dieciocho mil con algo que no es una complexión: seis nombres propios y un código interno del juego que se escapó sin traducir. Es lo que pasa cuando alguien pone un campo libre donde tenía que haber una lista cerrada. Se corrigen al valor más común y se sigue.
+
+La última decisión es `work_rate`, que guarda **dos datos en una columna**: `"Medium/Low"` es esfuerzo en ataque y esfuerzo en defensa. Una columna con dos cosas dentro no se puede agrupar ni comparar, así que se parte en dos.
+
+```python
+sol[["esfuerzo_ataque", "esfuerzo_defensa"]] = sol["work_rate"].str.split("/", expand=True)
+```
+
+### Valores atípicos: encontrarlos es fácil, decidir no
+
+Un atípico es un valor que se aleja mucho del resto. El criterio más usado es el del **rango intercuartílico**: se considera atípico lo que queda por encima de `Q3 + 1,5 × (Q3 − Q1)`.
+
+**Listado 3.7.** Atípicos: el criterio dice cuáles, los datos dicen qué hacer · [ver fichero](listados/listado_3_07_atipicos.py)
+
+```text
+Q1      325,000 €
+Q3    2,100,000 €
+Límite superior    4,762,500 €
+
+Atípicos: 2,511 de 18,028 (13.9 %)
+
+Los cinco más altos:
+  short_name                club  overall  value_eur
+   Neymar Jr Paris Saint-Germain       92  105500000
+    L. Messi        FC Barcelona       94   95500000
+   K. Mbappé Paris Saint-Germain       89   93500000
+   E. Hazard         Real Madrid       91   90000000
+K. De Bruyne     Manchester City       91   90000000
+```
+
+Un 13,9 % de atípicos. Y en cuanto se mira quiénes son, la respuesta es evidente: Neymar, Messi, Mbappé. **No son errores.** Es una distribución con cola larga, donde unos pocos valen cien veces más que la mediana. Eso es el mercado del fútbol, no un fallo de captura.
+
+```text
+Asimetría del valor:              6.39  (0 sería simétrica)
+Asimetría del logaritmo:          0.40
+
+Media:      2,518,485 €
+Mediana:      725,000 €
+```
+
+La asimetría de 6,39 es la medida de esa cola. Y al tomar logaritmos baja a 0,40, casi simétrica: por eso **los gráficos de dinero se dibujan en escala logarítmica** y por eso en la UD6 el modelo predecirá el logaritmo del salario y no el salario.
+
+> [!IMPORTANT]
+> La regla no es «elimina los atípicos». Es: encuéntralos, **mira quiénes son** y decide. Si son errores de captura (una edad de 300 años), fuera. Si son la cola natural del fenómeno, se quedan, porque muchas veces son lo más interesante del conjunto. Quitar a Messi del análisis del mercado del fútbol sería absurdo.
 
 ### Para practicar
 
-1. ¿Qué porcentaje de filas perderías si aplicaras `dropna()` sin `subset`? ¿Te parece aceptable?
-2. Detecta los atípicos de la columna `importe` con el mismo criterio. ¿Son los mismos que los de `unidades`?
-3. Comprueba si hay duplicados por `id_venta` aunque el resto de la fila cambie: `ventas.duplicated(subset=["id_venta"])`.
-4. (A) Escribe una función `limpiar(ventas: pd.DataFrame) -> pd.DataFrame` que reúna todos los pasos y devuelva el DataFrame limpio, con su docstring. Compárala con [`comun.py`](listados/comun.py).
+1. Comprueba cuántos jugadores de FIFA 20 tienen `contract_valid_until` vacío y mira sus clubes. ¿Encuentras una explicación?
+
+2. Aplica el criterio del rango intercuartílico a la columna `age` en vez de a `value_eur`. ¿Cuántos atípicos salen? ¿Son errores?
+
+   ```text
+   Límite superior: 39.5 años · atípicos: 19
+   ```
+
+3. Escribe una función `limpiar(df)` que haga las cuatro decisiones del listado 3.6 y devuelva el DataFrame limpio. Compárala con la que hay en `comun.py`.
+
+4. (A) Ejecuta `sol["value_eur"].replace(0, pd.NA)` **sin** el `.astype("Int64")` y después `sol.nlargest(3, "value_eur")`. Copia el error y explica con tus palabras qué ha pasado con el tipo de la columna.
 
 ## 3.5 Transformar: columnas, grupos y uniones
 
-### Columnas derivadas
+Con los datos limpios empieza el análisis de verdad. Este apartado tiene cinco herramientas, y las vas a usar todas en cada proyecto de datos que hagas en tu vida.
 
-**Listado 3.8.** `assign`, operaciones vectorizadas y clasificación · [ver fichero](listados/listado_3_08_columnas.py)
+### Columnas derivadas: el dato que no viene, pero se calcula
 
-```python
-ventas = ventas.assign(
-    importe=lambda df: (df["unidades"] * df["precio"]).round(2),
-    mes=lambda df: df["fecha"].dt.month,
-    trimestre=lambda df: df["fecha"].dt.quarter,
-)
+Casi ningún análisis interesante sale de las columnas tal como vienen. Lo normal es construir las que responden a tu pregunta.
 
-ventas["tamaño"] = np.where(ventas["importe"] > 1000, "grande", "normal")
-ventas["rango_precio"] = pd.cut(
-    ventas["precio"],
-    bins=[0, 50, 200, 1000],
-    labels=["bajo", "medio", "alto"],
-)
-```
-
-`assign` devuelve una copia con las columnas nuevas, así que permite encadenar transformaciones sin modificar el original. Para clasificar, `np.where` resuelve los casos de dos ramas y `pd.cut` convierte una variable continua en intervalos. Evita `apply` fila a fila siempre que exista una operación vectorizada: es mucho más lento.
-
-### Agrupar y agregar
-
-**Listado 3.9.** El equivalente a `GROUP BY` · [ver fichero](listados/listado_3_09_groupby.py)
+**Listado 3.8.** Cinco formas de crear una columna · [ver fichero](listados/listado_3_08_columnas.py)
 
 ```python
-print(ventas.groupby("ciudad")["importe"].sum().sort_values(ascending=False))
+# 1. Aritmética entre columnas: se aplica fila a fila, sin bucle.
+sol["margen"] = sol["potential"] - sol["overall"]
 
-resumen = (
-    ventas.groupby("ciudad")
-    .agg(
-        ventas=("id_venta", "count"),
-        unidades=("unidades", "sum"),
-        importe=("importe", "sum"),
-        ticket_medio=("importe", "mean"),
-    )
-    .round(2)
-    .sort_values("importe", ascending=False)
-)
-print(resumen)
+# 2. Clasificar por tramos: pd.cut reparte en intervalos.
+sol["tramo_edad"] = pd.cut(sol["age"], bins=[15, 21, 25, 30, 50],
+                           labels=["Promesa", "Joven", "Madurez", "Veterano"])
+
+# 3. Una condición: np.where es el "si... entonces... si no".
+sol["titular"] = np.where(sol["overall"] >= 70, "sí", "no")
+
+# 4. Varias condiciones: np.select, en orden, con un valor por defecto.
+sol["nivel"] = np.select(
+    [sol["overall"] >= 85, sol["overall"] >= 75, sol["overall"] >= 65],
+    ["Estrella", "Titular", "Rotación"],
+    default="Reserva")
+
+# 5. Texto: extraer una parte de una columna.
+sol["inicial"] = sol["short_name"].str[0]
 ```
-
-Resultado:
 
 ```text
-         ventas  unidades    importe  ticket_medio
-ciudad
-Málaga      168      1348  361772.14       2153.41
-Huelva      163      1251  337589.59       2071.10
-Sevilla     149      1576  280358.89       1881.60
-...
+       short_name  age tramo_edad  overall    nivel  margen
+         L. Messi   32   Veterano       94 Estrella       0
+Cristiano Ronaldo   34   Veterano       93 Estrella       0
+        Neymar Jr   27    Madurez       92 Estrella       0
+         J. Oblak   26    Madurez       91 Estrella       2
+
+Margen de mejora medio por tramo de edad:
+tramo_edad
+Promesa     13.0
+Joven        6.1
+Madurez      0.9
+Veterano     0.0
 ```
 
-Compáralo con el listado 1.30, que hacía esto mismo con un diccionario y doce líneas. La sintaxis `nombre=("columna", "función")` da nombres claros a las columnas resultantes ([pandas: Group by](https://pandas.pydata.org/docs/user_guide/groupby.html)).
+Esa última tabla es una **comprobación de cordura**, y merece la pena cogerle el hábito. Si acabas de construir una columna que mide «lo que le queda por crecer a un jugador», lo mínimo que tiene que pasar es que los jóvenes tengan mucho y los veteranos nada. Sale 13,0 contra 0,0. La columna está bien construida.
 
-![groupby divide por clave, aplica la función a cada grupo y combina el resultado.](figuras/groupby.svg)
+Cuando una columna nueva da un resultado que no se parece a lo que sabes del mundo, casi siempre está mal la columna, no el mundo.
 
-*Figura 3.3. groupby divide por clave, aplica la función a cada grupo y combina el resultado.*
+> [!TIP]
+> `np.select` evalúa las condiciones **en orden** y se queda con la primera que se cumple. Por eso van de mayor a menor: si pusieras `>= 65` la primera, todos los jugadores de 90 serían «Rotación».
 
-**Listado 3.10.** Tablas dinámicas y de contingencia · [ver fichero](listados/listado_3_10_pivot.py)
+### Agrupar: la operación más importante de pandas
+
+`groupby` hace en una línea lo que en la UD1 te costó dos diccionarios y un bucle: parte los datos en grupos, calcula algo en cada uno y junta los resultados.
+
+![El mecanismo de groupby: una tabla se parte en grupos según una columna, se calcula un valor en cada grupo y los resultados se juntan en una tabla nueva, con una fila por grupo.](figuras/groupby.svg)
+
+*Figura 3.3. Partir, calcular y juntar. Son siempre los mismos tres pasos.*
+
+**Listado 3.9.** `groupby` de lo simple a lo útil · [ver fichero](listados/listado_3_09_groupby.py)
 
 ```python
-tabla = pd.pivot_table(
-    ventas, index="ciudad", columns="canal", values="importe",
-    aggfunc="sum", fill_value=0,
-).round(0)
+# Lo mínimo: columna para agrupar, columna para calcular, operación.
+sol.groupby("posicion")["overall"].mean()
 
-print(pd.crosstab(ventas["producto"], ventas["canal"]))   # recuento cruzado
+# Varias operaciones a la vez, con nombres propios para las columnas.
+resumen = sol.groupby("posicion").agg(
+    jugadores=("sofifa_id", "size"),
+    media=("overall", "mean"),
+    edad=("age", "mean"),
+    valor_mediano=("value_eur", "median"),
+)
 ```
 
-### Unir tablas
+```text
+          jugadores  media  edad  valor_mediano
+posicion
+LW              378   66.9  23.5      1000000.0
+RW              369   67.1  23.8      1000000.0
+CF              113   69.1  25.4       975000.0
+CAM            1146   66.9  24.6       925000.0
+LM             1049   66.5  24.7       875000.0
+CDM            1424   67.4  25.9       875000.0
+ST             2582   66.4  25.3       825000.0
+RM             1050   66.1  24.7       775000.0
+```
 
-**Listado 3.11.** `merge` y `concat` · [ver fichero](listados/listado_3_11_merge.py)
+La forma `agg(nombre=("columna", "operación"))` es la que debes memorizar: da columnas con nombres legibles en lugar de un índice de dos niveles ilegible.
+
+Y hay una trampa que aparece en cuanto agrupas por algo con muchas categorías:
+
+```text
+Países con mejor media (mínimo 100 jugadores):
+                jugadores  media
+nationality
+Uruguay               164   71.6
+Brazil                824   71.2
+Portugal              344   70.5
+Czech Republic        102   70.3
+Spain                1035   70.0
+
+  Sin ese filtro, el primero sería un país con 4 jugador(es):
+   Mozambique           4   73.2
+   Chad                 1   73.0
+   Bahrain              1   72.0
+```
+
+Chad es el segundo mejor país del mundo con una media de 73,0… basada en un jugador. **Una media sobre un grupo diminuto no es una media, es un dato suelto.** Filtrar los grupos pequeños antes de ordenar no es opcional: es la diferencia entre un ranking y un disparate.
+
+### Tablas dinámicas: el mismo groupby, en rejilla
+
+`pivot_table` coloca un grupo en las filas y otro en las columnas. No calcula nada nuevo; lo coloca de forma que se pueda leer de un vistazo.
+
+**Listado 3.10.** Rejillas y totales · [ver fichero](listados/listado_3_10_pivot.py)
 
 ```python
-ciudades = pd.read_csv(Path("datos") / "ciudades.csv", sep=";")
-
-completo = ventas.merge(ciudades, on="ciudad", how="left")   # el JOIN de SQL
-print(completo["provincia"].isna().sum(), "filas sin provincia")
-
-por_ciudad = completo.groupby(["ciudad", "poblacion_miles"])["importe"].sum().reset_index()
-por_ciudad["euros_por_habitante"] = (
-    por_ciudad["importe"] / (por_ciudad["poblacion_miles"] * 1000)
-).round(2)
-
-semestre = pd.concat([primer_trimestre, segundo_trimestre], ignore_index=True)  # UNION
+tabla = sol.pivot_table(values="overall", index="posicion", columns="tramo",
+                        aggfunc="mean", observed=True)
 ```
 
-`how="left"` conserva todas las filas de la izquierda, igual que un `LEFT JOIN`. Contar los nulos que aparecen tras el `merge` es la forma rápida de detectar claves que no casan, casi siempre por diferencias de escritura ([pandas: Merge, join, concatenate](https://pandas.pydata.org/docs/user_guide/merging.html)).
+```text
+tramo     Promesa  Joven  Madurez  Veterano
+posicion
+CAM          61.4   67.8     70.5      71.2
+CB           60.6   66.4     69.1      69.6
+CDM          61.3   67.4     69.6      70.0
+CF           61.4   70.1     72.5      73.6
+CM           60.1   66.9     69.1      69.4
+GK           58.0   63.5     67.9      68.9
+```
 
-![Un merge con how='left' conserva las filas de la izquierda y deja NaN donde no hay pareja.](figuras/merge.svg)
+Para contar con totales, `crosstab` es más directo:
 
-*Figura 3.4. Un merge con how='left' conserva las filas de la izquierda y deja NaN donde no hay pareja.*
+```text
+tramo       Promesa  Joven  Madurez  Veterano  Total
+es_portero
+False          4070   4872     5004      2296  16242
+True            444    547      558       487   2036
+Total          4514   5419     5562      2783  18278
+```
 
-La métrica de euros por habitante cambia por completo el ranking: Málaga factura más en total, pero Jaén y Cádiz facturan mucho más por habitante. Un dato agregado casi nunca significa nada hasta que se normaliza.
+Y una rejilla puede tener casillas vacías, que es un resultado en sí mismo:
 
-### Series temporales
+```text
+esfuerzo_defensa     High     Low  Medium
+posicion
+CAM                3350.0  1100.0   825.0
+CB                  900.0   550.0   675.0
+CDM                1100.0   315.0   700.0
+CF                10250.0   575.0   875.0
+CM                 1200.0   575.0   650.0
+GK                   <NA>    <NA>   400.0
+```
 
-**Listado 3.12.** Remuestrear y suavizar · [ver fichero](listados/listado_3_12_temporal.py)
+Los dos huecos de la fila `GK` no son un fallo: **no hay ni un solo portero con esfuerzo defensivo alto o bajo**, todos están en medio. Si rellenaras esos huecos con ceros, estarías inventando porteros que no existen y además diciendo que valen cero euros.
+
+### Unir tablas: traer datos de otro sitio
+
+Dos situaciones muy distintas con la misma orden.
+
+![Dos tablas que se unen por una columna común: a la izquierda la tabla grande, a la derecha la pequeña de búsqueda, y el resultado con las columnas de las dos. Debajo, los cuatro tipos de unión: inner, left, right y outer.](figuras/merge.svg)
+
+*Figura 3.4. El `merge` de búsqueda (arriba) y los cuatro tipos de unión (abajo).*
+
+**Listado 3.11.** Los dos tipos de unión que vas a necesitar · [ver fichero](listados/listado_3_11_merge.py)
+
+**La primera es una búsqueda**: una tabla pequeña añade información a cada fila de la grande. Aquí, los 15 códigos de posición traen su nombre en español y su línea del campo.
 
 ```python
-serie = ventas.set_index("fecha")["importe"]
-
-mensual = serie.resample("ME").sum().round(2)      # ME = fin de mes; W = semana
-print(mensual.rolling(window=3).mean().round(2))   # media móvil de 3 meses
-print((mensual.pct_change() * 100).round(1))       # variación mensual en %
+posiciones = cargar_posiciones()                 # 15 filas
+con_linea = sol.merge(posiciones, on="posicion", how="left")
 ```
 
-Con la fecha como índice, `resample` agrupa por periodos, `rolling` calcula medias móviles que suavizan el ruido y `pct_change` da la variación respecto al periodo anterior ([pandas: Time series](https://pandas.pydata.org/docs/user_guide/timeseries.html)).
+```text
+Antes del merge: (18278, 29) · después: (18278, 32)
+  Mismas filas, tres columnas más. Eso es lo que debe pasar.
 
-### Guardar los resultados
+Jugadores y valor mediano por línea:
+                  jugadores  media  valor_mediano
+linea
+Ataque                 3442   66.7       875000.0
+Centro del campo       6862   66.4       800000.0
+Defensa                5938   66.3       675000.0
+Portería               2036   64.8       400000.0
 
-**Listado 3.13.** Exportar a CSV, Excel, JSON y Parquet · [ver fichero](listados/listado_3_13_exportar.py)
+Sin línea asignada: 0
+```
+
+> [!IMPORTANT]
+> Después de todo `merge`, dos comprobaciones obligatorias. **¿Han cambiado las filas?** En una búsqueda no deben cambiar: si aumentan, la tabla pequeña tiene claves repetidas y estás duplicando jugadores. **¿Ha quedado alguien sin pareja?** Un `isna().sum()` sobre una columna traída te lo dice. Aquí son 18.278 antes y después, y cero sin asignar: correcto.
+
+**La segunda es un cruce entre dos tablas grandes**, y ahí sí hay que elegir qué pasa con las filas que no casan.
 
 ```python
-resumen.to_csv(salida / "resumen_ciudades.csv", sep=";", decimal=",", encoding="utf-8")
-resumen.to_excel(salida / "resumen_ciudades.xlsx")          # necesita openpyxl
-resumen.to_json(salida / "resumen_ciudades.json", indent=2, force_ascii=False)
-ventas.to_parquet(salida / "ventas_limpias.parquet")        # formato columnar comprimido
+cruce = anterior.merge(actual, on="sofifa_id", how="inner", suffixes=("_19", "_20"))
+izquierda = anterior.merge(actual, on="sofifa_id", how="left", suffixes=("_19", "_20"))
 ```
 
-Guarda los datos limpios en **Parquet**, no en CSV: conserva los tipos, ocupa mucho menos y se lee más rápido. Volveremos sobre ello en la UD5. El CSV queda para lo que tenga que abrir una persona en Excel.
+```text
+FIFA 19: 17,770 jugadores · FIFA 20: 18,278
+inner -> 13,144 jugadores están en las dos ediciones
+left  -> 17,770 filas, de las que 4,626 no aparecen en FIFA 20
+```
+
+| Tipo | Se queda con | Cuándo usarlo |
+| --- | --- | --- |
+| `inner` | Solo lo que está en las dos | Comparar, calcular diferencias |
+| `left` | Todo lo de la izquierda | Enriquecer sin perder filas |
+| `right` | Todo lo de la derecha | Casi nunca: se da la vuelta y se usa `left` |
+| `outer` | Todo de las dos, con huecos | Auditar qué falta en cada lado |
+
+Esos 4.626 jugadores que están en FIFA 19 y no en FIFA 20 son un dato, no un problema: se retiraron, bajaron de categoría o el juego dejó de incluirlos. Elegir `inner` los descarta en silencio; elegir `left` te obliga a verlos. Por eso conviene mirar siempre los dos antes de decidir.
+
+Y el análisis que solo es posible después de cruzar:
+
+```text
+Mejoran 5,750 · igual 3,868 · empeoran 3,526
+Cambian de club: 4,184
+
+Los cinco que más suben de un año a otro:
+short_name_19  overall_19  overall_20  cambio
+  T. Nakagawa          51          68      17
+  C. McLennan          51          67      16
+      M. Heča          58          73      15
+```
+
+### Series temporales: seguir a los mismos jugadores
+
+El fichero tiene cinco ediciones y el mismo `sofifa_id` en todas, así que se puede pasar de la foto a la película.
+
+**Listado 3.12.** La dimensión temporal · [ver fichero](listados/listado_3_12_temporal.py)
+
+```text
+Messi, edición a edición:
+ fifa  age  overall  value_eur  wage_eur
+ 2016   28       94  111000000    550000
+ 2017   29       93   89000000    340000
+ 2018   30       93  105000000    565000
+ 2019   31       94  110500000    565000
+ 2020   32       94   95500000    565000
+
+Cómo evoluciona el conjunto:
+      jugadores  edad_media  media  valor_mediano
+fifa
+2016      14881        24.9   65.7       600000.0
+2017      17009        25.0   66.2       675000.0
+2018      17592        25.2   66.3       700000.0
+2019      17770        25.2   66.2       700000.0
+2020      18278        25.3   66.2       725000.0
+```
+
+`pct_change()` da la variación respecto a la fila anterior, que es como se leen de verdad las series: no el valor, sino cuánto ha cambiado.
+
+Y cuando una columna de fechas se convierte de verdad, aparecen cosas que el texto escondía:
+
+```text
+Fichajes por mes del año (los cinco más frecuentes):
+7.0    8319
+1.0    3339
+8.0    1936
+2.0     951
+6.0     810
+```
+
+Julio y enero: los dos mercados de fichajes del fútbol europeo. Nadie ha metido esa información en el fichero; sale sola al agrupar por mes. **Eso es un análisis exploratorio funcionando**: el dato confirma algo que sabías, lo cual, además de interesante, valida que has convertido bien las fechas.
+
+### Guardar el resultado
+
+Un análisis que hay que repetir desde cero cada vez no sirve. El resultado limpio se guarda y todo lo demás parte de ahí.
+
+**Listado 3.13.** CSV para compartir, Parquet para trabajar · [ver fichero](listados/listado_3_13_exportar.py)
+
+```text
+                 tamaño   escritura
+CSV             14.2 MB      792 ms
+Parquet          2.2 MB      157 ms
+
+Parquet ocupa 6 veces menos.
+
+Tipo de value_eur al recuperarlo:
+  desde CSV:     float64
+  desde Parquet: Int64  <- el que habíamos puesto
+```
+
+Seis veces menos espacio y cinco veces más rápido, pero lo que de verdad importa es la última línea: **el CSV no guarda los tipos**. Todo el trabajo de limpieza que hiciste —convertir a `Int64`, parsear las fechas, declarar las categorías— se pierde al escribir un CSV y hay que repetirlo al leerlo. Parquet guarda la tabla con sus tipos dentro.
+
+Regla práctica: Parquet para los pasos intermedios de tu análisis, CSV solo cuando alguien lo tenga que abrir con Excel.
 
 ### Para practicar
 
-1. Calcula la facturación por producto y canal, y muéstrala como tabla dinámica con los productos en filas.
-2. Añade a `ciudades.csv` una columna `zona` (oriental u occidental) y calcula la facturación por zona.
-3. Obtén la facturación semanal con `resample("W")` y su media móvil de 4 semanas.
-4. (A) Reescribe el listado 1.30 de la UD1 usando pandas. Cuenta las líneas de una y otra versión y comenta la diferencia.
+1. Calcula la valoración media y el valor mediano por nacionalidad, quedándote solo con los países que tengan al menos 50 jugadores, y ordena por valor mediano.
+
+2. Construye una tabla dinámica con la línea del campo en las filas, el tramo de edad en las columnas y el salario mediano en las celdas. ¿En qué casilla está el salario más alto?
+
+3. Cruza FIFA 16 con FIFA 20 y calcula cuántos jugadores siguen en el mismo club cuatro años después.
+
+   ```text
+   En las dos ediciones: 7.302 · mismo club: 1.653
+   ```
+
+4. (A) Haz un `merge` de los jugadores con la tabla de posiciones usando `how="inner"` y después `how="left"`, y compara el número de filas. Explica por qué aquí dan lo mismo y en qué caso no darían.
 
 ## 3.6 Visualizar: matplotlib y seaborn
 
-**matplotlib** es la base: da control total sobre figuras y ejes. **seaborn** está construido encima y resuelve en una línea los gráficos estadísticos habituales, con un aspecto cuidado por defecto.
+Un gráfico no es un adorno al final del análisis: es una herramienta para **ver** lo que las tablas esconden. Una distribución con dos picos, un grupo que se comporta distinto, un punto imposible: eso no sale en un `describe()` y salta a la vista en un histograma.
 
-**Listado 3.14.** Figura con dos ejes en matplotlib · [ver fichero](listados/listado_3_14_matplotlib.py)
+### matplotlib: la figura y los ejes
+
+Casi siempre usarás seaborn o pandas por encima, pero los dos devuelven objetos de matplotlib, así que para ajustar cualquier detalle hay que conocer sus dos piezas. La **figura** es el lienzo; los **ejes** son cada gráfico dentro de ese lienzo.
+
+**Listado 3.14.** Un gráfico, y varios en la misma figura · [ver fichero](listados/listado_3_14_matplotlib.py)
 
 ```python
 import matplotlib.pyplot as plt
 
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.5))
+figura, ejes = plt.subplots(figsize=(7, 4))
+ejes.hist(sol["overall"], bins=30, color="#2f6fd0", edgecolor="white")
+ejes.set_title("Cómo se reparten las valoraciones (FIFA 20)")
+ejes.set_xlabel("Valoración media")
+ejes.set_ylabel("Número de jugadores")
+ejes.grid(axis="y", alpha=0.3)
+figura.tight_layout()
+figura.savefig("graficos/distribucion_overall.png", dpi=120)
 
-ax1.plot(mensual.index, mensual.values, marker="o", color="#1f77b4")
-ax1.set_title("Facturación mensual 2026")
-ax1.set_xlabel("Mes")
-ax1.set_ylabel("Importe (€)")
-ax1.grid(alpha=0.3)
-ax1.tick_params(axis="x", rotation=45)
-
-ax2.barh(por_ciudad.index, por_ciudad.values, color="#2ca02c")
-ax2.set_title("Facturación por ciudad")
-
-fig.tight_layout()
-fig.savefig("graficos/resumen.png", dpi=150)
-plt.show()          # en un notebook el gráfico aparece bajo la celda
+# Varios gráficos: subplots devuelve una rejilla de ejes.
+figura, (izq, der) = plt.subplots(1, 2, figsize=(11, 4))
+izq.scatter(sol["age"], sol["overall"], s=4, alpha=0.15)
+der.scatter(con_valor["overall"], con_valor["value_eur"], s=4, alpha=0.15)
+der.set_yscale("log")                 # el dinero, siempre en escala logarítmica
 ```
 
-La estructura es siempre la misma: una **figura** que contiene uno o varios **ejes**, y sobre cada eje se dibuja y se etiqueta ([Matplotlib quick start guide](https://matplotlib.org/stable/users/explain/quick_start.html)).
+Tres reglas que no se negocian en este módulo:
 
-**Listado 3.15.** Cuatro gráficos estadísticos con seaborn · [ver fichero](listados/listado_3_15_seaborn.py)
+**Todo gráfico lleva título y los dos ejes etiquetados, con sus unidades.** Un gráfico sin etiquetar no se puede interpretar, y en la práctica significa que lo vas a tener que volver a hacer cuando alguien te pregunte qué es el eje vertical.
+
+**El dinero va en escala logarítmica.** Ya viste por qué en el apartado 3.4: con una cola tan larga, los diez primeros aplastan a los dieciocho mil restantes y el gráfico queda en blanco con diez puntos arriba.
+
+**Con muchos puntos, transparencia baja.** `alpha=0.15` hace que donde se acumulan los puntos se vea oscuro y donde hay pocos, claro. Sin eso, dieciocho mil puntos son una mancha uniforme.
+
+![Dos gráficos de dispersión: a la izquierda, edad frente a valoración, con los puntos formando columnas por cada año de edad. A la derecha, valoración frente a valor de mercado en escala logarítmica, donde los puntos dibujan una línea ascendente muy marcada.](figuras/dispersion-ejemplo.svg)
+
+*Figura 3.5. El gráfico de la derecha es casi una recta en escala logarítmica. Guarda esa imagen: va a ser importante en la UD6.*
+
+### seaborn: los gráficos estadísticos ya hechos
+
+seaborn está construido sobre matplotlib y entiende los DataFrame. Donde en matplotlib agrupas tú y luego dibujas, aquí le dices qué columna va en cada eje.
+
+**Listado 3.15.** Los cuatro gráficos que más vas a usar · [ver fichero](listados/listado_3_15_seaborn.py)
 
 ```python
 import seaborn as sns
-
 sns.set_theme(style="whitegrid")
 
-sns.histplot(data=ventas, x="importe", bins=40, ax=ejes[0, 0])      # distribución
-sns.boxplot(data=ventas, x="canal", y="importe", ax=ejes[0, 1])     # comparar grupos
-sns.barplot(data=por_producto, x="importe", y="producto", ax=ejes[1, 0])
-sns.scatterplot(data=ventas, x="unidades", y="importe", hue="canal", alpha=0.6,
-                ax=ejes[1, 1])                                      # relación
+sns.boxplot(data=sol, x="linea", y="overall", ax=ejes,
+            order=["Portería", "Defensa", "Centro del campo", "Ataque"])
+
+sns.histplot(data=sol, x="age", hue="es_portero", bins=25, ax=ejes)
+
+sns.regplot(data=muestra, x="overall", y="wage_eur", ax=ejes,
+            scatter_kws={"s": 8, "alpha": 0.25})
 ```
 
-Elegir el gráfico es elegir la pregunta ([seaborn tutorial](https://seaborn.pydata.org/tutorial.html)):
+| Gráfico | Para qué |
+| --- | --- |
+| `boxplot` | Comparar una distribución entre pocos grupos |
+| `histplot` | Ver la forma de una distribución |
+| `regplot` | Relación entre dos números, con la tendencia dibujada |
+| `barplot` | Comparar una magnitud entre categorías |
 
-| Pregunta | Gráfico | Función |
-| --- | --- | --- |
-| ¿Cómo se distribuye una variable numérica? | Histograma | `sns.histplot` |
-| ¿Cómo evoluciona en el tiempo? | Líneas | `sns.lineplot`, `ax.plot` |
-| ¿Cómo se comparan las categorías? | Barras | `sns.barplot`, `ax.bar` |
-| ¿Hay diferencias de distribución entre grupos? | Cajas o violín | `sns.boxplot`, `sns.violinplot` |
-| ¿Se relacionan dos variables numéricas? | Dispersión | `sns.scatterplot` |
-| ¿Cómo se relacionan todas con todas? | Mapa de calor | `sns.heatmap` |
-
-> [!TIP]
-> Un gráfico sin título ni unidades no vale nada, y uno con el eje Y cortado engaña aunque los datos sean correctos. Pon siempre título, nombres de ejes con unidades, y empieza las barras en cero.
+> [!WARNING]
+> Dos gráficos que no vas a usar en este módulo, porque engañan. El **de tarta con más de tres trozos**: el ojo humano compara longitudes bien y ángulos mal, así que un gráfico de barras siempre se lee mejor. Y el de **dos ejes verticales distintos**: la relación aparente entre las dos series depende por completo de dónde decidas empezar cada eje, así que puedes hacer que digan lo que quieras. Si tienes dos magnitudes de escalas distintas, son dos gráficos.
 
 ### Para practicar
 
-1. Dibuja la evolución mensual de las unidades vendidas y añade la media móvil de tres meses en la misma figura.
-2. Haz un `boxplot` del importe por producto y explica qué producto tiene más variabilidad.
-3. Cambia los colores del gráfico de barras con `palette` y guarda la figura a 300 dpi.
-4. (A) Busca un gráfico publicado en un medio de comunicación con el eje Y cortado y explica cómo cambiaría la lectura si empezara en cero.
+1. Dibuja la distribución de `potential` y compárala con la de `overall` en la misma figura. ¿Qué diferencia ves y cómo la explicas?
+
+2. Haz un `boxplot` del salario por línea del campo, en escala logarítmica. Explica en dos líneas qué muestra la caja y qué muestran los puntos de fuera.
+
+3. Representa la evolución del valor mediano por edición con un gráfico de líneas, con los años en el eje horizontal.
+
+4. (A) Coge el gráfico del ejercicio 3 y haz que el eje vertical empiece en 600.000 en lugar de en cero. Compara las dos versiones y explica cuál da una impresión más fiel de la subida real del 21 %.
 
 ## 3.7 Análisis exploratorio
 
-El análisis exploratorio es mirar los datos con método antes de sacar conclusiones: primero cada variable por separado, después las relaciones entre ellas.
+El análisis exploratorio es el trabajo de conocer unos datos antes de modelarlos: mirar cada variable, después las relaciones entre ellas, y acabar con frases que alguien pueda usar.
 
-**Listado 3.16.** Una variable cada vez · [ver fichero](listados/listado_3_16_univariante.py)
+### Una variable cada vez
 
-```python
-print(ventas["importe"].describe().round(2))
-print("mediana:", ventas["importe"].median().round(2))
-print("asimetría:", ventas["importe"].skew().round(2))
-print(ventas["importe"].quantile([0.1, 0.25, 0.5, 0.75, 0.9, 0.99]).round(2))
+De una columna numérica se miran tres cosas: **centro** (media, mediana), **dispersión** (desviación típica, rango) y **forma** (asimetría).
 
-print(ventas["canal"].value_counts())
-print((ventas["canal"].value_counts(normalize=True) * 100).round(1))
-```
-
-En nuestros datos, la media del importe es 1.972 € y la mediana 899 €. Esa distancia, junto con una asimetría de 7,8, dice que unas pocas ventas muy grandes tiran de la media hacia arriba. **Con distribuciones asimétricas, informa de la mediana**, no solo de la media.
-
-**Listado 3.17.** Relaciones entre variables · [ver fichero](listados/listado_3_17_bivariante.py)
-
-```python
-print(ventas.groupby("canal")["importe"].agg(["count", "mean", "median"]).round(2))
-
-numericas = ventas[["unidades", "precio", "importe", "mes"]]
-correlacion = numericas.corr().round(2)
-
-sns.heatmap(correlacion, annot=True, cmap="Blues", vmin=-1, vmax=1, ax=ax)
-```
-
-La matriz de correlación mide la relación **lineal** entre pares de variables, entre -1 y 1. Aquí `importe` correlaciona 0,63 con `unidades` y 0,48 con `precio`, lo cual es esperable porque es su producto; `mes` no correlaciona con nada, es decir, no hay tendencia creciente a lo largo del año.
-
-> [!WARNING]
-> Correlación no es causalidad, y una correlación cercana a cero no significa que no haya relación: solo que no es lineal. Mira siempre el gráfico de dispersión además del número.
-
-**Listado 3.18.** De los datos a la decisión · [ver fichero](listados/listado_3_18_hallazgos.py)
-
-```python
-por_cliente = ventas.groupby("cliente")["importe"].sum().sort_values(ascending=False)
-top20 = por_cliente.head(int(len(por_cliente) * 0.2))
-print(f"{len(top20)} clientes ({len(top20) / len(por_cliente):.0%}) aportan "
-      f"{top20.sum() / total:.0%} de la facturación")
-
-mensual = ventas.groupby("mes")["importe"].sum()
-print(f"Mejor mes: {mensual.idxmax()} ({mensual.max():,.0f} €)")
-```
-
-Salida:
+**Listado 3.16.** Análisis univariante · [ver fichero](listados/listado_3_16_univariante.py)
 
 ```text
-59 clientes (20%) aportan 51% de la facturación
-Mejor mes: 5 (302,269 €)
-Peor mes:  1 (79,863 €)
-Más factura: portátil
-Más unidades: impresora
+=== overall ===
+Centro:      media 66.2 · mediana 66
+Dispersión:  desviación típica 6.9 · rango 48–94
+Forma:       asimetría 0.07
+  Media y mediana casi iguales y asimetría cerca de cero:
+  es una distribución simétrica, parecida a una campana.
+
+=== value_eur ===
+Centro:      media 2,518,485 € · mediana 725,000 €
+Forma:       asimetría 6.39
+  Aquí la media casi triplica a la mediana y la asimetría es enorme:
+  distribución con cola larga. La media NO describe al jugador típico.
 ```
 
-Ahí está el criterio 2e: cada número apunta a una decisión posible. Que el 20 % de los clientes aporte la mitad de la facturación sugiere un plan de fidelización; que el producto que más unidades mueve no sea el que más factura sugiere revisar márgenes. **Un análisis termina en recomendaciones, no en una tabla.**
+Dos columnas numéricas del mismo fichero, con comportamientos opuestos. En `overall` la media sirve; en `value_eur` engaña. Por eso no hay una receta única: hay que mirar cada columna.
+
+Cuando hay cola larga, los **percentiles** dicen mucho más que la media:
+
+```text
+Percentiles del valor:
+   10%       150,000 €
+   25%       325,000 €
+   50%       725,000 €
+   75%     2,100,000 €
+   90%     6,500,000 €
+   99%    27,500,000 €
+```
+
+De la mediana al percentil 99 hay un factor de 38. Esa sola tabla cuenta la historia del mercado mejor que cualquier media.
+
+Para una columna categórica se mira cuántas categorías hay y cómo de repartidas están:
+
+```text
+=== nationality ===
+Categorías distintas: 162
+Las 5 primeras concentran el 31.7 % de los jugadores
+Hay 21 países con un solo jugador
+```
+
+162 categorías, de las que 21 tienen un único jugador. Eso es un problema que arrastrarás hasta la UD6: una variable así no se puede meter tal cual en un modelo, porque crearía 162 columnas y 21 de ellas tendrían un solo caso. Habrá que agrupar la cola en «Otros».
+
+### Dos variables a la vez
+
+Tres combinaciones posibles, cada una con su herramienta.
+
+**Listado 3.17.** Análisis bivariante · [ver fichero](listados/listado_3_17_bivariante.py)
+
+**Número con número: correlación.** Va de −1 a 1 y mide cuánto se parece la relación a una recta.
+
+```text
+overall      1.00
+passing      0.68
+potential    0.65
+value_eur    0.65
+wage_eur     0.58
+shooting     0.50
+age          0.46
+pace         0.16
+weight_kg    0.16
+height_cm    0.04
+```
+
+`height_cm` con `overall`: 0,04. Ser alto no te hace mejor jugador. Pero cuidado, porque una correlación global puede esconder dos comportamientos distintos:
+
+```text
+Altura y valoración, separando por puesto:
+  todos      +0.04   (18,278 jugadores)
+  porteros   +0.15   (2,036 jugadores)
+  de campo   +0.07   (16,242 jugadores)
+```
+
+En los porteros la altura sí cuenta algo, y al meterlos en el mismo saco que los delanteros el efecto se diluye. **Calcular una correlación sobre grupos que no se parecen es la forma más fácil de no ver lo que está pasando.**
+
+> [!IMPORTANT]
+> Correlación no es causalidad, y además la correlación solo mide relaciones **lineales**. Un 0,0 no significa «no hay relación»: significa «no hay relación en línea recta». Dos variables pueden estar perfectamente relacionadas en forma de U y dar correlación cero.
+
+**Número con categoría: comparar grupos.**
+
+```text
+=== Salario por línea del campo ===
+                   count     mean     50%       max
+linea
+Ataque            3406.0  11922.0  4000.0  565000.0
+Centro del campo  6776.0   9776.0  3000.0  370000.0
+Defensa           5860.0   8948.0  3000.0  300000.0
+Portería          1996.0   6802.0  2000.0  250000.0
+```
+
+**Categoría con categoría: tabla de contingencia.** Normalizada por filas, para comparar proporciones y no cantidades.
+
+```text
+preferred_foot    Left  Right
+linea
+Ataque            17.9   82.1
+Centro del campo  22.2   77.8
+Defensa           33.0   67.0
+Portería          10.8   89.2
+```
+
+Los zurdos son el 23,6 % del total, pero el 33 % de los defensas y solo el 18 % de los delanteros. Ahí hay una pregunta interesante, y el dato solo aparece al cruzar las dos columnas.
+
+### De los números a los hallazgos
+
+Un análisis no termina en una tabla. Termina en frases que alguien pueda usar para decidir algo, y un hallazgo bien escrito tiene tres partes: **qué has visto, el dato que lo respalda y qué sugiere hacer**.
+
+**Listado 3.18.** Cinco hallazgos sobre el mercado · [ver fichero](listados/listado_3_18_hallazgos.py)
+
+```text
+1. El mercado está muy concentrado.
+   Dato: el 1 % más caro (180 jugadores) acumula el 17 % del valor total.
+   Sugiere: cualquier media sobre el valor hay que leerla con cuidado;
+   usa la mediana para describir al jugador típico.
+
+3. A igual nivel, el puesto cambia el salario.
+   Dato: entre los jugadores de valoración 70 a 75 (4,043 jugadores),
+   el salario mediano va de 13,000 € en ataque a 8,000 € en portería.
+   Sugiere: el puesto tiene que entrar en el modelo de la UD6.
+
+5. Los zurdos se concentran en defensa.
+   Dato: son el 33 % de los defensas y solo el 18 % de los delanteros.
+   Sugiere: el pie bueno no es una variable neutra; conviene mirarlo
+   junto con el puesto y no por separado.
+```
+
+Fíjate en el hallazgo 3. La versión fácil sería comparar el salario mediano de los delanteros con el de los porteros y decir que los delanteros cobran el doble. Pero eso mezclaría dos cosas: el efecto del puesto y el de que haya más estrellas en ataque. Por eso el cálculo se restringe a jugadores de valoración 70 a 75, para que el nivel no contamine la comparación.
+
+**Ese cuidado es el análisis.** El `groupby` lo hace pandas; decidir qué grupos son comparables, no.
+
+> [!TIP]
+> Ninguno de los cinco hallazgos dice «la media es 66,2». Un número no es un hallazgo: lo es la frase que explica qué significa y qué hacer con él. Si tu informe se puede resumir en una lista de medias, todavía no has analizado nada.
 
 ### Para practicar
 
-1. Calcula la mediana y la media del importe por ciudad. ¿Cambia el ranking según cuál uses?
-2. ¿Qué día de la semana se vende más? Pista: `dt.dayofweek` y `dt.day_name()`.
-3. Comprueba si los clientes del canal `online` compran importes mayores que los de `tienda`, con datos y con un gráfico.
-4. (A) Escribe cinco hallazgos de estos datos, cada uno con el número que lo respalda y la decisión que propondrías. Máximo dos líneas por hallazgo.
+1. Escribe dos hallazgos propios sobre la relación entre la edad y el valor de mercado, con el formato de los tres anteriores: qué ves, el dato, y qué sugiere.
+
+2. Calcula la matriz de correlación de las seis valoraciones de juego (`pace` a `physic`) solo para jugadores de campo. ¿Qué dos van más de la mano? ¿Tiene sentido futbolístico?
+
+3. Encuentra un grupo de jugadores que se comporte de forma distinta al resto en alguna variable, y escríbelo como hallazgo.
+
+4. (A) Busca un caso en el que la media y la mediana de una columna lleven a conclusiones opuestas, y explica cuál de las dos usarías y por qué.
 
 ## 3.8 De los datos a la decisión: Streamlit
 
-Un notebook sirve para analizar, pero no para que lo use otra persona. **Streamlit** convierte un script de Python en una aplicación web: no hay HTML, ni CSS, ni JavaScript. Cada vez que alguien mueve un filtro, Streamlit vuelve a ejecutar el script entero de arriba abajo y redibuja la página ([Streamlit: Get started](https://docs.streamlit.io/get-started)).
+Un análisis que solo puedes ver tú, en tu cuaderno, en tu portátil, no ha terminado. Streamlit convierte un script de Python en una página web sin que escribas una línea de HTML, y la publica gratis en internet.
 
-**Listado 3.19.** La aplicación más pequeña posible · [ver fichero](listados/listado_3_19_streamlit_minimo.py)
+### La idea que hay que entender primero
+
+Streamlit **vuelve a ejecutar el script entero, de arriba abajo, cada vez que alguien toca un control**. No hay eventos, ni callbacks, ni estado que mantener. Mueves un deslizador y el programa se ejecuta otra vez completo, con el valor nuevo.
+
+Eso es lo que lo hace tan fácil de escribir: el código es un script normal. Y es también lo que explica la única optimización que hace falta conocer, `@st.cache_data`, porque sin ella volverías a leer los 20 MB del fichero en cada movimiento.
+
+**Listado 3.19.** Una aplicación web en veinte líneas · [ver fichero](listados/listado_3_19_streamlit_minimo.py)
 
 ```python
 import streamlit as st
+from comun import cargar_limpio
 
-from comun import cargar_ventas
+st.title("Explorador de jugadores")
 
-st.title("Ventas 2026")
+jugadores = cargar_limpio(edicion=2020)
 
-ventas = cargar_ventas()
+# Un control devuelve directamente su valor. No hay que registrar nada.
+minimo = st.slider("Valoración mínima", 40, 95, 80)
 
-st.metric("Facturación total", f"{ventas['importe'].sum():,.0f} €")
-st.dataframe(ventas.head(20))
-st.bar_chart(ventas.groupby("ciudad")["importe"].sum())
+# Y a partir de aquí, Python normal.
+seleccion = jugadores[jugadores["overall"] >= minimo]
+
+st.write(f"Hay **{len(seleccion):,}** jugadores con valoración {minimo} o más.")
+st.dataframe(seleccion[["short_name", "club", "age", "overall", "value_eur"]]
+             .sort_values("overall", ascending=False).head(20))
 ```
-
-Se ejecuta desde la terminal, no con `python`:
 
 ```bash
 streamlit run listado_3_19_streamlit_minimo.py
 ```
 
-**Listado 3.20.** El panel completo · [ver fichero](app/app.py)
+Se abre el navegador en `localhost:8501`. Mueve el control y fíjate en que el script se ejecuta otra vez entero.
+
+### El panel completo
+
+Un panel de verdad tiene cuatro piezas: **filtros**, **indicadores**, **gráficos** y una forma de **llevarse los datos**.
+
+**Listado 3.20.** Las cuatro piezas de un panel · [ver fichero](listados/listado_3_20_panel_streamlit.py)
 
 ```python
-@st.cache_data                      # se calcula una vez; no en cada interacción
-def cargar_ventas(ruta: Path) -> pd.DataFrame:
-    """Lee y limpia el fichero de ventas."""
-    ventas = pd.read_csv(ruta, sep=";", decimal=",", parse_dates=["fecha"])
-    ...
+@st.cache_data                     # se ejecuta una vez; después, memoria
+def datos():
+    return cargar_limpio(edicion=2020).merge(cargar_posiciones(),
+                                             on="posicion", how="left")
 
+jugadores = datos()
 
-with st.sidebar:                    # los filtros, en la barra lateral
-    ciudades = st.multiselect("Ciudades", options=..., default=...)
-    minimo, maximo = st.slider("Importe por venta (€)", 0, tope, (0, tope), step=100)
+# --- Filtros, en la barra lateral ---
+st.sidebar.header("Filtros")
+lineas = st.sidebar.multiselect("Línea", ORDEN_LINEAS, default=ORDEN_LINEAS)
+edad = st.sidebar.slider("Edad", 16, 45, (18, 33))
+minimo = st.sidebar.slider("Valoración mínima", 40, 95, 65)
 
-filtradas = ventas[ventas["ciudad"].isin(ciudades) & ventas["importe"].between(minimo, maximo)]
+seleccion = jugadores[
+    jugadores["linea"].isin(lineas)
+    & jugadores["age"].between(*edad)
+    & (jugadores["overall"] >= minimo)
+]
 
-col1, col2, col3 = st.columns(3)
-col1.metric("Facturación", f"{filtradas['importe'].sum():,.0f} €")
+# --- Indicadores ---
+a, b, c, d = st.columns(4)
+a.metric("Jugadores", f"{len(seleccion):,}")
+b.metric("Valoración media", f"{seleccion['overall'].mean():.1f}")
 
-st.line_chart(filtradas.set_index("fecha")["importe"].resample("ME").sum())
-st.download_button("Descargar resumen en CSV", data=..., file_name="resumen_ventas.csv")
+# --- Antes de dibujar: ¿queda algo? ---
+if seleccion.empty:
+    st.warning("Ningún jugador cumple esos filtros. Prueba a relajarlos.")
+    st.stop()
+
+# --- Descarga ---
+st.download_button("Descargar la selección en CSV",
+                   seleccion.to_csv(index=False).encode("utf-8"),
+                   file_name="jugadores_filtrados.csv", mime="text/csv")
 ```
 
-Los elementos que necesitas para casi cualquier panel:
+Tres detalles que separan un panel que funciona de uno que se rompe en la demostración:
 
-| Familia | Funciones |
-| --- | --- |
-| Texto | `st.title`, `st.header`, `st.subheader`, `st.write`, `st.caption`, `st.markdown` |
-| Datos | `st.dataframe`, `st.table`, `st.metric`, `st.json` |
-| Gráficos | `st.line_chart`, `st.bar_chart`, `st.area_chart`, `st.pyplot(fig)` para matplotlib |
-| Entradas | `st.selectbox`, `st.multiselect`, `st.slider`, `st.date_input`, `st.checkbox`, `st.text_input` |
-| Estructura | `st.sidebar`, `st.columns`, `st.tabs`, `st.expander` |
-| Otros | `st.download_button`, `st.warning`, `st.stop`, `st.set_page_config` |
+**`@st.cache_data` sobre la carga.** Es un decorador, como los que viste en la UD2: envuelve la función y guarda su resultado. Sin él, cada movimiento de un filtro relee y limpia los 20 MB, y la aplicación tarda segundos en responder.
 
-> [!TIP]
-> `@st.cache_data` es un decorador, como el `@property` y el `@dataclass` de la UD2: envuelve la función sin tocarla. Este guarda el resultado y lo reutiliza mientras no cambien sus argumentos. Sin él, tu aplicación releería y limpiaría el CSV cada vez que alguien tocara un filtro.
+**La comprobación de selección vacía.** Si el usuario mueve los filtros hasta que no queda ningún jugador, `mean()` da `NaN` y los gráficos fallan con un error feo. Dos líneas con `st.stop()` lo convierten en un aviso claro. Es el caso que siempre aparece cuando enseñas la aplicación a alguien.
+
+**El botón de descarga.** Un panel que solo deja mirar obliga a pedirte los datos por correo. Uno que deja descargar la selección filtrada se usa solo.
 
 ### Publicar la aplicación
 
-Streamlit Community Cloud publica aplicaciones desde un repositorio de GitHub de forma gratuita, y necesita dos cosas: el fichero de la aplicación y un `requirements.txt` con las dependencias, en la raíz del repositorio o junto a la aplicación ([Streamlit Community Cloud](https://docs.streamlit.io/deploy/streamlit-community-cloud)).
+Streamlit Community Cloud despliega gratis desde un repositorio de GitHub. Hace falta:
 
-1. Sube tu proyecto a GitHub con `app.py`, los datos y `requirements.txt`.
-2. Entra en [share.streamlit.io](https://share.streamlit.io) con tu cuenta de GitHub.
-3. Elige repositorio, rama y ruta del fichero principal, por ejemplo `ud3-datos/app/app.py`.
-4. Espera a que instale las dependencias. Obtendrás una URL pública que puedes compartir.
+1. Un fichero de la aplicación, aquí [`app/app.py`](app/app.py), que no dependa de nada que esté fuera del repositorio.
+2. Un [`app/requirements.txt`](app/requirements.txt) con las versiones fijadas.
+3. Entrar en [share.streamlit.io](https://share.streamlit.io), conectar la cuenta de GitHub, elegir el repositorio y el fichero, y desplegar.
 
-> [!IMPORTANT]
-> La aplicación es **pública** y se ejecuta en servidores de Estados Unidos: no subas datos personales ni información confidencial. Fija las versiones en `requirements.txt` (`pandas==3.0.2`), porque si dejas que instale la última versión, un día tu aplicación dejará de funcionar sola.
+```text
+pandas==3.0.2
+matplotlib==3.10.8
+seaborn==0.13.2
+streamlit==1.64.0
+pyarrow==21.0.0
+```
+
+> [!WARNING]
+> Las versiones se fijan con `==`, no con `>=`. Si pones `pandas>=3.0`, el día que salga pandas 3.1 con un cambio incompatible tu aplicación dejará de arrancar sin que tú hayas tocado nada, y encima no sabrás por qué. Esto vale para cualquier despliegue, no solo para Streamlit.
+
+> [!TIP]
+> El fichero de la aplicación es distinto del listado: `app/app.py` lleva su propia función de carga en lugar de importar `comun.py`, porque en el servidor no existe la carpeta `listados/`. Compara los dos y fíjate en qué cambia exactamente.
 
 ### Para practicar
 
-1. Añade al panel un filtro por producto y un cuarto indicador con las unidades totales.
-2. Sustituye `st.bar_chart` por un gráfico de seaborn mostrado con `st.pyplot(fig)`.
-3. Añade una pestaña con `st.tabs` que muestre la tabla de datos sin agregar.
-4. (A) Quita el decorador `@st.cache_data`, mide con `time.perf_counter()` cuánto tarda la carga y explica qué notas al mover los filtros.
+1. Añade al panel un cuarto filtro por nacionalidad, con un desplegable que incluya una opción «Todas».
+
+2. Sustituye el gráfico de cajas por uno de barras con el valor mediano por línea, y comprueba que reacciona a los filtros.
+
+3. Añade una pestaña con `st.tabs` que muestre la tabla completa de la selección, sin limitarla a 20 filas.
+
+4. (A) Quita el `@st.cache_data`, mide con `time.perf_counter()` cuánto tarda la carga y explica qué notas al mover los filtros.
 
 ## Práctica de la unidad · Hito 2 del proyecto integrador
 
-Toca aplicar todo esto a **tu** conjunto de datos, el que elegiste en el hito 0. Trabajas dentro del paquete que dejaste instalado en el hito 1: los módulos nuevos de esta unidad van ahí, junto a los que ya tienes.
+Vas a limpiar el conjunto de datos, explorarlo y publicar un panel en internet. Es el hito más largo del curso y el que más se parece a un encargo real: alguien te da un fichero y te pide que le cuentes qué hay dentro.
+
+Trabajas dentro del paquete que dejaste instalado en el hito 1: los módulos nuevos van ahí, junto a los que ya tienes.
+
+![Ruta del hito 2](figuras/hito-2.svg)
+
+*Figura 3.6. La ruta del hito 2: limpiar los datos, explorarlos y publicar el panel.*
 
 ### 1. Limpieza reproducible
 
-En tu paquete `src/`, un módulo `limpieza.py` con la función `cargar_limpio(ruta) -> pd.DataFrame` que:
+Un módulo `limpieza.py` en tu paquete, con la función `cargar_limpio(ruta) -> pd.DataFrame` que:
 
-- Cargue el fichero con los parámetros correctos de `read_csv` o `read_json`.
-- Trate nulos, duplicados, tipos, textos y atípicos, con una decisión justificada para cada caso.
-- Añada al menos dos columnas derivadas útiles para tu pregunta.
-- Guarde el resultado en `datos/procesado/<nombre>.parquet`.
+- Cargue el fichero con los parámetros adecuados de `read_csv`.
+- Tome **las cuatro decisiones** del apartado 3.4, cada una con un comentario que explique por qué.
+- Añada al menos tres columnas derivadas útiles para tus preguntas.
+- Guarde el resultado en `datos/procesado/jugadores.parquet`.
 
 ### 2. Análisis exploratorio
 
-Un notebook `notebooks/03_exploracion.ipynb` con:
+Un cuaderno `notebooks/03_exploracion.ipynb` con:
 
 - Inspección inicial: dimensiones, tipos, nulos y estadísticos.
 - Análisis univariante de al menos tres variables, numéricas y categóricas.
 - Análisis bivariante: dos comparaciones entre grupos y una matriz de correlación.
-- Un mínimo de seis gráficos, todos con título y ejes etiquetados.
-- Texto entre las celdas que explique qué se ve en cada gráfico. Un notebook sin texto es un montón de código, no un análisis.
+- Un mínimo de **seis gráficos**, todos con título y ejes etiquetados.
+- Texto entre las celdas explicando qué se ve en cada gráfico. Un cuaderno sin texto es un montón de código, no un análisis.
 
 ### 3. Panel publicado
 
-Una aplicación `app/app.py` desplegada en Streamlit Community Cloud con, al menos:
+Una aplicación `app/app.py` desplegada en Streamlit Community Cloud con, al menos: dos filtros, tres indicadores, dos gráficos que reaccionen a los filtros, una tabla, un botón de descarga y `@st.cache_data` en la carga.
 
-- Dos filtros en la barra lateral.
-- Tres indicadores (`st.metric`).
-- Dos gráficos que reaccionen a los filtros.
-- Una tabla y un botón de descarga.
-- `@st.cache_data` en la carga de datos.
+### Cómo saber que vas bien
 
-### 4. Entregables
+Estas cifras salen del mismo fichero que tienes tú, aplicando las decisiones del apartado 3.4. **Te tienen que salir iguales.** Si una no cuadra, ahí tienes algo que revisar.
+
+| Comprobación | Valor correcto |
+| --- | --- |
+| Filas tras quitar FIFA 15 | 85.530 |
+| Filas de FIFA 20 | 18.278 |
+| Nulos en `value_eur` (FIFA 20), tras convertir los ceros | 250 |
+| Porteros · jugadores de campo | 2.036 · 16.242 |
+| Valores de `body_type` tras limpiar | 3 (Normal 10.757, Lean 6.505, Stocky 1.016) |
+| Valoración media de FIFA 20 | 66,24 |
+| Valor mediano de FIFA 20 | 725.000 € |
+| Valor medio de FIFA 20 | 2.518.485 € |
+| Asimetría de `value_eur` | 6,39 |
+| Correlación `overall` con `value_eur` | 0,65 |
+| Margen de mejora medio | 5,3 |
+| Jugadores por línea | Ataque 3.442 · Centro 6.862 · Defensa 5.938 · Portería 2.036 |
+
+Y tres preguntas para comprobar que entiendes lo que has hecho:
+
+1. ¿Por qué el valor medio de FIFA 20 es casi cuatro veces la mediana? ¿Cuál de los dos usarías en un informe y por qué?
+2. Tu limpieza convierte 250 ceros en nulos. ¿Qué le pasaría a la media del valor si no lo hicieras? Calcúlalo.
+3. Si quitaras los 2.511 atípicos de `value_eur` en lugar de dejarlos, ¿qué análisis de los que has hecho cambiaría, y a mejor o a peor?
+
+### Entregables
 
 - El código en el repositorio, con `requirements.txt` actualizado y versiones fijadas.
 - El enlace a la aplicación publicada, en el `README.md` del proyecto.
-- **Cinco hallazgos** en el `README.md`: cada uno con el dato que lo respalda y la decisión que sugiere, en dos líneas.
+- **Cinco hallazgos** en el `README.md`, cada uno con el dato que lo respalda y la decisión que sugiere, en dos líneas, con el formato del listado 3.18.
 - Defensa oral breve (5 minutos): explicar una decisión de limpieza y uno de los hallazgos.
 
 Fecha de entrega propuesta: antes del inicio de la UD5 (30/11/2026).
 
-### 5. Qué se evalúa
+### Qué se evalúa
 
 | CE | Evidencias en la práctica |
 | --- | --- |
-| 2a | Carga con los parámetros adecuados, limpieza justificada y datos guardados en Parquet, reproducible con una función |
+| 2a | Carga con los parámetros adecuados, cuatro decisiones de limpieza justificadas y datos guardados en Parquet |
 | 2b | Seis gráficos legibles, con el tipo adecuado a cada pregunta, con título y unidades |
 | 2c | Análisis univariante y bivariante que identifica patrones, diferencias entre grupos y correlaciones |
 | 2e | Cinco hallazgos redactados con su dato y su decisión, y un panel que permite a otra persona explorar los datos |
@@ -701,28 +1264,30 @@ Fecha de entrega propuesta: antes del inicio de la UD5 (30/11/2026).
 
 | Apartado | Idea clave |
 | --- | --- |
-| 3.1 NumPy | Vectorizar en lugar de iterar: las operaciones se aplican al array entero y son mucho más rápidas |
-| 3.2 Cargar | `read_csv` resuelve con parámetros (`sep`, `decimal`, `parse_dates`) lo que en la UD1 programaste a mano |
-| 3.3 Filtrar | `loc` por etiqueta, `iloc` por posición y máscaras booleanas con `&`, `\|`, `~` |
-| 3.4 Limpiar | Nulos, duplicados, textos, tipos y atípicos. Cada decisión se justifica y se documenta |
-| 3.5 Transformar | `assign` para columnas nuevas, `groupby().agg()` para agrupar, `merge` para unir y `resample` para el tiempo |
-| 3.6 Visualizar | La pregunta decide el gráfico. Título, ejes y unidades siempre; barras desde cero |
-| 3.7 Explorar | Media frente a mediana en distribuciones asimétricas; correlación no es causalidad |
-| 3.8 Comunicar | Streamlit convierte un script en una aplicación web; `@st.cache_data` evita recalcular; se publica desde GitHub |
+| 3.1 NumPy | Vectorizar es operar sobre todos los valores a la vez. La máscara booleana es la base del filtrado de pandas |
+| 3.2 Cargar e inspeccionar | `usecols` y `parse_dates` ahorran limpieza. En `describe()` ya se ven los problemas: un mínimo de cero y una media que triplica a la mediana |
+| 3.3 Seleccionar | `[]` para columnas y máscaras, `.loc` por nombre, `.iloc` por posición. Paréntesis en cada condición y `&` en vez de `and` |
+| 3.4 Limpiar | Antes de rellenar un hueco, averigua por qué falta. Un cero puede ser una ausencia. Los atípicos se miran antes de decidir, y casi nunca se tiran |
+| 3.5 Transformar | `groupby` es partir, calcular y juntar. Filtra los grupos pequeños antes de ordenar. Tras un `merge`, comprueba filas y claves sin pareja |
+| 3.6 Visualizar | Título y ejes etiquetados siempre. El dinero, en escala logarítmica. Ni tartas de más de tres trozos ni dos ejes verticales |
+| 3.7 Exploratorio | Centro, dispersión y forma. Una correlación global puede esconder dos grupos distintos. Un número no es un hallazgo |
+| 3.8 Streamlit | El script se reejecuta entero en cada interacción. `@st.cache_data` en la carga, comprobar selección vacía y versiones fijadas con `==` |
 
 ## Bibliografía de la UD3
 
-Todas las fuentes web se consultaron el 28 de septiembre de 2026.
+Todas las fuentes web se consultaron el 18 de octubre de 2026.
 
 ### Documentación de las bibliotecas
 
 - NumPy developers. (2026). *NumPy: the absolute basics for beginners*. <https://numpy.org/doc/stable/user/absolute_beginners.html>
 - pandas development team. (2026). *10 minutes to pandas*. <https://pandas.pydata.org/docs/user_guide/10min.html>
 - pandas development team. (2026). *User Guide*: [Working with missing data](https://pandas.pydata.org/docs/user_guide/missing_data.html), [Group by: split-apply-combine](https://pandas.pydata.org/docs/user_guide/groupby.html), [Merge, join, concatenate and compare](https://pandas.pydata.org/docs/user_guide/merging.html) y [Time series / date functionality](https://pandas.pydata.org/docs/user_guide/timeseries.html).
+- pandas development team. (2026). *Nullable integer data type*. <https://pandas.pydata.org/docs/user_guide/integer_na.html>
 - Matplotlib development team. (2026). *Quick start guide*. <https://matplotlib.org/stable/users/explain/quick_start.html>
 - Waskom, M. (2026). *seaborn: user guide and tutorial*. <https://seaborn.pydata.org/tutorial.html>
 - Snowflake Inc. (2026). *Streamlit documentation: Get started* y *API reference*. <https://docs.streamlit.io/get-started> · <https://docs.streamlit.io/develop/api-reference>
 - Snowflake Inc. (2026). *Deploy on Streamlit Community Cloud*. <https://docs.streamlit.io/deploy/streamlit-community-cloud>
+- Apache Arrow. (2026). *Parquet file format*. <https://parquet.apache.org/docs/>
 
 ### Lectura complementaria
 

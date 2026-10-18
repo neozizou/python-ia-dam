@@ -2,16 +2,13 @@
 
 from pathlib import Path
 
-ruta = Path("datos") / "registro.txt"
+ruta = Path("datos/registro.txt")
 
-with ruta.open("w", encoding="utf-8") as f:
-    f.write("inicio del proceso\n")
-    f.write("ERROR: fichero no encontrado\n")
-    f.write("fin del proceso\n")
+with ruta.open("w", encoding="utf-8") as fichero:      # "w" crea o vacía
+    fichero.write("inicio del repaso de fichas\n")     # el salto de línea es tuyo
+    fichero.writelines(["ERROR: edición 2021 no encontrada\n", "fin del repaso\n"])
 
-with ruta.open(encoding="utf-8") as f:
-    for numero, linea in enumerate(f, start=1):    # línea a línea
+with ruta.open(encoding="utf-8") as fichero:           # por defecto, "r" de lectura
+    for numero, linea in enumerate(fichero, start=1):
         if linea.startswith("ERROR"):
-            print(f"Línea {numero}: {linea.rstrip()}")
-
-# Línea 2: ERROR: fichero no encontrado
+            print(f"Línea {numero}: {linea.rstrip()}")  # rstrip quita el \n final

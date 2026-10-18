@@ -482,6 +482,10 @@ Sea cual sea, el panel de Streamlit de la UD3 puede leer de la base de datos en 
 
 Tu conjunto de datos deja de vivir en un fichero.
 
+![Ruta del hito 3. Se parte de: Los datos limpios en Parquet del hito 2. Paso 1: Diseñar el esquema, con claves, tipos e índice, produce esquema.sql. Paso 2: Cargar los datos desde Python, produce bd.py. Paso 3: Seis consultas parametrizadas que respondan, produce consultas.py. Paso 4: Guardar una parte como documentos y comparar, produce README: SQL frente a NoSQL. Paso 5: Hacer que el panel lea de la base de datos, produce app/app.py. Se entrega: Base de datos cargada, seis consultas, comparativa y panel desplegado.](figuras/hito-3.svg)
+
+*Figura 4.4. La ruta del hito 3: llevar los datos a una base de datos y consultarlos.*
+
 ### 1. Llevarlo a una base de datos relacional
 
 - Diseña el esquema con tipos, claves y restricciones (`NOT NULL`, `CHECK`, `UNIQUE`). Justifica los tipos elegidos.

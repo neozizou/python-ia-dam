@@ -1,38 +1,67 @@
-"""Listado 3.15. Gráficos estadísticos con seaborn."""
+"""seaborn: los gráficos estadísticos que más se repiten, ya hechos.
+
+seaborn está construido sobre matplotlib y entiende los DataFrame. Donde en
+matplotlib agrupas tú y luego dibujas, aquí le dices qué columna va en cada eje
+y él se encarga.
+"""
 
 from pathlib import Path
 
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from comun import cargar_ventas
+from comun import cargar_limpio, cargar_posiciones
 
-sns.set_theme(style="whitegrid")          # estilo común para todos los gráficos
+SALIDA = Path("graficos")
+SALIDA.mkdir(exist_ok=True)
+sns.set_theme(style="whitegrid")       # rejilla discreta y fondo claro
 
-ventas = cargar_ventas()
-GRAFICOS = Path("graficos")
-GRAFICOS.mkdir(exist_ok=True)
+sol = cargar_limpio(edicion=2020).merge(cargar_posiciones(), on="posicion", how="left")
 
-fig, ejes = plt.subplots(2, 2, figsize=(13, 9))
+# 1. Comparar una distribución entre grupos: la caja dice mucho en poco sitio.
+figura, ejes = plt.subplots(figsize=(8, 4))
+sns.boxplot(data=sol, x="linea", y="overall", ax=ejes,
+            order=["Portería", "Defensa", "Centro del campo", "Ataque"],
+            color="#dbe8fb")
+ejes.set_title("Valoración por línea del campo (FIFA 20)")
+ejes.set_xlabel("")
+ejes.set_ylabel("Valoración media")
+figura.tight_layout()
+figura.savefig(SALIDA / "caja_por_linea.png", dpi=120)
+plt.close(figura)
 
-# 1. Distribución de una variable numérica
-sns.histplot(data=ventas, x="importe", bins=40, ax=ejes[0, 0])
-ejes[0, 0].set_title("Distribución del importe por venta")
+# 2. Una distribución con su forma: el histograma con curva de densidad.
+figura, ejes = plt.subplots(figsize=(8, 4))
+sns.histplot(data=sol, x="age", hue="es_portero", bins=25, ax=ejes,
+             palette=["#2f6fd0", "#d9822b"], alpha=0.6)
+ejes.set_title("Edad de porteros y jugadores de campo")
+ejes.set_xlabel("Edad (años)")
+ejes.set_ylabel("Jugadores")
+figura.tight_layout()
+figura.savefig(SALIDA / "edad_porteros.png", dpi=120)
+plt.close(figura)
 
-# 2. Comparar una numérica entre categorías
-sns.boxplot(data=ventas, x="canal", y="importe", ax=ejes[0, 1])
-ejes[0, 1].set_title("Importe según el canal")
+# 3. La relación entre dos variables numéricas, con la recta de ajuste.
+muestra = sol.dropna(subset=["wage_eur"]).sample(2000, random_state=42)
+figura, ejes = plt.subplots(figsize=(7, 4.5))
+sns.regplot(data=muestra, x="overall", y="wage_eur", ax=ejes,
+            scatter_kws={"s": 8, "alpha": 0.25, "color": "#2f6fd0"},
+            line_kws={"color": "#c0392b"})
+ejes.set_yscale("log")
+ejes.set_title("Valoración y salario semanal (muestra de 2.000 jugadores)")
+ejes.set_xlabel("Valoración media")
+ejes.set_ylabel("Salario semanal (€, escala logarítmica)")
+figura.tight_layout()
+figura.savefig(SALIDA / "salario_vs_media.png", dpi=120)
+plt.close(figura)
 
-# 3. Comparar un agregado entre categorías
-por_producto = ventas.groupby("producto")["importe"].sum().reset_index()
-sns.barplot(data=por_producto, x="importe", y="producto", ax=ejes[1, 0])
-ejes[1, 0].set_title("Facturación por producto")
-
-# 4. Relación entre dos numéricas
-sns.scatterplot(data=ventas, x="unidades", y="importe", hue="canal", alpha=0.6,
-                ax=ejes[1, 1])
-ejes[1, 1].set_title("Unidades frente a importe")
-
-fig.tight_layout()
-fig.savefig(GRAFICOS / "seaborn.png", dpi=150)
-print("Guardado en", GRAFICOS / "seaborn.png")
+print("Guardados:", [f.name for f in sorted(SALIDA.glob("*.png"))])
+print("\nQué elegir:")
+print("  boxplot   comparar una distribución entre pocos grupos")
+print("  histplot  ver la forma de una distribución")
+print("  regplot   relación entre dos números, con la tendencia dibujada")
+print("  barplot   comparar una magnitud entre categorías")
+print("\nY lo que NO hay que usar: un gráfico de tarta con más de tres trozos,")
+print("y dos ejes verticales distintos en el mismo gráfico. Los dos engañan.")

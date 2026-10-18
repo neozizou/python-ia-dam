@@ -6,5 +6,10 @@ def estadisticas(valores: list[float]) -> tuple[float, float, float]:
     return min(valores), max(valores), sum(valores) / len(valores)
 
 
-minimo, maximo, promedio = estadisticas([4.5, 7.0, 9.25, 6.0])
-print(minimo, maximo, promedio)        # 4.5 9.25 6.6875
+peor, mejor, promedio = estadisticas([94, 93, 91, 91, 89])
+print(peor, mejor, promedio)       # 89 94 91.6
+
+# Lo que devuelve es una tupla; desempaquetarla es opcional.
+resultado = estadisticas([94, 93, 91])
+print(resultado)                   # (91, 94, 92.66666666666667)
+print(f"Media: {resultado[2]:.2f}")

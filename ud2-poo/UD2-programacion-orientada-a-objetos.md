@@ -90,6 +90,8 @@ python listado_2_04_producto_en_uso.py
 python -m tienda.app                     # el paquete completo, en marcha
 ```
 
+La carpeta `listados/datos/` empieza vacía: **los ficheros de datos los crean los propios listados** la primera vez que se ejecutan, y no están en el repositorio porque abultan. El más grande es el catálogo del Listado 2.15, con 200.000 productos: tarda unos siete segundos en generarse y ocupa 6,5 MB.
+
 ## 2.1 Objetos ajenos: leer una API
 
 Antes de escribir una clase conviene saber leer las que ya existen, porque en este módulo vas a usar muchas más de las que escribes. La distinción fundamental es sencilla: un **atributo** es un dato que el objeto ya tiene y se escribe sin paréntesis; un **método** es algo que el objeto hace cuando se lo pides y lleva paréntesis ([The Python Tutorial: Classes](https://docs.python.org/3/tutorial/classes.html)).
@@ -759,6 +761,8 @@ Una función con `yield` no devuelve una lista: devuelve un **generador**, que e
 
 **Listado 2.15.** Un catálogo de 200.000 productos, con lista y con generador · [ver fichero](listados/listado_2_15_catalogo_generador.py)
 
+La primera vez que lo ejecutes, `generar_fichero()` creará `datos/catalogo_grande.csv` (6,5 MB, unos siete segundos). Las siguientes veces lo reutiliza.
+
 ```python
 def cargar_lista(ruta: Path) -> list[Producto]:
     """Lee el fichero entero y devuelve una lista con todos los productos."""
@@ -931,6 +935,10 @@ Es el Listado 0.22 de Acceso a Datos, con los mismos números.
 
 Vas a convertir el explorador del hito 0 en un **paquete instalable y probado**. Mismo resultado, mejor organización: este paquete es el que seguirás usando a partir de la UD3, así que merece la pena dejarlo bien.
 
+![Ruta del hito 1. Se parte de: El explorador del hito 0 y su informe_inicial.json. Paso 1: Separar el código en módulos por responsabilidad, produce src/tu_paquete/. Paso 2: Hacer el paquete instalable, produce pyproject.toml. Paso 3: Llevar las opciones a una dataclass, produce configuracion.py. Paso 4: Leer las filas con un generador, dentro de with, produce lectura.py. Paso 5: Escribir cuatro pruebas, produce tests/. Paso 6: Regenerar el informe y comprobar que no cambia, produce informe_inicial.json idéntico. Se entrega: Paquete instalado con pip install -e, pruebas en verde, README y defensa.](figuras/hito-1.svg)
+
+*Figura 2.13. La ruta del hito 1: convertir el explorador en un paquete instalable.*
+
 ### 1. Punto de partida
 
 Tu explorador de la UD1, con su `informe_inicial.json` ya generado. Ese fichero es tu prueba: al terminar, el programa debe producir **exactamente el mismo JSON**.
@@ -949,7 +957,65 @@ Tu explorador de la UD1, con su `informe_inicial.json` ya generado. Ese fichero 
 
 No hace falta ninguna clase más que la `dataclass` de configuración. Si al terminar tienes una clase con un solo método y ningún estado, conviértela en una función: es la señal de que sobra.
 
-### 3. Entregables
+### 3. Cómo tiene que quedar el proyecto
+
+```text
+mi-proyecto/
+├── pyproject.toml              nombre del paquete, dependencias y src/ como raíz
+├── README.md                   qué hace, cómo se instala y los módulos que has creado
+├── datos/
+│   ├── <tu_fichero>.csv        los datos originales, sin tocar
+│   └── informe_inicial.json    regenerado, idéntico al de la UD1
+├── docs/
+│   └── ficha_dataset.md        la del hito 0
+├── src/
+│   └── <tu_paquete>/
+│       ├── __init__.py         qué expone el paquete hacia fuera
+│       ├── __main__.py         python -m <tu_paquete>: ata los módulos y guarda el informe
+│       ├── configuracion.py    la dataclass Configuracion
+│       ├── lectura.py          el generador que entrega las filas de una en una
+│       ├── tipos.py            inferir el tipo de una columna
+│       ├── estadisticas.py     vacíos, mínimos, máximos, medias y frecuencias
+│       └── informe.py          arma el diccionario del informe y lo guarda
+└── tests/
+    ├── test_tipos.py
+    ├── test_estadisticas.py
+    ├── test_lectura.py
+    └── test_informe.py         el informe regenerado es igual al guardado
+```
+
+Los nombres de los módulos son orientativos; lo que no es orientativo es que **cada uno tenga una responsabilidad y una sola**. Si un módulo lee ficheros y además calcula medias, está haciendo dos cosas.
+
+> [!IMPORTANT]
+> «El mismo informe» significa que los **datos** son los mismos, no que los ficheros sean idénticos byte a byte. La prueba compara los diccionarios después de cargarlos con `json.load`, de modo que el orden de las claves o la sangría pueden cambiar sin que falle.
+
+### 4. Cómo saber que está terminado
+
+Cinco comprobaciones, en este orden. Si las cinco pasan, el hito está hecho.
+
+```bash
+# 1. El paquete se instala
+pip install -e .
+
+# 2. Se puede importar desde cualquier sitio, no solo desde su carpeta
+cd ~ && python -c "import <tu_paquete>; print('bien')" && cd -
+
+# 3. El programa se ejecuta y regenera el informe
+python -m <tu_paquete>
+
+# 4. El informe no ha cambiado respecto al de la UD1
+python -c "import json; a=json.load(open('datos/informe_inicial.json')); b=json.load(open('datos/informe_ud1.json')); print('iguales' if a==b else 'DISTINTOS')"
+
+# 5. Las pruebas pasan
+pytest -q
+```
+
+Para la comprobación 4, guarda una copia del informe de la UD1 como `datos/informe_ud1.json` **antes** de empezar a mover código. Es tu red de seguridad: cualquier cosa que rompas por el camino aparecerá ahí.
+
+> [!TIP]
+> Mueve el código en pasos pequeños y ejecuta la comprobación 4 después de cada uno. Refactorizar a lo grande y comprobar al final es la forma más rápida de pasarse una tarde buscando qué cambió.
+
+### 5. Entregables
 
 - El paquete en `src/`, con `pyproject.toml`, instalado con `pip install -e .`.
 - `datos/informe_inicial.json` regenerado e **idéntico** al de la UD1. Explica en el `README.md` cómo lo has comprobado.
@@ -957,7 +1023,7 @@ No hace falta ninguna clase más que la `dataclass` de configuración. Si al ter
 - Un apartado de tres a cinco líneas en el `README.md`: qué módulos has creado, qué responsabilidad tiene cada uno y por qué.
 - Defensa oral breve (5 minutos): justificar la separación en módulos y explicar qué habría que tocar para leer los datos de otro formato.
 
-### 4. Qué se evalúa
+### 6. Qué se evalúa
 
 | CE | Evidencias en la práctica |
 | --- | --- |

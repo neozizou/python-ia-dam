@@ -1,33 +1,60 @@
-"""Listado 3.14. Gráficos con matplotlib."""
+"""matplotlib: la base de todos los gráficos de Python.
+
+Casi siempre usarás seaborn o pandas por encima, pero los dos devuelven objetos
+de matplotlib, así que para ajustar cualquier detalle hay que conocer sus dos
+piezas: la **figura** (el lienzo) y los **ejes** (cada gráfico dentro).
+"""
 
 from pathlib import Path
 
+import matplotlib
+matplotlib.use("Agg")                 # sin ventana: guarda en fichero
 import matplotlib.pyplot as plt
 
-from comun import cargar_ventas
+from comun import cargar_limpio
 
-ventas = cargar_ventas()
-GRAFICOS = Path("graficos")
-GRAFICOS.mkdir(exist_ok=True)
+SALIDA = Path("graficos")
+SALIDA.mkdir(exist_ok=True)
 
-mensual = ventas.set_index("fecha")["importe"].resample("ME").sum()
-por_ciudad = ventas.groupby("ciudad")["importe"].sum().sort_values()
+sol = cargar_limpio(edicion=2020)
 
-# Una figura con dos ejes (subplots)
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.5))
+# Un gráfico: una figura con unos ejes.
+figura, ejes = plt.subplots(figsize=(7, 4))
+ejes.hist(sol["overall"], bins=30, color="#2f6fd0", edgecolor="white")
+ejes.set_title("Cómo se reparten las valoraciones (FIFA 20)")
+ejes.set_xlabel("Valoración media")
+ejes.set_ylabel("Número de jugadores")
+ejes.grid(axis="y", alpha=0.3)        # rejilla discreta, solo donde ayuda
+figura.tight_layout()
+figura.savefig(SALIDA / "distribucion_overall.png", dpi=120)
+plt.close(figura)
 
-ax1.plot(mensual.index, mensual.values, marker="o", color="#1f77b4")
-ax1.set_title("Facturación mensual 2026")
-ax1.set_xlabel("Mes")
-ax1.set_ylabel("Importe (€)")
-ax1.grid(alpha=0.3)
-ax1.tick_params(axis="x", rotation=45)
+# Varios gráficos en una figura: subplots devuelve una rejilla de ejes.
+figura, (izq, der) = plt.subplots(1, 2, figsize=(11, 4))
 
-ax2.barh(por_ciudad.index, por_ciudad.values, color="#2ca02c")
-ax2.set_title("Facturación por ciudad")
-ax2.set_xlabel("Importe (€)")
+izq.scatter(sol["age"], sol["overall"], s=4, alpha=0.15, color="#2f6fd0")
+izq.set_title("Edad frente a valoración")
+izq.set_xlabel("Edad (años)")
+izq.set_ylabel("Valoración media")
 
-fig.tight_layout()
-fig.savefig(GRAFICOS / "resumen.png", dpi=150)
-plt.show()          # en un notebook el gráfico aparece bajo la celda
-print("Guardado en", GRAFICOS / "resumen.png")
+con_valor = sol.dropna(subset=["value_eur"])
+der.scatter(con_valor["overall"], con_valor["value_eur"], s=4, alpha=0.15,
+            color="#1f9d6b")
+der.set_yscale("log")                 # el dinero, siempre en escala logarítmica
+der.set_title("Valoración frente a valor de mercado")
+der.set_xlabel("Valoración media")
+der.set_ylabel("Valor (€, escala logarítmica)")
+
+figura.tight_layout()
+figura.savefig(SALIDA / "dispersion.png", dpi=120)
+plt.close(figura)
+
+print("Guardados en graficos/:")
+for fichero in sorted(SALIDA.glob("*.png")):
+    print(f"  {fichero.name:<28} {fichero.stat().st_size // 1024} KB")
+
+print("\nTres reglas que no se negocian:")
+print("  1. Todo gráfico lleva título y los dos ejes etiquetados, con unidades.")
+print("  2. El dinero va en escala logarítmica: si no, los diez primeros")
+print("     aplastan a los dieciocho mil restantes.")
+print("  3. Con muchos puntos, alpha baja: así se ve dónde se acumulan.")

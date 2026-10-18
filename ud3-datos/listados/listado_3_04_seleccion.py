@@ -1,26 +1,44 @@
-"""Listado 3.4. Seleccionar y filtrar: loc, iloc y máscaras booleanas."""
+"""Elegir filas y columnas: `[]`, `.loc` y `.iloc`.
 
-from pathlib import Path
+La confusión más habitual de quien empieza con pandas es mezclar las tres
+formas. La regla es corta: los corchetes sueltos eligen **columnas**, `.loc`
+elige por **etiqueta** y `.iloc` por **posición**.
+"""
 
-import pandas as pd
+from comun import cargar_limpio
 
-ventas = pd.read_csv(Path("datos") / "ventas_2026.csv", sep=";", decimal=",",
-                     parse_dates=["fecha"])
+sol = cargar_limpio(edicion=2020)
 
-print(ventas.loc[0, "ciudad"])                 # por etiqueta: fila 0, columna ciudad
-print(ventas.iloc[0, 2])                       # por posición: fila 0, columna 2
-print(ventas.loc[:4, ["ciudad", "precio"]])    # rebanada de filas y columnas
+# Una columna es una Series; dos o más, un DataFrame.
+print("Una columna ->", type(sol["overall"]).__name__)
+print("Varias      ->", type(sol[["short_name", "overall"]]).__name__)
 
-caras = ventas["precio"] > 500                 # una Series de True/False
-print(caras.sum(), "ventas de más de 500 €")
-print(ventas[caras].head(3))
+# Filtrar filas: una condición dentro de los corchetes.
+estrellas = sol[sol["overall"] >= 90]
+print(f"\nJugadores con media 90 o más: {len(estrellas)}")
 
-# Varias condiciones: & (y), | (o), ~ (no). Cada una entre paréntesis
-granada_online = ventas[(ventas["ciudad"] == "Granada") & (ventas["canal"] == "online")]
-print(len(granada_online))
+# Varias condiciones: paréntesis obligatorios, y & | en lugar de and / or.
+jovenes_promesa = sol[(sol["age"] <= 21) & (sol["potential"] >= 85)]
+print(f"Menores de 22 con potencial 85+: {len(jovenes_promesa)}")
+print(jovenes_promesa.nlargest(5, "potential")[
+    ["short_name", "age", "club", "overall", "potential"]].to_string(index=False))
 
-andalucia_oriental = ventas[ventas["ciudad"].isin(["Granada", "Jaén", "Almería"])]
-print(len(andalucia_oriental))
+# .loc: filas por condición, columnas por nombre, en una sola orden.
+print("\n.loc con condición y columnas:")
+print(sol.loc[sol["nationality"] == "Spain",
+              ["short_name", "club", "overall"]].head(3).to_string(index=False))
 
-print(len(ventas[ventas["precio"].between(100, 200)]))
-print(len(ventas.query("precio > 500 and canal == 'tienda'")))   # alternativa legible
+# .iloc: por posición, como una lista. Útil para mirar, poco para analizar.
+print("\n.iloc[0, :3]:", list(sol.iloc[0, :3]))
+
+# isin evita escribir una cadena de condiciones con |.
+tres_grandes = sol[sol["club"].isin(["FC Barcelona", "Real Madrid", "Atlético Madrid"])]
+print(f"\nJugadores de los tres grandes: {len(tres_grandes)}")
+
+# between, para rangos.
+veteranos = sol[sol["age"].between(34, 40)]
+print(f"Entre 34 y 40 años: {len(veteranos)}")
+
+# Y el aviso clásico: esto modifica una copia, no el original.
+print("\nOrdenar no modifica: sol sigue igual tras sort_values()")
+print(sol.sort_values("overall", ascending=False).head(2)["short_name"].tolist())

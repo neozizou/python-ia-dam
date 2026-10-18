@@ -544,6 +544,10 @@ Fíjate en el `st.caption`: la aplicación muestra **la predicción y su margen 
 
 Entrena, evalúa y ajusta un modelo sobre **tu** conjunto de datos.
 
+![Ruta del hito 5. Se parte de: Los datos limpios y la pregunta del hito 0. Paso 1: Plantear el problema y partir los datos, produce modelo.py. Paso 2: Pipeline, modelo de referencia y tres modelos, produce tabla comparativa. Paso 3: Ajustar los hiperparámetros con validación cruzada, produce mejores parámetros. Paso 4: Evaluar: métricas, grupos, importancia y curvas, produce graficos/. Paso 5: Guardar el modelo junto a sus métricas, produce modelos/*.joblib · metricas.json. Se entrega: Modelo entrenado y guardado, ficha del modelo en el README y defensa.](figuras/hito-5.svg)
+
+*Figura 6.5. La ruta del hito 5: entrenar, evaluar y ajustar el modelo.*
+
 ### 1. Plantear el problema
 
 En el `README.md`: qué predices, si es regresión o clasificación, qué decisión cambiaría la predicción y **qué columnas no puedes usar** porque no existirían en el momento de predecir.

@@ -1,22 +1,22 @@
-"""Listado 1.11. Calificación a partir de una nota."""
+"""Listado 1.11. Encadenar condiciones con if / elif / else."""
 
-nota = 7.5
+media = 87
 
-if nota < 0 or nota > 10:
-    calificacion = "Nota no válida"
-elif nota < 5:
-    calificacion = "Insuficiente"
-elif nota < 6:
-    calificacion = "Suficiente"
-elif nota < 7:
-    calificacion = "Bien"
-elif nota < 9:
-    calificacion = "Notable"
+if media < 0 or media > 99:
+    nivel = "Valoración no válida"
+elif media < 60:
+    nivel = "Reserva"
+elif media < 70:
+    nivel = "Suplente"
+elif media < 80:
+    nivel = "Titular"
+elif media < 90:
+    nivel = "Estrella"
 else:
-    calificacion = "Sobresaliente"
+    nivel = "Clase mundial"
 
-print(calificacion)      # Notable
+print(f"Media {media}: {nivel}")       # Media 87: Estrella
 
-# Expresión condicional (el «ternario» de Python)
-estado = "aprobado" if nota >= 5 else "suspenso"
-print(estado)            # aprobado
+# La misma idea en una línea, cuando solo hay dos casos.
+titular = "sí" if media >= 70 else "no"
+print("¿Es titular?", titular)         # ¿Es titular? sí

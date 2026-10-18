@@ -1,7 +1,8 @@
-numpy==2.4.4
-pandas==3.0.2
-matplotlib==3.10.8
+# Versiones con las que están ejecutados y comprobados todos los listados.
+numpy==2.5.3
+pandas==3.0.5
+matplotlib==3.11.2
 seaborn==0.13.2
-streamlit==1.64.0
+streamlit==1.66.0
 openpyxl==3.1.5
-pyarrow==25.0.1
+pyarrow==26.0.0

@@ -434,6 +434,10 @@ Un patrón se repite en todos: el proyecto que funciona resuelve **una** pregunt
 
 Toca someter tu conjunto de datos a un «reto de escala».
 
+![Ruta del hito 4. Se parte de: Tus datos, ya en una base de datos. Paso 1: Multiplicar los datos hasta dos millones de filas, produce escalar.py. Paso 2: Medir memoria y tiempo de la versión ingenua, produce tabla de medidas. Paso 3: Optimizar: tipos, columnas y Parquet, produce datos/procesado/. Paso 4: Procesar por trozos o en flujo, produce flujo.py. Paso 5: Escribir conclusiones, incluido el impacto social, produce README. Se entrega: Script de escalado, medidas antes y después, conclusiones y defensa.](figuras/hito-4.svg)
+
+*Figura 5.4. La ruta del hito 4: tratar los datos como un problema de escala.*
+
 ### 1. Multiplicar tus datos
 
 Escribe un script `escalar.py` que genere una versión ampliada de tu conjunto de datos, de al menos **dos millones de filas**, repitiendo y perturbando los datos reales (con `numpy`, como en [`generar_datos_grandes.py`](listados/generar_datos_grandes.py)). No lo subas al repositorio: sube el script y añade el fichero al `.gitignore`.

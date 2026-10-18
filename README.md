@@ -4,7 +4,9 @@ Módulo optativo de **2.º de Desarrollo de Aplicaciones Multiplataforma (DAM)**
 
 📖 **Sitio web de los apuntes: <https://neozizou.github.io/python-ia-dam/>**
 
-Materiales del módulo: apuntes de cada unidad, listados de código ejecutables y datos de ejemplo. El módulo se imparte del 16/09/2026 al 16/02/2027, con 3 horas semanales (53 horas lectivas según el calendario escolar de Granada).
+Materiales del módulo: apuntes de cada unidad, listados de código ejecutables y el conjunto de datos común con el que se trabaja todo el curso. El módulo se imparte del 16/09/2026 al 16/02/2027, con 3 horas semanales (53 horas lectivas según el calendario escolar de Granada).
+
+El conjunto de datos es [`datos-comunes/jugadores.csv`](datos-comunes/README.md): las valoraciones de los jugadores de FIFA 15 a FIFA 20 (100.995 filas, 36.559 jugadores, 37 columnas, licencia CC0). Todos los ejemplos de los apuntes y todos los hitos del proyecto salen de ese mismo fichero.
 
 ## Unidades didácticas
 
@@ -40,28 +42,32 @@ python -m venv .venv
 Cada unidad tiene su propia carpeta con la misma estructura:
 
 ```text
+datos-comunes/     el fichero de jugadores del curso y su página de referencia
 udN-tema/
 ├── UDN-tema.md    apuntes de la unidad
 ├── README.md      portada de la carpeta, con los enlaces
+├── figuras/       las figuras de los apuntes, en SVG
 ├── listados/      los listados de los apuntes como ficheros .py ejecutables
 └── proyecto/      código de ejemplo completo, cuando la unidad lo necesita
 ```
 
-Los listados se ejecutan desde su carpeta `listados/`, para que las rutas a `datos/` funcionen.
+Los listados se ejecutan desde su carpeta `listados/`. Los que leen el fichero de jugadores lo localizan solos a partir de la raíz del repositorio, así que no hay que copiarlo a ningún sitio.
 
 ## Proyecto integrador
 
-A lo largo del curso cada alumno o equipo trabaja siempre con el mismo conjunto de datos real:
+Todo el alumnado trabaja sobre el mismo fichero de jugadores, de principio a fin. Cada unidad termina en un hito que añade una capa al mismo proyecto, y como el punto de partida es idéntico para todos, cada alumno puede comprobar solo si sus cifras cuadran con las que dan los apuntes:
 
 | Hito | Unidad | Qué se hace con el conjunto de datos |
 | --- | --- | --- |
-| 0 | UD1 | Elegirlo y describirlo con Python puro |
+| 0 | UD1 | Describirlo y explorarlo con Python puro, sin bibliotecas |
 | 1 | UD2 | Convertir el explorador en un paquete instalable y probado |
 | 2 | UD3 | Limpiarlo, explorarlo y publicar un primer panel con Streamlit |
 | 3 | UD4 | Guardarlo en una base de datos y consultarlo |
 | 4 | UD5 | Tratarlo como problema de escala |
 | 5 | UD6 | Entrenar, evaluar y ajustar un modelo |
 | 6 | UD7 | Desplegar la aplicación con el modelo y defenderla |
+
+Cada hito trae en los apuntes su **esquema de la ruta** (de qué se parte, qué produce cada paso y qué se entrega) y una **hoja de autoevaluación** con las cifras exactas que tienen que salir.
 
 ## El sitio web
 

@@ -385,6 +385,10 @@ Tres preguntas que caerán seguro: por qué elegiste ese modelo y no otro; qué 
 
 ## Entrega final del proyecto integrador
 
+![Ruta del hito 6. Se parte de: Todo lo de las seis unidades anteriores. Paso 1: Recoger el proyecto en un repositorio ordenado, produce estructura final. Paso 2: Una sola definición de cada cosa, produce src/tu_paquete/. Paso 3: Pruebas y versiones fijadas, produce tests/ · requirements.txt. Paso 4: La aplicación que usa el modelo guardado, produce app/app.py. Paso 5: Desplegar y comprobar en un equipo limpio, produce enlace público. Paso 6: README y ficha del modelo, produce documentación. Se entrega: Aplicación publicada, Día en la Oficina y defensa oral de 10 minutos.](figuras/hito-6.svg)
+
+*Figura 7.3. La ruta del hito 6: recoger el proyecto, desplegarlo y defenderlo.*
+
 ### Qué se entrega
 
 | Elemento | Requisitos |

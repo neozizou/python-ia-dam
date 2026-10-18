@@ -1,25 +1,44 @@
-"""Listado 3.7. Valores atípicos con el criterio del rango intercuartílico."""
+"""Valores atípicos: encontrarlos es fácil; decidir qué hacer, no.
 
-from pathlib import Path
+Un atípico es un valor que se aleja mucho del resto. Puede ser un error de
+captura, o puede ser el dato más interesante del fichero. La técnica te dice
+cuáles son; quién son te dice qué hacer con ellos.
+"""
 
-import pandas as pd
+from comun import cargar_limpio
 
-ventas = pd.read_csv(Path("datos") / "ventas_2026.csv", sep=";", decimal=",",
-                     parse_dates=["fecha"]).drop_duplicates()
-ventas["unidades"] = ventas["unidades"].fillna(0).astype("int64")
+sol = cargar_limpio(edicion=2020)
+valor = sol["value_eur"].dropna()
 
-print(ventas["unidades"].describe())
-
-q1 = ventas["unidades"].quantile(0.25)
-q3 = ventas["unidades"].quantile(0.75)
+# El criterio del rango intercuartílico: fuera de Q3 + 1,5·IQR es atípico.
+q1, q3 = valor.quantile([0.25, 0.75])
 iqr = q3 - q1
-limite_superior = q3 + 1.5 * iqr
+limite = q3 + 1.5 * iqr
 
-atipicos = ventas[ventas["unidades"] > limite_superior]
-print(f"Q1={q1}  Q3={q3}  IQR={iqr}  límite={limite_superior}")
-print(len(atipicos), "ventas atípicas")
-print(atipicos[["id_venta", "ciudad", "producto", "unidades"]].head())
+print(f"Q1 {q1:>12,.0f} €")
+print(f"Q3 {q3:>12,.0f} €")
+print(f"Límite superior {limite:>12,.0f} €")
 
-# Un atípico no siempre es un error: decide y documenta la decisión
-ventas_filtradas = ventas[ventas["unidades"] <= limite_superior]
-print(len(ventas), "->", len(ventas_filtradas))
+atipicos = sol[sol["value_eur"] > limite]
+print(f"\nAtípicos: {len(atipicos):,} de {len(valor):,} ({len(atipicos)/len(valor)*100:.1f} %)")
+
+# Y ahora la pregunta que importa: ¿quiénes son?
+print("\nLos cinco más altos:")
+print(atipicos.nlargest(5, "value_eur")[
+    ["short_name", "club", "overall", "value_eur"]].to_string(index=False))
+
+print("\nNo son errores. Es una distribución con cola larga: unos pocos")
+print("jugadores valen cien veces más que la mediana, y eso es el fútbol.")
+
+# Que la distribución sea asimétrica se ve en un número.
+print(f"\nAsimetría del valor:            {valor.skew():>6.2f}  (0 sería simétrica)")
+import numpy as np
+print(f"Asimetría del logaritmo:        {np.log10(valor).skew():>6.2f}")
+print("\nPor eso los gráficos de dinero se dibujan en escala logarítmica,")
+print("y por eso en la UD6 el modelo predecirá el logaritmo del salario.")
+
+# Comparación de resúmenes, para ver cuánto arrastran los atípicos.
+print(f"\nMedia:   {valor.mean():>12,.0f} €")
+print(f"Mediana: {valor.median():>12,.0f} €")
+print("La media está muy por encima de la mediana: la arrastran los de arriba.")
+print("Con datos así, la mediana describe mejor 'el jugador típico'.")

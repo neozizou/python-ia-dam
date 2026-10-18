@@ -1,31 +1,41 @@
-"""Listado 3.9. Agrupar y agregar: el equivalente a GROUP BY."""
+"""`groupby`: partir, calcular y volver a juntar.
 
-from pathlib import Path
+Es la operación más importante de pandas y la que más se usa. Hace en una línea
+lo que en la UD1 costaba dos diccionarios y un bucle: partir los datos en
+grupos, calcular algo en cada uno y devolver el resultado.
+"""
 
-import pandas as pd
+from comun import cargar_limpio
 
-ventas = pd.read_csv(Path("datos") / "ventas_2026.csv", sep=";", decimal=",",
-                     parse_dates=["fecha"]).drop_duplicates()
-ventas["unidades"] = ventas["unidades"].fillna(0).astype("int64")
-ventas["ciudad"] = ventas["ciudad"].str.strip().str.title()
-ventas["importe"] = (ventas["unidades"] * ventas["precio"]).round(2)
+sol = cargar_limpio(edicion=2020)
 
-# Una agregación sobre una columna
-print(ventas.groupby("ciudad")["importe"].sum().sort_values(ascending=False))
+# Lo mínimo: una columna para agrupar, una para calcular, una operación.
+print("Media de valoración por posición:")
+print(sol.groupby("posicion")["overall"].mean().round(1)
+      .sort_values(ascending=False).head(5).to_string())
 
-# Varias agregaciones con nombres propios
-resumen = (
-    ventas.groupby("ciudad")
-    .agg(
-        ventas=("id_venta", "count"),
-        unidades=("unidades", "sum"),
-        importe=("importe", "sum"),
-        ticket_medio=("importe", "mean"),
-    )
-    .round(2)
-    .sort_values("importe", ascending=False)
-)
-print(resumen)
+# Varias operaciones a la vez, con nombres propios para las columnas.
+print("\nResumen por línea del campo:")
+resumen = sol.groupby("posicion").agg(
+    jugadores=("sofifa_id", "size"),
+    media=("overall", "mean"),
+    edad=("age", "mean"),
+    valor_mediano=("value_eur", "median"),
+).round(1).sort_values("valor_mediano", ascending=False)
+print(resumen.head(8).to_string())
 
-# Agrupar por dos columnas
-print(ventas.groupby(["ciudad", "canal"])["importe"].sum().head(8))
+# Agrupar por dos columnas da un índice de dos niveles.
+print("\nValoración media por posición y pie bueno (primeras filas):")
+doble = sol.groupby(["posicion", "preferred_foot"])["overall"].mean().round(1)
+print(doble.head(6).to_string())
+
+# Filtrar grupos pequeños: con menos de 100 jugadores la media no dice nada.
+print("\nPaíses con mejor media (mínimo 100 jugadores):")
+por_pais = sol.groupby("nationality").agg(
+    jugadores=("sofifa_id", "size"), media=("overall", "mean"))
+grandes = por_pais[por_pais["jugadores"] >= 100]
+print(grandes.nlargest(5, "media").round(1).to_string())
+
+print(f"\n  Sin ese filtro, el primero sería un país con "
+      f"{por_pais.nlargest(1, 'media')['jugadores'].iloc[0]} jugador(es):")
+print("  ", por_pais.nlargest(3, "media").round(1).to_string().replace("\n", "\n   "))

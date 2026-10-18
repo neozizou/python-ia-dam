@@ -78,6 +78,7 @@ nav:
   - UD6 · Machine Learning: ud6.md
   - UD7 · Proyecto y despliegue: ud7.md
   - Material de apoyo:
+      - El conjunto de datos del curso: datos-comunes.md
       - Ficha del modelo: plantillas/ficha-modelo.md
       - Lista de comprobación del despliegue: plantillas/checklist-despliegue.md
       - Proyecto de ejemplo: proyecto-ejemplo.md

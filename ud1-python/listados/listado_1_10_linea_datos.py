@@ -1,10 +1,10 @@
 """Listado 1.10. Procesar y formatear una línea de datos."""
 
-linea = "  Portátil;899.90;12 \n"
+linea = "  L. Messi;FC Barcelona;94;95500000 \n"
 
-nombre, precio, stock = linea.strip().split(";")
-precio = float(precio)
-stock = int(stock)
+nombre, club, media, valor = linea.strip().split(";")
+media = int(media)                     # todo lo que llega como texto hay que convertirlo
+valor = int(valor)
 
-print(f"{nombre:<10} {precio:>8.2f} € x {stock:>3} = {precio * stock:>9.2f} €")
-# Portátil     899.90 € x  12 =  10798.80 €
+print(f"{nombre:<12} {club:<16} media {media:>3}  {valor / 1_000_000:>6.1f} M€")
+# L. Messi     FC Barcelona     media  94    95.5 M€

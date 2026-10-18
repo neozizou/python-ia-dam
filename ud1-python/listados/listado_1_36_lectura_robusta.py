@@ -1,38 +1,57 @@
-"""Listado 1.36. Lectura robusta de ventas.csv (mejora del listado 1.33)."""
+"""Leer un fichero real sin que un dato raro tire el programa.
+
+Un programa que se cae en la fila 40.000 de 100.995 es inútil: pierdes el
+trabajo anterior y no sabes qué pasó. La estrategia es otra: intentar procesar
+cada fila, apartar las que no se pueden, seguir adelante y contar al final qué
+se quedó fuera y por qué.
+
+Ese recuento no es burocracia. Es lo que te avisa cuando el error no está en
+los datos, sino en tu código.
+"""
 
 import csv
-import logging
+from collections import Counter
 from pathlib import Path
 
-logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+DATOS = Path(__file__).resolve().parents[2] / "datos-comunes" / "jugadores.csv"
 
 
-def a_float(texto: str) -> float:
-    """Convierte un número en formato español ('1.234,56') en float."""
-    return float(texto.replace(".", "").replace(",", "."))
+def anio_ingenuo(texto: str) -> int:
+    """Primer intento: convertir el año de contrato a entero."""
+    if texto == "":
+        raise ValueError("viene vacío")
+    return int(texto)
 
 
-def leer_ventas(ruta: Path) -> list[dict]:
-    """Devuelve las filas válidas del CSV de ventas con los tipos convertidos."""
-    validas = []
-    with ruta.open(encoding="utf-8", newline="") as f:
-        lector = csv.DictReader(f, delimiter=";")
-        for num_linea, fila in enumerate(lector, start=2):   # la línea 1 es la cabecera
+def anio_correcto(texto: str) -> int:
+    """Segundo intento, sabiendo que el CSV escribe los años como '2021.0'."""
+    if texto == "":
+        raise ValueError("viene vacío")
+    return int(float(texto))        # primero a decimal, luego se trunca
+
+
+def recorrer(convertir) -> tuple[int, Counter[str], list[int]]:
+    """Aplica `convertir` a cada fila y devuelve qué ha salido y qué ha fallado."""
+    procesadas, descartadas, anios = 0, Counter(), []
+    with DATOS.open(encoding="utf-8", newline="") as fichero:
+        for fila in csv.DictReader(fichero):
             try:
-                fila["unidades"] = int(fila["unidades"])
-                fila["precio"] = a_float(fila["precio"])
-            except ValueError as e:
-                logging.warning("Línea %d descartada: %s", num_linea, e)
-                continue
-            validas.append(fila)
-    return validas
+                anios.append(convertir(fila["contract_valid_until"]))
+                procesadas += 1
+            except ValueError as error:
+                descartadas[str(error)[:34]] += 1
+    return procesadas, descartadas, anios
 
 
-try:
-    ventas = leer_ventas(Path("datos") / "ventas.csv")
-except FileNotFoundError as e:
-    logging.error("No se encuentra el fichero %s", e.filename)
-else:
-    logging.info("%d ventas válidas", len(ventas))
-finally:
-    logging.info("Proceso terminado")
+for nombre, funcion in (("ingenuo", anio_ingenuo), ("correcto", anio_correcto)):
+    procesadas, descartadas, anios = recorrer(funcion)
+    total = procesadas + sum(descartadas.values())
+    print(f"--- Intento {nombre} ---")
+    print(f"  Procesadas: {procesadas:>7,} de {total:,} ({procesadas / total * 100:.1f} %)")
+    for motivo, veces in descartadas.most_common(2):
+        print(f"  Descartadas: {veces:>6,}  {motivo}")
+    if procesadas:
+        print(f"  Contratos entre {min(anios)} y {max(anios)}")
+    else:
+        print("  No ha sobrevivido ninguna fila: el fallo es del código, no de los datos.")
+    print()

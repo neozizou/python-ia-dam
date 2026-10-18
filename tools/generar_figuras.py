@@ -249,12 +249,12 @@ def ud3_ciclo() -> Figura:
 
 def ud3_dataframe() -> Figura:
     f = Figura(820, 320, "Anatomía de un DataFrame")
-    columnas = ["fecha", "ciudad", "unidades", "precio"]
-    tipos = ["datetime64", "str", "int64", "float64"]
+    columnas = ["short_name", "club", "overall", "value_eur"]
+    tipos = ["str", "str", "int64", "Int64"]
     filas = [
-        ("0", "2026-09-01", "Granada", "3", "899.90"),
-        ("1", "2026-09-01", "Málaga", "10", "12.50"),
-        ("2", "2026-09-02", "Granada", "2", "180.00"),
+        ("0", "L. Messi", "FC Barcelona", "94", "95500000"),
+        ("1", "Neymar Jr", "Paris S-G", "92", "105500000"),
+        ("2", "J. Oblak", "Atlético", "91", "77500000"),
     ]
     x0, y0, ancho = 120, 90, 150
     f.caja(x0 - 70, y0 - 40, 70 + ancho * 4, 40, relleno=AZUL_CLARO, borde=AZUL, radio=6)
@@ -278,7 +278,7 @@ def ud3_dataframe() -> Figura:
     f.texto(x0 + ancho * 2 + ancho / 2, 275, "una columna es una Series", tam=12.5,
             anclaje="middle", color=VERDE, peso="700")
     f.encabezado(230, 30, "df.shape = (3, 4)   ·   df.columns   ·   df.dtypes")
-    f.nota(30, 300, "df.loc[0, \'ciudad\'] usa etiquetas; df.iloc[0, 1], posiciones.", mono=True)
+    f.nota(30, 300, "df.loc[0, \'club\'] usa etiquetas; df.iloc[0, 1], posiciones.", mono=True)
     return f
 
 
@@ -287,60 +287,60 @@ def ud3_groupby() -> Figura:
     etapas = ["1. Dividir por clave", "2. Aplicar la función", "3. Combinar"]
     for i, titulo in enumerate(etapas):
         f.encabezado(30 + i * 290, 45, titulo, tam=13.5)
-    datos = [("Granada", 3, VERDE, VERDE_CLARO), ("Málaga", 10, NARANJA, NARANJA_CLARO),
-             ("Granada", 2, VERDE, VERDE_CLARO), ("Málaga", 4, NARANJA, NARANJA_CLARO)]
-    for j, (ciudad, valor, color, claro) in enumerate(datos):
+    datos = [("ST", 71, VERDE, VERDE_CLARO), ("CB", 65, NARANJA, NARANJA_CLARO),
+             ("ST", 79, VERDE, VERDE_CLARO), ("CB", 67, NARANJA, NARANJA_CLARO)]
+    for j, (puesto, valor, color, claro) in enumerate(datos):
         f.caja(30, 65 + j * 42, 200, 34, relleno=claro, borde=color, radio=6)
-        f.texto(45, 87 + j * 42, ciudad, tam=12.5, mono=True)
+        f.texto(45, 87 + j * 42, puesto, tam=12.5, mono=True)
         f.texto(205, 87 + j * 42, str(valor), tam=12.5, mono=True, anclaje="end")
     f.flecha(240, 150, 300, 150)
-    grupos = [("Granada", ["3", "2"], VERDE, VERDE_CLARO, 65),
-              ("Málaga", ["10", "4"], NARANJA, NARANJA_CLARO, 170)]
-    for ciudad, valores, color, claro, y in grupos:
+    grupos = [("ST", ["71", "79"], VERDE, VERDE_CLARO, 65),
+              ("CB", ["65", "67"], NARANJA, NARANJA_CLARO, 170)]
+    for puesto, valores, color, claro, y in grupos:
         f.caja(310, y, 190, 86, relleno=claro, borde=color)
-        f.texto(325, y + 24, ciudad, tam=12.5, mono=True, peso="700")
-        f.texto(325, y + 48, " + ".join(valores), tam=12.5, mono=True)
-        f.texto(325, y + 72, f"sum() = {sum(int(v) for v in valores)}", tam=12.5,
-                mono=True, color=color)
+        f.texto(325, y + 24, puesto, tam=12.5, mono=True, peso="700")
+        f.texto(325, y + 48, " , ".join(valores), tam=12.5, mono=True)
+        media = sum(int(v) for v in valores) / len(valores)
+        f.texto(325, y + 72, f"mean() = {media:.0f}", tam=12.5, mono=True, color=color)
     f.flecha(510, 150, 570, 150)
     f.caja(580, 95, 250, 110, relleno=FONDO, borde=AZUL)
-    f.texto(600, 125, "ciudad", tam=12.5, mono=True, color=SUAVE)
-    f.texto(810, 125, "unidades", tam=12.5, mono=True, color=SUAVE, anclaje="end")
-    for j, (c, v) in enumerate([("Granada", "5"), ("Málaga", "14")]):
+    f.texto(600, 125, "posicion", tam=12.5, mono=True, color=SUAVE)
+    f.texto(810, 125, "overall", tam=12.5, mono=True, color=SUAVE, anclaje="end")
+    for j, (c, v) in enumerate([("ST", "75"), ("CB", "66")]):
         f.texto(600, 152 + j * 25, c, tam=12.5, mono=True)
         f.texto(810, 152 + j * 25, v, tam=12.5, mono=True, anclaje="end")
-    f.nota(30, 270, "ventas.groupby(\'ciudad\')[\'unidades\'].sum()", mono=True, color=AZUL)
+    f.nota(30, 270, "sol.groupby(\'posicion\')[\'overall\'].mean()", mono=True, color=AZUL)
     f.nota(400, 270, "Es el GROUP BY de SQL y el map-reduce de la UD5.", color=SUAVE)
     return f
 
 
 def ud3_merge() -> Figura:
     f = Figura(840, 320, "merge: el JOIN de pandas")
-    f.encabezado(30, 42, "ventas")
+    f.encabezado(30, 42, "jugadores")
     f.caja(30, 55, 230, 120, relleno=FONDO, borde=AZUL)
-    f.texto(45, 80, "ciudad", tam=12, mono=True, color=SUAVE)
-    f.texto(165, 80, "importe", tam=12, mono=True, color=SUAVE)
-    for j, (c, v) in enumerate([("Granada", "3059.70"), ("Málaga", "845.00"),
-                                ("Ronda", "120.00")]):
+    f.texto(45, 80, "short_name", tam=12, mono=True, color=SUAVE)
+    f.texto(190, 80, "posicion", tam=12, mono=True, color=SUAVE)
+    for j, (c, v) in enumerate([("L. Messi", "RW"), ("J. Oblak", "GK"),
+                                ("K. Koulibaly", "CB")]):
         f.texto(45, 105 + j * 25, c, tam=12, mono=True)
-        f.texto(165, 105 + j * 25, v, tam=12, mono=True)
-    f.encabezado(300, 42, "ciudades")
+        f.texto(190, 105 + j * 25, v, tam=12, mono=True)
+    f.encabezado(300, 42, "posiciones")
     f.caja(300, 55, 230, 120, relleno=FONDO, borde=VERDE)
-    f.texto(315, 80, "ciudad", tam=12, mono=True, color=SUAVE)
-    f.texto(425, 80, "provincia", tam=12, mono=True, color=SUAVE)
-    for j, (c, p) in enumerate([("Granada", "Granada"), ("Málaga", "Málaga"),
-                                ("Sevilla", "Sevilla")]):
+    f.texto(315, 80, "posicion", tam=12, mono=True, color=SUAVE)
+    f.texto(425, 80, "linea", tam=12, mono=True, color=SUAVE)
+    for j, (c, p) in enumerate([("RW", "Ataque"), ("GK", "Portería"),
+                                ("CB", "Defensa")]):
         f.texto(315, 105 + j * 25, c, tam=12, mono=True)
         f.texto(425, 105 + j * 25, p, tam=12, mono=True)
     f.caja(570, 55, 250, 120, relleno=PANEL, borde=BORDE)
     f.encabezado(585, 42, "how = \'left\'")
-    f.texto(585, 80, "ciudad", tam=12, mono=True, color=SUAVE)
-    f.texto(695, 80, "provincia", tam=12, mono=True, color=SUAVE)
-    for j, (c, p, color) in enumerate([("Granada", "Granada", TINTA),
-                                       ("Málaga", "Málaga", TINTA),
-                                       ("Ronda", "NaN", ROJO)]):
+    f.texto(585, 80, "short_name", tam=12, mono=True, color=SUAVE)
+    f.texto(730, 80, "linea", tam=12, mono=True, color=SUAVE)
+    for j, (c, p, color) in enumerate([("L. Messi", "Ataque", TINTA),
+                                       ("J. Oblak", "Portería", TINTA),
+                                       ("K. Koulibaly", "Defensa", TINTA)]):
         f.texto(585, 105 + j * 25, c, tam=12, mono=True, color=color)
-        f.texto(695, 105 + j * 25, p, tam=12, mono=True, color=color)
+        f.texto(730, 105 + j * 25, p, tam=12, mono=True, color=color)
     f.flecha(265, 115, 295, 115)
     f.flecha(535, 115, 565, 115)
     f.caja(30, 200, 790, 100, relleno=PANEL, borde=BORDE)
@@ -350,7 +350,7 @@ def ud3_merge() -> Figura:
         x = 50 + i * 195
         f.etiqueta(x, 220, 90, 32, nombre, AZUL, AZUL_CLARO, tam=12.5)
         f.nota(x, 272, descripcion, tam=11)
-    f.nota(30, 195, "Contar los NaN que aparecen tras el merge delata las claves que no casan.",
+    f.nota(30, 195, "Tras todo merge: ¿han cambiado las filas? ¿ha quedado alguien sin pareja?",
            color=ROJO)
     return f
 
@@ -790,6 +790,114 @@ def ud2_contrato_doble() -> Figura:
     return f
 
 
+# ------------------------------------------- Rutas de los hitos
+def ruta_del_hito(numero: int, entrada: str, pasos: list[tuple[str, str]],
+                  entrega: str) -> Figura:
+    """Dibuja la ruta de un hito: de dónde se parte, los pasos y qué se entrega.
+
+    Cada paso es una pareja (qué hay que hacer, qué fichero produce).
+    """
+    ancho, margen = 900, 24
+    banda_alto, fila_alto, inicio = 54, 58, 100
+    alto = inicio + len(pasos) * fila_alto + 14 + banda_alto + margen
+
+    descripcion = (f"Ruta del hito {numero}. Se parte de: {entrada}. "
+                   + " ".join(f"Paso {i}: {que}, produce {fichero}."
+                              for i, (que, fichero) in enumerate(pasos, start=1))
+                   + f" Se entrega: {entrega}.")
+    f = Figura(ancho, alto, descripcion)
+    interior = ancho - 2 * margen
+
+    def banda(y: int, etiqueta: str, texto: str, borde: str, relleno: str) -> None:
+        f.caja(margen, y, interior, banda_alto, relleno=relleno, borde=borde)
+        f.texto(margen + 20, y + 21, etiqueta, tam=10, color=SUAVE, peso="700")
+        f.texto(margen + 20, y + 41, texto, tam=13, peso="500")
+
+    banda(margen, "PARTES DE", entrada, GRIS, GRIS_CLARO)
+
+    f.texto(90, inicio - 8, "QUÉ HAY QUE HACER", tam=10, color=SUAVE, peso="700")
+    f.texto(716, inicio - 8, "QUÉ PRODUCE", tam=10, color=SUAVE, peso="700",
+            anclaje="middle")
+
+    for i, (que, fichero) in enumerate(pasos):
+        y = inicio + i * fila_alto
+        if i:                                     # hilo que une un paso con el anterior
+            f.linea(58, y - 30, 58, y + 11, color=BORDE, guiones="3 4")
+        f.circulo(58, y + 27, 15, relleno=AZUL_CLARO, borde=AZUL)
+        f.texto(58, y + 32, str(i + 1), tam=13, anclaje="middle", peso="700", color=AZUL)
+        f.texto(90, y + 32, que, tam=13.5, peso="500")
+        f.etiqueta(556, y + 12, 320, 31, fichero, VERDE, VERDE_CLARO, tam=11.5)
+
+    banda(inicio + len(pasos) * fila_alto + 14, "ENTREGAS", entrega, MORADO, MORADO_CLARO)
+    return f
+
+
+HITOS = {
+    0: ("El fichero de jugadores del curso: 100.995 filas y 37 columnas", [
+        ("Leer la página del conjunto de datos y describirlo", "docs/ficha_dataset.md"),
+        ("Abrir el CSV con pathlib y csv", "lectura.py"),
+        ("Inferir el tipo de cada columna", "tipos.py"),
+        ("Contar vacíos, mínimos, máximos y frecuencias", "estadisticas.py"),
+        ("Escribir el informe y registrar los fallos", "datos/informe_inicial.json"),
+        ("Organizarlo como paquete ejecutable", "src/explorador/"),
+    ], "Paquete instalable, informe generado, ficha del conjunto de datos y defensa"),
+
+    1: ("El explorador del hito 0 y su informe_inicial.json", [
+        ("Separar el código en módulos por responsabilidad", "src/tu_paquete/"),
+        ("Hacer el paquete instalable", "pyproject.toml"),
+        ("Llevar las opciones a una dataclass", "configuracion.py"),
+        ("Leer las filas con un generador, dentro de with", "lectura.py"),
+        ("Escribir cuatro pruebas", "tests/"),
+        ("Regenerar el informe y comprobar que no cambia", "informe_inicial.json idéntico"),
+    ], "Paquete instalado con pip install -e, pruebas en verde, README y defensa"),
+
+    2: ("El paquete del hito 1, ya instalado", [
+        ("Limpiar los datos de forma reproducible", "limpieza.py · *.parquet"),
+        ("Explorar: seis gráficos con su explicación", "notebooks/03_exploracion.ipynb"),
+        ("Construir el panel con filtros e indicadores", "app/app.py"),
+        ("Publicarlo en Streamlit Community Cloud", "enlace en el README"),
+    ], "Panel publicado, cinco hallazgos en el README y defensa de 5 minutos"),
+
+    3: ("Los datos limpios en Parquet del hito 2", [
+        ("Diseñar el esquema, con claves, tipos e índice", "esquema.sql"),
+        ("Cargar los datos desde Python", "bd.py"),
+        ("Seis consultas parametrizadas que respondan", "consultas.py"),
+        ("Guardar una parte como documentos y comparar", "README: SQL frente a NoSQL"),
+        ("Hacer que el panel lea de la base de datos", "app/app.py"),
+    ], "Base de datos cargada, seis consultas, comparativa y panel desplegado"),
+
+    4: ("Tus datos, ya en una base de datos", [
+        ("Multiplicar los datos hasta dos millones de filas", "escalar.py"),
+        ("Medir memoria y tiempo de la versión ingenua", "tabla de medidas"),
+        ("Optimizar: tipos, columnas y Parquet", "datos/procesado/"),
+        ("Procesar por trozos o en flujo", "flujo.py"),
+        ("Escribir conclusiones, incluido el impacto social", "README"),
+    ], "Script de escalado, medidas antes y después, conclusiones y defensa"),
+
+    5: ("Los datos limpios y la pregunta del hito 0", [
+        ("Plantear el problema y partir los datos", "modelo.py"),
+        ("Pipeline, modelo de referencia y tres modelos", "tabla comparativa"),
+        ("Ajustar los hiperparámetros con validación cruzada", "mejores parámetros"),
+        ("Evaluar: métricas, grupos, importancia y curvas", "graficos/"),
+        ("Guardar el modelo junto a sus métricas", "modelos/*.joblib · metricas.json"),
+    ], "Modelo entrenado y guardado, ficha del modelo en el README y defensa"),
+
+    6: ("Todo lo de las seis unidades anteriores", [
+        ("Recoger el proyecto en un repositorio ordenado", "estructura final"),
+        ("Una sola definición de cada cosa", "src/tu_paquete/"),
+        ("Pruebas y versiones fijadas", "tests/ · requirements.txt"),
+        ("La aplicación que usa el modelo guardado", "app/app.py"),
+        ("Desplegar y comprobar en un equipo limpio", "enlace público"),
+        ("README y ficha del modelo", "documentación"),
+    ], "Aplicación publicada, Día en la Oficina y defensa oral de 10 minutos"),
+}
+
+
+def hito(numero: int) -> Figura:
+    entrada, pasos, entrega = HITOS[numero]
+    return ruta_del_hito(numero, entrada, pasos, entrega)
+
+
 def main() -> None:
     figuras = {
         (1, "variables-etiquetas"): ud1_variables,
@@ -817,6 +925,13 @@ def main() -> None:
         (6, "sobreajuste"): ud6_sobreajuste,
         (7, "crisp-dm"): ud7_crispdm,
         (7, "arquitectura-proyecto"): ud7_arquitectura,
+        (1, "hito-0"): lambda h=0: hito(h),
+        (2, "hito-1"): lambda h=1: hito(h),
+        (3, "hito-2"): lambda h=2: hito(h),
+        (4, "hito-3"): lambda h=3: hito(h),
+        (5, "hito-4"): lambda h=4: hito(h),
+        (6, "hito-5"): lambda h=5: hito(h),
+        (7, "hito-6"): lambda h=6: hito(h),
     }
     for (unidad, nombre), funcion in figuras.items():
         ruta = UNIDADES[unidad] / f"{nombre}.svg"

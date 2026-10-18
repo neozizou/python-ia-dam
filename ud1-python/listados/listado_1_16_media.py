@@ -6,5 +6,5 @@ def media(valores: list[float]) -> float:
     return sum(valores) / len(valores)
 
 
-print(media([4.5, 7.0, 9.25, 6.0]))    # 6.6875
-help(media)                            # muestra el docstring
+print(media([94, 93, 91, 91]))     # 92.25
+help(media)                        # muestra el docstring

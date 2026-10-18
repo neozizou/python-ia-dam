@@ -33,6 +33,7 @@ PAGINAS = {
     "ud7-proyecto/plantillas/ficha-modelo.md": "plantillas/ficha-modelo.md",
     "ud7-proyecto/plantillas/checklist-despliegue.md": "plantillas/checklist-despliegue.md",
     "ud7-proyecto/proyecto-ejemplo/README.md": "proyecto-ejemplo.md",
+    "datos-comunes/README.md": "datos-comunes.md",
 }
 
 # Enlaces entre páginas: cómo aparecen en los apuntes -> a dónde deben ir
@@ -57,6 +58,8 @@ ENLACES_INTERNOS = {
     "plantillas/ficha-modelo.md": "plantillas/ficha-modelo.md",
     "plantillas/checklist-despliegue.md": "plantillas/checklist-despliegue.md",
     "proyecto-ejemplo/README.md": "proyecto-ejemplo.md",
+    "../datos-comunes/README.md": "datos-comunes.md",
+    "datos-comunes/README.md": "datos-comunes.md",
 }
 
 PATRON_IMAGEN = re.compile(r"!\[([^\]]*)\]\((?!https?://)([^)]+)\)")

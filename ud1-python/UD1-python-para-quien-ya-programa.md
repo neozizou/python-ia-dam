@@ -54,18 +54,37 @@ El ritmo es alto porque partes de saber programar. Las sesiones se dedican sobre
 - Nociones de SQL de Bases de Datos de 1.º (se retoman en la UD4).
 - Portátil propio con permisos de administrador para instalar software.
 
+### El conjunto de datos del curso
+
+Desde esta unidad y hasta la última vas a trabajar siempre con el mismo fichero: las **valoraciones de los jugadores de FIFA**, de la edición de 2015 a la de 2020. Son 100.995 filas y 37 columnas, unos 19,5 MB.
+
+Cada fila es un jugador en una edición concreta. El mismo jugador aparece hasta seis veces, una por año, siempre con el mismo `sofifa_id`. Eso permite seguirlo en el tiempo: cómo sube su media, cómo cambia de club, cómo se encarece.
+
+```text
+fifa  sofifa_id  short_name   age  club           overall  value_eur
+2016  158023     L. Messi     28   FC Barcelona   94       111000000
+2017  158023     L. Messi     29   FC Barcelona   93       104500000
+```
+
+No es un fichero de juguete. Trae huecos, ceros que en realidad son ausencias y una columna con valores que no deberían estar ahí. Eso es lo normal, y aprender a verlo es la mitad del trabajo.
+
+Tiene una página propia, con el significado de las 37 columnas y los problemas que arrastra: **[El conjunto de datos del curso](../datos-comunes/README.md)**. Léela antes de empezar la práctica de esta unidad.
+
+> [!TIP]
+> El fichero ya está en el repositorio, en `datos-comunes/jugadores.csv`, así que puedes empezar sin instalar nada. Aun así, descárgalo tú al menos una vez desde Kaggle siguiendo las instrucciones de esa página: saber moverse por un portal de datos es parte del oficio.
+
 ### Cómo usar esta carpeta
 
 | Carpeta | Contenido |
 | --- | --- |
 | [`listados/`](listados/) | Todos los listados de la unidad como ficheros `.py` listos para ejecutar, más los datos de ejemplo en `listados/datos/` |
-| [`proyecto/`](proyecto/) | El proyecto completo del apartado 1.8: paquete `ventas`, `pyproject.toml` y datos |
+| [`proyecto/`](proyecto/) | El proyecto del apartado 1.8: el paquete `ojeador` y su `pyproject.toml` |
 
 Ejecuta los listados **desde la carpeta `listados/`**, con tu entorno virtual activado, para que las rutas relativas a `datos/` funcionen:
 
 ```bash
 cd ud1-python/listados
-python listado_1_33_resumen_ventas.py
+python listado_1_33_resumen_jugadores.py
 ```
 
 Los fragmentos que empiezan por `>>>` son sesiones del intérprete interactivo y no tienen fichero: se escribe lo que sigue a `>>>` y la línea siguiente es la respuesta de Python.
@@ -261,7 +280,7 @@ TypeError: can only concatenate str (not "int") to str
 Dos detalles de sintaxis que usarás constantemente:
 
 - **Asignación múltiple.** `a, b = 1, 2` asigna a la vez, y `a, b = b, a` intercambia dos valores sin variable auxiliar.
-- **Constantes por convenio.** No existe `const`. Un nombre en mayúsculas, como `IVA = 0.21`, indica a quien lee que no debe modificarse.
+- **Constantes por convenio.** No existe `const`. Un nombre en mayúsculas, como `MEDIA_MAXIMA = 99`, indica a quien lee que no debe modificarse.
 
 ### Números
 
@@ -305,7 +324,7 @@ El problema de `0.1 + 0.2` no es de Python, sino de la representación binaria d
 ### Booleanos y `None`
 
 - Los valores son `True` y `False`, con mayúscula inicial. Los operadores lógicos son palabras: `and`, `or`, `not`, en lugar de `&&`, `||`, `!`.
-- Las comparaciones se pueden encadenar como en matemáticas: `0 <= nota <= 10`.
+- Las comparaciones se pueden encadenar como en matemáticas: `0 <= media <= 99`.
 - `None` representa la ausencia de valor, parecido a `nullptr`. Se compara con `is`: `if resultado is None:`.
 - Cualquier objeto tiene un valor de verdad. Son **falsos** `0`, `0.0`, `""`, `[]`, `{}` y `None`; casi todo lo demás es verdadero. Por eso es idiomático escribir `if lista:` en lugar de `if len(lista) > 0:`.
 
@@ -348,14 +367,14 @@ Una f-string es una cadena precedida de `f` en la que las expresiones entre llav
 **Listado 1.10.** Procesar y formatear una línea de datos · [ver fichero](listados/listado_1_10_linea_datos.py)
 
 ```python
-linea = "  Portátil;899.90;12 \n"
+linea = "  L. Messi;FC Barcelona;94;95500000 \n"
 
-nombre, precio, stock = linea.strip().split(";")
-precio = float(precio)
-stock = int(stock)
+nombre, club, media, valor = linea.strip().split(";")
+media = int(media)                     # todo lo que llega como texto hay que convertirlo
+valor = int(valor)
 
-print(f"{nombre:<10} {precio:>8.2f} € x {stock:>3} = {precio * stock:>9.2f} €")
-# Portátil     899.90 € x  12 =  10798.80 €
+print(f"{nombre:<12} {club:<16} media {media:>3}  {valor / 1_000_000:>6.1f} M€")
+# L. Messi     FC Barcelona     media  94    95.5 M€
 ```
 
 | Especificador | Significado | Ejemplo |
@@ -376,7 +395,7 @@ print(f"{nombre:<10} {precio:>8.2f} € x {stock:>3} = {precio * stock:>9.2f} �
 ### Para practicar
 
 1. Predice el resultado y compruébalo en el intérprete: `7 / 2`, `7 // 2`, `-7 // 2`, `-7 % 3`, `2 ** 0.5`, `round(2.5)`, `round(3.5)`.
-2. Escribe `conversor.py`, que pida una temperatura en grados Celsius y muestre su equivalente en Fahrenheit con un decimal. La fórmula es `F = C * 9 / 5 + 32`.
+2. Escribe `conversor.py`, que pida la altura de un jugador en centímetros y muestre su equivalente en pies y pulgadas con un decimal. Una pulgada son 2,54 cm y un pie, 12 pulgadas.
 
    ```text
    Temperatura en °C: 25
@@ -391,31 +410,35 @@ Las estructuras son las que ya conoces, con dos cambios de mentalidad: `for` rec
 
 ### Condicionales: `if`, `elif`, `else`
 
-**Listado 1.11.** Calificación a partir de una nota · [ver fichero](listados/listado_1_11_calificacion.py)
+**Listado 1.11.** Clasificar a un jugador por su media · [ver fichero](listados/listado_1_11_calificacion.py)
 
 ```python
-nota = 7.5
+media = 87
 
-if nota < 0 or nota > 10:
-    calificacion = "Nota no válida"
-elif nota < 5:
-    calificacion = "Insuficiente"
-elif nota < 6:
-    calificacion = "Suficiente"
-elif nota < 7:
-    calificacion = "Bien"
-elif nota < 9:
-    calificacion = "Notable"
+if media < 0 or media > 99:
+    nivel = "Valoración no válida"
+elif media < 60:
+    nivel = "Reserva"
+elif media < 70:
+    nivel = "Suplente"
+elif media < 80:
+    nivel = "Titular"
+elif media < 90:
+    nivel = "Estrella"
 else:
-    calificacion = "Sobresaliente"
+    nivel = "Clase mundial"
 
-print(calificacion)      # Notable
+print(f"Media {media}: {nivel}")       # Media 87: Estrella
+
+# La misma idea en una línea, cuando solo hay dos casos.
+titular = "sí" if media >= 70 else "no"
+print("¿Es titular?", titular)         # ¿Es titular? sí
 ```
 
 Para asignaciones sencillas existe la **expresión condicional**, equivalente al operador ternario de C++:
 
 ```python
-estado = "aprobado" if nota >= 5 else "suspenso"
+titular = "sí" if media >= 70 else "no"
 ```
 
 ### `match`: coincidencia de patrones
@@ -440,7 +463,7 @@ match comando.split():
         print(f"Orden desconocida: {comando}")
 ```
 
-Con la entrada `cargar ventas.csv`, el programa muestra `Cargando ventas.csv...`; con `borrar todo`, llega al comodín.
+Con la entrada `cargar jugadores.csv`, el programa muestra `Cargando jugadores.csv...`; con `borrar todo`, llega al comodín.
 
 > [!NOTE]
 > **Desde C++.** `match` no tiene *fallthrough*: se ejecuta solo el primer `case` que encaja y no hace falta `break`. Tampoco se limita a enteros o enumerados: compara listas, tuplas, diccionarios y objetos.
@@ -452,20 +475,23 @@ El `for` de Python equivale al *range-based for* de C++ (`for (auto x : v)`). Nu
 **Listado 1.13.** Las cuatro formas habituales de `for` · [ver fichero](listados/listado_1_13_bucles_for.py)
 
 ```python
-ciudades = ["Granada", "Málaga", "Sevilla"]
-temperaturas = [21.5, 24.0, 27.3]
+jugadores = ["L. Messi", "J. Oblak", "K. De Bruyne"]
+medias = [94, 91, 91]
 
-for ciudad in ciudades:                          # 1. elemento a elemento
-    print(ciudad)
+for jugador in jugadores:                          # 1. elemento a elemento
+    print(jugador)
 
-for i, ciudad in enumerate(ciudades, start=1):   # 2. con su posición
-    print(f"{i}. {ciudad}")
+print()
+for i, jugador in enumerate(jugadores, start=1):   # 2. con su posición
+    print(f"{i}. {jugador}")
 
-for ciudad, t in zip(ciudades, temperaturas):    # 3. dos secuencias en paralelo
-    print(f"{ciudad}: {t} °C")
+print()
+for jugador, media in zip(jugadores, medias):      # 3. dos secuencias en paralelo
+    print(f"{jugador:<14} {media}")
 
-for n in range(10, 0, -2):                       # 4. una secuencia de enteros
-    print(n, end=" ")                            # 10 8 6 4 2
+print()
+for numero in range(3):                            # 4. un número de veces
+    print("Vuelta", numero)
 ```
 
 `range(inicio, fin, paso)` genera enteros desde `inicio` hasta `fin` **sin incluirlo**. Con un solo argumento empieza en 0: `range(5)` produce 0, 1, 2, 3 y 4.
@@ -493,15 +519,23 @@ print(f"Edad registrada: {edad}")
 
 Un bucle puede llevar `else`: ese bloque se ejecuta si el bucle termina **sin** pasar por `break`. Es la forma idiomática de expresar «busqué y no lo encontré».
 
-**Listado 1.15.** Números primos con `for … else` (adaptado del tutorial oficial) · [ver fichero](listados/listado_1_15_primos.py)
+**Listado 1.15.** Buscar con `for … else` (adaptado del tutorial oficial) · [ver fichero](listados/listado_1_15_busqueda_for_else.py)
 
 ```python
-for n in range(2, 20):
-    for divisor in range(2, n):
-        if n % divisor == 0:
-            break              # tiene un divisor: no es primo
+PLANTILLA = [
+    ("L. Messi", "RW, CF, ST"),
+    ("Sergio Ramos", "CB"),
+    ("J. Oblak", "GK"),
+    ("K. De Bruyne", "CAM, CM"),
+]
+
+for nombre, posiciones in PLANTILLA:
+    for posicion in posiciones.split(","):
+        if posicion.strip() == "GK":
+            print(f"{nombre:<14} es portero")
+            break                    # encontrado: salimos del bucle interno
     else:
-        print(n, "es primo")   # el for interno terminó sin break
+        print(f"{nombre:<14} juega de campo")   # el for terminó sin break
 ```
 
 ### Tabla de equivalencias C++ → Python
@@ -531,7 +565,7 @@ for n in range(2, 20):
    Orden: salir
    Hasta luego
    ```
-3. Dadas `nombres = ["Ana", "Luis", "Eva"]` y `notas = [6.5, 4.0, 9.1]`, muestra cada alumno con su posición y su nota, y cuenta cuántos han aprobado. Pista: `enumerate` y `zip` a la vez.
+3. Dadas `nombres = ["L. Messi", "Sergio Ramos", "J. Oblak"]` y `medias = [94, 89, 91]`, muestra cada jugador con su posición en la lista y su media, y cuenta cuántos llegan a 90. Pista: `enumerate` y `zip` a la vez.
 
    ```text
    1. Ana   6.5
@@ -561,7 +595,8 @@ def media(valores: list[float]) -> float:
     return sum(valores) / len(valores)
 
 
-print(media([4.5, 7.0, 9.25, 6.0]))    # 6.6875
+print(media([94, 93, 91, 91]))     # 92.25
+help(media)                        # muestra el docstring
 ```
 
 - La cadena entre comillas triples tras la cabecera es el **docstring**: documenta la función y aparece al escribir `help(media)` o al pasar el ratón por encima en VS Code.
@@ -578,29 +613,42 @@ def estadisticas(valores: list[float]) -> tuple[float, float, float]:
     return min(valores), max(valores), sum(valores) / len(valores)
 
 
-minimo, maximo, promedio = estadisticas([4.5, 7.0, 9.25, 6.0])
+peor, mejor, promedio = estadisticas([94, 93, 91, 91, 89])
+print(peor, mejor, promedio)       # 89 94 91.6
+
+# Lo que devuelve es una tupla; desempaquetarla es opcional.
+resultado = estadisticas([94, 93, 91])
+print(resultado)                   # (91, 94, 92.66666666666667)
+print(f"Media: {resultado[2]:.2f}")
 ```
 
 En realidad la función devuelve **una tupla** de tres elementos, que se desempaqueta en tres variables. En C++ necesitarías un `struct`, un `std::tuple` o parámetros por referencia.
 
 ### Tipos de parámetros
 
-**Listado 1.18.** Valores por defecto y parámetros solo por nombre · [ver fichero](listados/listado_1_18_precio_final.py)
+**Listado 1.18.** Coste de un traspaso: valores por defecto y parámetros solo por nombre · [ver fichero](listados/listado_1_18_precio_final.py)
 
 ```python
-def precio_final(base: float, iva: float = 0.21, *, descuento: float = 0.0) -> float:
-    """Aplica el descuento y después el IVA.
+def coste_traspaso(valor: float, comision: float = 0.10, *,
+                   descuento: float = 0.0) -> float:
+    """Calcula lo que cuesta fichar a un jugador.
 
-    Los parámetros que siguen a * solo se pueden pasar por nombre.
+    Primero se aplica el descuento sobre el valor de mercado y después la
+    comisión del agente. Los parámetros que siguen a `*` solo se pueden pasar
+    por nombre, para que nadie escriba un 0.2 suelto sin decir qué significa.
     """
-    return round(base * (1 - descuento) * (1 + iva), 2)
+    return round(valor * (1 - descuento) * (1 + comision), 2)
 
 
-precio_final(100)                   # 121.0
-precio_final(100, 0.10)             # 110.0
-precio_final(100, descuento=0.2)    # 96.8
-precio_final(iva=0.04, base=50)     # 52.0  (por nombre, en cualquier orden)
-precio_final(100, 0.21, 0.2)        # TypeError: descuento debe ir por nombre
+print(coste_traspaso(95_500_000))                      # 105050000.0
+print(coste_traspaso(95_500_000, 0.05))                # 100275000.0
+print(coste_traspaso(95_500_000, descuento=0.2))       # 84040000.0
+
+# Esto falla a propósito: descuento no se puede pasar por posición.
+try:
+    coste_traspaso(95_500_000, 0.10, 0.2)
+except TypeError as error:
+    print("\nPor posición ->", error)
 ```
 
 Obligar a pasar un parámetro por nombre evita errores de orden y hace legibles las llamadas. Es un patrón que verás constantemente en pandas y scikit-learn.
@@ -675,12 +723,19 @@ Como las funciones son objetos, se pueden pasar como argumento. El caso más hab
 **Listado 1.22.** Ordenar con una función clave · [ver fichero](listados/listado_1_22_ordenar_lambda.py)
 
 ```python
-alumnos = [("Ana", 6.5), ("Luis", 4.0), ("Eva", 9.1)]
+jugadores = [("L. Messi", 94), ("Sergio Ramos", 89), ("J. Oblak", 91)]
 
-ranking = sorted(alumnos, key=lambda a: a[1], reverse=True)
-# [('Eva', 9.1), ('Ana', 6.5), ('Luis', 4.0)]
+# key recibe cada elemento y devuelve el valor por el que se ordena.
+ranking = sorted(jugadores, key=lambda j: j[1], reverse=True)
+print(ranking)           # [('L. Messi', 94), ('J. Oblak', 91), ('Sergio Ramos', 89)]
 
-mejor = max(alumnos, key=lambda a: a[1])     # ('Eva', 9.1)
+mejor = max(jugadores, key=lambda j: j[1])
+print(mejor)             # ('L. Messi', 94)
+
+# Ordenar por dos criterios: primero por media (de mayor a menor) y, a igualdad,
+# por nombre alfabético. El menos solo vale para números.
+plantilla = [("Hazard", 91), ("De Bruyne", 91), ("Oblak", 91), ("Messi", 94)]
+print(sorted(plantilla, key=lambda j: (-j[1], j[0])))
 ```
 
 Las funciones que reciben o devuelven otras funciones son la base de los decoradores, que verás aplicados en la UD2 (`@property`, `@dataclass`) y usarás en la UD3 con Streamlit.
@@ -796,20 +851,20 @@ Un diccionario asocia **claves** únicas con **valores**. El acceso por clave es
 **Listado 1.26.** Crear, consultar, modificar y recorrer un diccionario · [ver fichero](listados/listado_1_26_diccionarios.py)
 
 ```python
-alumno = {"nombre": "Ana", "nota": 6.5, "ciclo": "DAM"}
+jugador = {"nombre": "L. Messi", "media": 94, "club": "FC Barcelona"}
 
-alumno["nombre"]                   # 'Ana'
-alumno["telefono"]                 # KeyError: 'telefono'
-alumno.get("email")                # None: no lanza error
-alumno.get("email", "sin email")   # valor alternativo
+jugador["nombre"]                  # 'L. Messi'
+jugador["telefono"]                # KeyError: 'telefono'
+jugador.get("pais")                # None: no lanza error
+jugador.get("pais", "desconocido") # valor alternativo
 
-alumno["nota"] = 7.0               # modificar
-alumno["email"] = "ana@example.com"    # añadir
-del alumno["email"]                # eliminar
+jugador["media"] = 93              # modificar
+jugador["pais"] = "Argentina"      # añadir
+del jugador["pais"]                # eliminar
 
-"nota" in alumno                   # True: busca entre las CLAVES
+"media" in jugador                 # True: busca entre las CLAVES
 
-for clave, valor in alumno.items():
+for clave, valor in jugador.items():
     print(f"{clave}: {valor}")
 ```
 
@@ -868,251 +923,300 @@ iniciales = {nombre[0] for nombre in ["Ana", "Alberto", "Eva"]}   # {'A', 'E'}
 
 Si una comprensión no cabe en una línea o necesita varias condiciones anidadas, vuelve al bucle `for`: la legibilidad manda.
 
-### Todo junto: una tabla con listas y diccionarios
+### Todo junto: agrupar, agregar, ordenar y buscar
 
-**Listado 1.30.** Ventas por ciudad con Python puro · [ver fichero](listados/listado_1_30_ventas_por_ciudad.py)
+Las cuatro operaciones de este apartado son las que forman cualquier análisis de datos. Conviene hacerlas una vez a mano, con diccionarios y bucles, porque en la UD3 cada una pasará a ser una línea de pandas y es mucho más fácil confiar en una herramienta cuando sabes qué hace por dentro.
+
+**Listado 1.30.** Las cuatro operaciones, con Python puro · [ver fichero](listados/listado_1_30_jugadores_por_pais.py)
 
 ```python
-ventas = [
-    {"ciudad": "Granada", "producto": "portátil", "unidades": 3, "precio": 899.90},
-    {"ciudad": "Málaga", "producto": "ratón", "unidades": 10, "precio": 12.50},
-    {"ciudad": "Granada", "producto": "monitor", "unidades": 2, "precio": 180.00},
-    {"ciudad": "Sevilla", "producto": "portátil", "unidades": 1, "precio": 899.90},
-    {"ciudad": "Málaga", "producto": "monitor", "unidades": 4, "precio": 180.00},
+JUGADORES = [
+    {"nombre": "L. Messi", "pais": "Argentina", "media": 94, "valor": 95_500_000},
+    {"nombre": "K. De Bruyne", "pais": "Belgium", "media": 91, "valor": 90_000_000},
+    {"nombre": "E. Hazard", "pais": "Belgium", "media": 91, "valor": 90_000_000},
+    {"nombre": "Sergio Ramos", "pais": "Spain", "media": 89, "valor": 34_500_000},
+    # ...
 ]
 
-# Acumular el importe por ciudad
-total_por_ciudad = {}
-for v in ventas:
-    importe = v["unidades"] * v["precio"]
-    total_por_ciudad[v["ciudad"]] = total_por_ciudad.get(v["ciudad"], 0) + importe
+# 1. AGRUPAR Y AGREGAR: el diccionario hace de «cajón» por país.
+valor_por_pais = {}
+for jugador in JUGADORES:
+    pais = jugador["pais"]
+    valor_por_pais[pais] = valor_por_pais.get(pais, 0) + jugador["valor"]
 
-# Mostrar de mayor a menor
-for ciudad, total in sorted(total_por_ciudad.items(), key=lambda par: par[1], reverse=True):
-    print(f"{ciudad:<8} {total:>9.2f} €")
+# 2. ORDENAR: sorted con key, de mayor a menor.
+for pais, total in sorted(valor_por_pais.items(), key=lambda par: par[1], reverse=True):
+    print(f"  {pais:<10} {total / 1_000_000:>6.1f} M€")
 
-# Granada    3059.70 €
-# Sevilla     899.90 €
-# Málaga      845.00 €
-
-# La venta de mayor importe
-mejor = max(ventas, key=lambda v: v["unidades"] * v["precio"])
+# 3. BUSCAR EL MÁXIMO: max con key evita escribir el bucle.
+mas_caro = max(JUGADORES, key=lambda j: j["valor"])
 ```
 
-Fíjate en lo que hemos hecho: agrupar, agregar, ordenar y buscar el máximo. Son exactamente las operaciones que en la UD3 resolverás con una línea de pandas. Hacerlas antes a mano es la mejor forma de entender qué hace pandas por dentro.
+```text
+Valor total de la selección, por país:
+  Belgium     180.0 M€
+  Spain       109.0 M€
+  Argentina    95.5 M€
+
+Media de valoración por país:
+  Argentina  94.0  (1 jugador)
+  Belgium    91.0  (2 jugadores)
+  Spain      88.3  (3 jugadores)
+
+El más caro: L. Messi (95.5 M€)
+```
+
+Fíjate en el patrón de la agrupación, porque se repite siempre: un diccionario vacío, un recorrido, y `get(clave, 0)` para que la primera vez empiece en cero en lugar de fallar. Calcular una **media** por grupo necesita dos diccionarios, uno que suma y otro que cuenta, porque hay que dividir al final. Esa incomodidad es la razón de que exista `groupby` en pandas.
 
 ### Para practicar
 
-1. A partir de `ventas` (listado 1.30), calcula las unidades vendidas por producto y el importe medio por venta.
+1. A partir de `JUGADORES` (listado 1.30), calcula cuántos jugadores hay por país y el valor medio de los de cada país.
 
    ```text
-   {'portátil': 4, 'ratón': 10, 'monitor': 6}
-   Importe medio por venta: 960.92 €
+   {'Argentina': 1, 'Portugal': 1, 'Slovenia': 1, 'Belgium': 2, 'Spain': 3}
+   Valor medio de los españoles: 36.3 M€
    ```
-2. Con una comprensión, obtén la lista de ciudades distintas ordenada alfabéticamente. Hazlo después con un conjunto. ¿Qué diferencia hay?
-3. **Notas por alumno.** Partiendo de esta lista de tuplas, en la que cada tupla es `(alumno, módulo, nota)`:
+2. Con una comprensión, obtén la lista de países distintos ordenada alfabéticamente. Hazlo después con un conjunto. ¿Qué diferencia hay?
+3. **Medias por jugador.** Partiendo de esta lista de tuplas, en la que cada tupla es `(jugador, edición, media)`:
 
    ```python
    datos = [
-       ("Ana", "Programación", 8),
-       ("Luis", "Programación", 6),
-       ("Ana", "Bases de Datos", 9),
-       ("Luis", "Bases de Datos", 7),
-       ("Marta", "Programación", 10),
+       ("L. Messi", 2018, 94),
+       ("Sergio Ramos", 2018, 91),
+       ("L. Messi", 2019, 94),
+       ("Sergio Ramos", 2019, 91),
+       ("J. Oblak", 2019, 90),
+       ("L. Messi", 2020, 94),
+       ("J. Oblak", 2020, 91),
    ]
    ```
 
    Construye **dos** diccionarios, uno a partir del otro:
 
-   a) Uno que agrupe todas las notas de cada alumno, en el orden en que aparecen:
+   a) Uno que agrupe todas las medias de cada jugador, en el orden en que aparecen:
 
    ```python
-   {'Ana': [8, 9], 'Luis': [6, 7], 'Marta': [10]}
+   {'L. Messi': [94, 94, 94], 'Sergio Ramos': [91, 91], 'J. Oblak': [90, 91]}
    ```
 
-   b) Y otro, construido a partir del anterior, con la media de cada alumno:
+   b) Y otro, construido a partir del anterior, con la media de cada jugador a lo largo de las ediciones:
 
    ```python
-   {'Ana': 8.5, 'Luis': 6.5, 'Marta': 10.0}
+   {'L. Messi': 94.0, 'Sergio Ramos': 91.0, 'J. Oblak': 90.5}
    ```
 
-   Puedes resolverlo con un bucle y un condicional, o con `dict.get` y `setdefault` (listado 1.27). El módulo no interviene en el resultado: está en los datos para que practiques a quedarte solo con lo que necesitas.
+   Puedes resolverlo con un bucle y un condicional, o con `dict.get` y `setdefault` (listado 1.27). La edición no interviene en el resultado: está en los datos para que practiques a quedarte solo con lo que necesitas.
 4. (A) Explica por qué `[[0] * 3] * 2` crea filas compartidas. Dibuja las etiquetas y los objetos.
 
 ## 1.6 Ficheros: texto, CSV y JSON
 
-Tres reglas resumen este apartado: abre los ficheros siempre con `with` e indicando `encoding="utf-8"`, construye las rutas con `pathlib`, y lee los CSV con el módulo `csv` en lugar de trocear líneas a mano. Referencia: apartado 7.2 del tutorial ([The Python Tutorial](https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files)).
+Hasta aquí los datos estaban escritos dentro del programa. A partir de ahora vienen de fuera, que es como funciona todo en la vida real: un fichero, una base de datos o una llamada a un servidor. Este apartado va del caso más común, un fichero en tu disco.
+
+Hay tres ideas que conviene tener claras antes de escribir una línea, porque son el origen de casi todos los errores que vas a cometer:
+
+1. **Una ruta no es una cadena de texto.** Escribir `"datos/jugadores.csv"` funciona hasta que ejecutas el programa desde otra carpeta, o desde otro sistema operativo. Para eso está `pathlib`.
+2. **Todo lo que sale de un fichero de texto es texto.** El `94` de un CSV no es el número noventa y cuatro: es la cadena `"94"`. Si no lo conviertes, `"94" + 1` falla y `"94" > "100"` da `True`, porque compara letra a letra.
+3. **Lo que se abre hay que cerrarlo.** Y la forma de no olvidarse nunca es `with`.
 
 ### Rutas con `pathlib`
 
-Un objeto `Path` representa una ruta y funciona igual en Windows, macOS y Linux. El operador `/` une partes de la ruta sin preocuparse de si el separador es `\` o `/`.
+`pathlib` representa una ruta como un objeto con métodos, no como una cadena. Eso evita los dos problemas de las cadenas: las barras (`/` en macOS y Linux, `\` en Windows) y el punto de partida.
 
-**Listado 1.31.** Operaciones básicas con `Path` · [ver fichero](listados/listado_1_31_pathlib.py)
+El punto de partida es el que más confunde. Cuando escribes `Path("datos/jugadores.csv")`, Python busca esa carpeta **a partir de donde se ejecuta el programa**, que no tiene por qué ser donde está el fichero `.py`. Si ejecutas desde VS Code, desde la terminal o con doble clic, el punto de partida puede ser distinto cada vez.
+
+La solución es anclarse a algo que no cambia: `__file__`, que es la ruta del propio fichero de código.
+
+**Listado 1.31.** Localizar el fichero de datos desde cualquier sitio · [ver fichero](listados/listado_1_31_pathlib.py)
 
 ```python
 from pathlib import Path
 
-ruta = Path("datos") / "ventas.csv"
+AQUI = Path(__file__).resolve()       # ruta absoluta de este .py
+RAIZ = AQUI.parents[2]                # dos carpetas más arriba: la raíz del repositorio
+DATOS = RAIZ / "datos-comunes" / "jugadores.csv"
 
-ruta.name        # 'ventas.csv'
-ruta.stem        # 'ventas'
-ruta.suffix      # '.csv'
-ruta.parent      # Path('datos')
-ruta.exists()    # True o False
-
-list(Path("datos").glob("*.csv"))    # todos los CSV de la carpeta
+print("¿Existe?", DATOS.exists())
+print("Tamaño: ", f"{DATOS.stat().st_size / 1024 / 1024:.1f} MB")
+print("Nombre: ", DATOS.name, "· sin extensión:", DATOS.stem, "· extensión:", DATOS.suffix)
 ```
 
-Las rutas relativas se resuelven desde la **carpeta de trabajo**, que no siempre es la del script. En VS Code, abre siempre la carpeta raíz del proyecto (`python-ia`) y ejecuta desde ella.
+```text
+¿Existe? True
+Tamaño:  19.5 MB
+Nombre:  jugadores.csv · sin extensión: jugadores · extensión: .csv
+```
+
+`resolve()` convierte la ruta en absoluta y resuelve los `..`. `parents` son las carpetas que contienen al fichero, de dentro hacia fuera: `parents[0]` es `listados/`, `parents[1]` es `ud1-python/` y `parents[2]` es la raíz. El operador `/` une rutas y pone el separador que toque en cada sistema.
+
+> [!TIP]
+> Escribe siempre las rutas a partir de `Path(__file__)`. Es dos líneas más y te ahorra el `FileNotFoundError` más tonto y más repetido del curso.
+
+> [!NOTE]
+> **Desde C++.** No hay nada parecido en la biblioteca estándar que usaste en 1.º; lo más cercano es `std::filesystem::path`, de C++17. La diferencia práctica es que en Python `pathlib` es lo normal y manipular rutas como cadenas se considera un error.
 
 ### Ficheros de texto
 
-| Modo | Significado |
-| --- | --- |
-| `"r"` | Leer (por defecto). Error si el fichero no existe |
-| `"w"` | Escribir. Crea el fichero o **borra** su contenido si ya existía |
-| `"a"` | Añadir al final sin borrar lo anterior |
-| `"x"` | Crear. Error si el fichero ya existe |
-| `"b"` | Se combina con los anteriores para ficheros binarios: `"rb"`, `"wb"` |
+`open()` devuelve un objeto fichero. Usado dentro de un `with`, se cierra solo al salir del bloque, también si salta una excepción por el camino.
 
 **Listado 1.32.** Escribir y leer un fichero de texto · [ver fichero](listados/listado_1_32_fichero_texto.py)
 
 ```python
-from pathlib import Path
+ruta = Path("datos/registro.txt")
 
-ruta = Path("datos") / "registro.txt"
+with ruta.open("w", encoding="utf-8") as fichero:      # "w" crea o vacía
+    fichero.write("inicio del repaso de fichas\n")     # el salto de línea es tuyo
+    fichero.writelines(["ERROR: edición 2021 no encontrada\n", "fin del repaso\n"])
 
-with ruta.open("w", encoding="utf-8") as f:
-    f.write("inicio del proceso\n")
-    f.write("ERROR: fichero no encontrado\n")
-    f.write("fin del proceso\n")
-
-with ruta.open(encoding="utf-8") as f:
-    for numero, linea in enumerate(f, start=1):    # línea a línea
+with ruta.open(encoding="utf-8") as fichero:           # por defecto, "r" de lectura
+    for numero, linea in enumerate(fichero, start=1):
         if linea.startswith("ERROR"):
-            print(f"Línea {numero}: {linea.rstrip()}")
-
-# Línea 2: ERROR: fichero no encontrado
+            print(f"Línea {numero}: {linea.rstrip()}")  # rstrip quita el \n final
 ```
 
-- `with` cierra el fichero al salir del bloque, incluso si se produce un error. Es el equivalente de RAII en C++.
-- Recorrer el fichero con `for` lee **una línea cada vez**, sin cargarlo entero en memoria. Es la forma correcta de procesar ficheros grandes.
-- Para ficheros pequeños, `ruta.read_text(encoding="utf-8")` devuelve todo el contenido en una cadena.
-- Indica siempre `encoding="utf-8"`. En Windows, la codificación por defecto puede no ser UTF-8 y los acentos se estropean.
+```text
+Línea 2: ERROR: edición 2021 no encontrada
+```
+
+Tres cosas que hay que fijar de aquí:
+
+**El modo.** `"r"` lee, `"w"` **vacía el fichero** y escribe desde cero, `"a"` añade al final y `"x"` falla si ya existe. Confundir `"w"` con `"a"` borra trabajo.
+
+**La codificación.** `encoding="utf-8"` no es opcional. Sin ella, Python usa la codificación por defecto del sistema, que en Windows no es UTF-8, y tus ficheros con tildes se leerán bien en tu portátil y mal en el del compañero. Ponlo siempre, en lectura y en escritura.
+
+**El salto de línea.** `write()` escribe exactamente lo que le das: si quieres una línea, el `\n` lo pones tú. Y al leer, cada línea llega **con** su `\n`, por eso aparece `rstrip()`.
+
+> [!WARNING]
+> Si al leer un CSV ves un carácter raro antes del primer nombre de columna, como `ï»¿short_name`, es la marca BOM que mete Excel al guardar. Se quita leyendo con `encoding="utf-8-sig"`.
 
 ### Ficheros CSV
 
-CSV no es un formato con un estándar único: cada aplicación introduce pequeñas variaciones, como el separador o el entrecomillado. El módulo `csv` resuelve esas diferencias por ti. La documentación recomienda abrir el fichero con `newline=""` y advierte de que todos los valores se leen como texto, sin conversión automática de tipos ([docs.python.org, csv](https://docs.python.org/3/library/csv.html)).
+Un CSV es texto con un valor por columna y comas (o puntos y comas) en medio. Parece que se puede partir con `linea.split(",")`, y es justo lo que no hay que hacer: en nuestro fichero, la columna de posiciones vale `"RW, CF, ST"`, con comas dentro y entrecomillada, y `split` la rompería en tres.
 
-> [!TIP]
-> **CSV «a la española».** Excel y LibreOffice en español suelen guardar los CSV con `;` como separador y coma decimal (`899,90`). Además, la opción «CSV UTF-8» de Excel añade al principio una marca invisible (BOM). Si la primera columna aparece con un nombre raro como `'\ufefffecha'`, abre el fichero con `encoding="utf-8-sig"`.
-
-Partimos de este fichero, [`datos/ventas.csv`](listados/datos/ventas.csv), que tiene una fila con un campo vacío:
-
-```csv
-fecha;ciudad;producto;unidades;precio
-2026-09-01;Granada;portátil;3;899,90
-2026-09-01;Málaga;ratón;10;12,50
-2026-09-02;Granada;monitor;2;180,00
-2026-09-02;Sevilla;portátil;;899,90
-2026-09-03;Málaga;monitor;4;1.180,00
-```
-
-**Listado 1.33.** `resumen_ventas.py`: de CSV a JSON · [ver fichero](listados/listado_1_33_resumen_ventas.py)
+El módulo `csv` de la biblioteca estándar entiende las comillas, los saltos de línea dentro de un campo y los separadores raros. Es una línea más y nunca falla.
 
 ```python
 import csv
-import json
-from pathlib import Path
 
-CARPETA_DATOS = Path("datos")
-entrada = CARPETA_DATOS / "ventas.csv"
-salida = CARPETA_DATOS / "resumen.json"
-
-
-def a_float(texto: str) -> float:
-    """Convierte un número en formato español ('1.234,56') en float."""
-    return float(texto.replace(".", "").replace(",", "."))
-
-
-total_por_ciudad = {}
-descartadas = 0
-
-with entrada.open(encoding="utf-8", newline="") as f:
-    lector = csv.DictReader(f, delimiter=";")
-    for fila in lector:                      # cada fila es un dict
-        if not fila["unidades"]:             # campo vacío: no se puede calcular
-            descartadas += 1
-            continue
-        importe = int(fila["unidades"]) * a_float(fila["precio"])
-        ciudad = fila["ciudad"]
-        total_por_ciudad[ciudad] = total_por_ciudad.get(ciudad, 0) + importe
-
-resumen = {
-    "fichero": entrada.name,
-    "filas_descartadas": descartadas,
-    "total_por_ciudad": {c: round(t, 2) for c, t in total_por_ciudad.items()},
-}
-
-with salida.open("w", encoding="utf-8") as f:
-    json.dump(resumen, f, ensure_ascii=False, indent=2)
+with ruta.open(encoding="utf-8", newline="") as fichero:
+    for fila in csv.DictReader(fichero):
+        print(fila["short_name"], fila["overall"])
 ```
 
-`csv.DictReader` usa la primera fila como cabecera y devuelve cada fila como un diccionario, así que el código accede a los campos por nombre y no por posición. Si mañana alguien reordena las columnas del CSV, el programa sigue funcionando.
+`DictReader` usa la primera línea como nombres de columna y devuelve cada fila como un diccionario. El `newline=""` es un requisito del módulo `csv`: sin él, los campos con saltos de línea se parten mal en Windows.
+
+Vamos a aplicarlo al fichero de verdad, las 100.995 filas.
+
+**Listado 1.33.** Resumir el fichero completo con la biblioteca estándar · [ver fichero](listados/listado_1_33_resumen_jugadores.py)
+
+```python
+import csv
+from collections import Counter
+from pathlib import Path
+
+DATOS = Path(__file__).resolve().parents[2] / "datos-comunes" / "jugadores.csv"
+EDICION = 2020
+
+filas, medias, valores, sin_valor = 0, [], [], 0
+por_pais = Counter()
+
+with DATOS.open(encoding="utf-8", newline="") as fichero:
+    for fila in csv.DictReader(fichero):
+        if int(fila["fifa"]) != EDICION:      # todo llega como texto: hay que convertir
+            continue
+        filas += 1
+        medias.append(int(fila["overall"]))
+        por_pais[fila["nationality"]] += 1
+
+        valor = int(fila["value_eur"])
+        if valor == 0:                        # agentes libres: el cero es «no hay dato»
+            sin_valor += 1
+        else:
+            valores.append(valor)
+
+print(f"FIFA {EDICION}: {filas:,} jugadores")
+print(f"Media de 'overall': {sum(medias) / len(medias):.1f}")
+print(f"Valor medio: {sum(valores) / len(valores):,.0f} €")
+for pais, total in por_pais.most_common(3):
+    print(f"  {pais:<16} {total:>5}")
+```
+
+```text
+FIFA 2020: 18,278 jugadores leídos en 0.5 s
+Sin valor de mercado: 250 (1.4 %)
+
+Media de la columna 'overall': 66.2
+Mejor: 94 · Peor: 48
+
+Valor medio (sin contar los ceros): 2,518,485 €
+Valor mediano:                      725,000 €
+
+Cinco países con más jugadores:
+  England           1667   9.1 %
+  Germany           1216   6.7 %
+  Spain             1035   5.7 %
+```
+
+Medio segundo para recorrer cien mil filas con Python puro. Guárdate el dato: en la UD3 harás lo mismo con pandas y podrás comparar.
+
+Dos decisiones que ya has tomado sin darte cuenta, y que son las que de verdad importan en el análisis de datos:
+
+**Filtrar una edición.** Si sumas las seis, estás mezclando al mismo jugador seis veces y la media no significa nada.
+
+**Separar los ceros.** Hay 250 jugadores con `value_eur` a cero. No valen cero euros: son agentes libres y el dato no está. Si los metes en la media, te sale un valor medio más bajo que el real. La diferencia entre un analista y alguien que calcula medias es exactamente esta: preguntarse qué significa cada número antes de sumarlo.
 
 > [!WARNING]
-> `a_float` solo sirve para números en formato español. Aplicada a `"1180.00"`, quitaría el punto y devolvería 118000. Saber en qué formato llegan los datos es parte del trabajo de limpieza que retomaremos en la UD3.
-
-Para **escribir** un CSV, `csv.DictWriter` hace el camino inverso: recibe los nombres de columna en `fieldnames`, escribe la cabecera con `writeheader()` y cada fila con `writerow(diccionario)`.
+> Y hay una trampa mayor esperándote: en **FIFA 15 las 15.465 filas tienen el valor y el salario a cero**. Si calculas el valor medio por edición sin filtrar, te saldrá que en 2015 los futbolistas del mundo no valían nada. Está explicado en [la página del conjunto de datos](../datos-comunes/README.md).
 
 ### Ficheros JSON
 
-JSON es el formato de intercambio de datos de la web y de casi todas las API. Su correspondencia con Python es directa: los objetos JSON son diccionarios, los arrays son listas, `true`/`false` son `True`/`False` y `null` es `None`.
+JSON guarda estructuras completas —diccionarios y listas anidados—, no una tabla plana. Es el formato en el que viajan los datos por internet y el que usaremos para el informe del hito 0.
 
-El resultado del listado 1.33, `datos/resumen.json`:
-
-```json
-{
-  "fichero": "ventas.csv",
-  "filas_descartadas": 1,
-  "total_por_ciudad": {
-    "Granada": 3059.7,
-    "Málaga": 4845.0
-  }
-}
-```
-
-**Listado 1.34.** Leer un JSON y trabajar con él · [ver fichero](listados/listado_1_34_leer_json.py)
+**Listado 1.34.** Guardar un informe y volver a leerlo · [ver fichero](listados/listado_1_34_informe_json.py)
 
 ```python
 import json
 
-with open("datos/resumen.json", encoding="utf-8") as f:
-    resumen = json.load(f)                     # dict de Python
+informe = {
+    "fichero": "jugadores.csv",
+    "edicion": 2020,
+    "filas": 18278,
+    "columnas": {
+        "overall": {"tipo": "entero", "minimo": 48, "maximo": 94, "media": 66.2},
+        "nationality": {"tipo": "texto", "distintos": 162},
+    },
+}
 
-ciudad, total = max(resumen["total_por_ciudad"].items(), key=lambda par: par[1])
-print(f"Ciudad con más ventas: {ciudad} ({total:.2f} €)")
+RUTA.write_text(json.dumps(informe, indent=2, ensure_ascii=False), encoding="utf-8")
+
+recuperado = json.loads(RUTA.read_text(encoding="utf-8"))
+print(recuperado["columnas"]["overall"]["media"])
 ```
 
-| Función | Hace | Parámetros útiles |
-| --- | --- | --- |
-| `json.load(f)` | Lee de un fichero abierto | — |
-| `json.loads(texto)` | Lee de una cadena | — |
-| `json.dump(obj, f)` | Escribe en un fichero abierto | `indent=2` (legible), `ensure_ascii=False` (conserva acentos) |
-| `json.dumps(obj)` | Devuelve una cadena JSON | Los mismos |
+`dumps` convierte a texto y `loads` vuelve a objetos de Python. El `indent=2` lo deja legible para una persona, y `ensure_ascii=False` escribe las tildes tal cual en vez de como `é`.
+
+> [!IMPORTANT]
+> JSON solo sabe de diccionarios, listas, cadenas, números, booleanos y nulos. Un `set`, una fecha o un objeto propio no se pueden guardar directamente: hay que convertirlos antes a algo que JSON entienda. Si intentas guardar un conjunto, el error que verás es `TypeError: Object of type set is not JSON serializable`.
 
 ### Para practicar
 
-1. Ejecuta el listado 1.33 desde la carpeta `listados/` y comprueba el JSON generado. ¿Por qué no aparece Sevilla?
-2. Amplía el programa para que genere también `datos/informe.csv` con las columnas `ciudad` y `total`, ordenado de mayor a menor, usando `csv.DictWriter` con `;` como separador.
-3. Escribe una función `contar_lineas(ruta: Path, texto: str) -> int` que devuelva cuántas líneas de un fichero contienen un texto dado, sin cargar el fichero entero en memoria. Pruébala con el `datos/registro.txt` que genera el listado 1.32.
+1. Modifica el listado 1.33 para que calcule, además, cuántos jugadores hay por pie bueno. Comprueba que te salen estos números:
 
-   ```python
-   contar_lineas(Path("datos/registro.txt"), "ERROR")     # 1
-   contar_lineas(Path("datos/registro.txt"), "proceso")   # 2
-   contar_lineas(Path("datos/registro.txt"), "zzz")       # 0
+   ```text
+   Right    13960  76.4 %
+   Left      4318  23.6 %
    ```
-4. (A) Abre `ventas.csv` con Excel o LibreOffice y guárdalo como «CSV UTF-8». Léelo con `encoding="utf-8"` y después con `"utf-8-sig"`, e imprime las claves de la primera fila. Explica la diferencia.
+
+2. Calcula la media de `overall` de **cada edición** y escríbela ordenada por año. ¿Sube o baja con los años?
+
+   ```text
+   2015  65.7
+   2016  65.8
+   ...
+   ```
+
+3. Escribe un programa que recorra el fichero y guarde en `datos/caros.json` los diez jugadores más caros de FIFA 20, con su nombre, club y valor. Comprueba que el primero es L. Messi con 95.500.000 €.
+
+4. (A) Abre `jugadores.csv` con Excel o LibreOffice y guárdalo como «CSV UTF-8». Léelo después con `encoding="utf-8"` y con `encoding="utf-8-sig"`, e imprime las claves de la primera fila. Explica qué diferencia ves y por qué.
 
 ## 1.7 Errores, excepciones y depuración
 
@@ -1176,115 +1280,81 @@ Se lee **de abajo arriba**. La última línea dice qué pasó (`ZeroDivisionErro
 
 ### Capturar excepciones: `try`, `except`, `else`, `finally`
 
-**Listado 1.36.** Lectura robusta de `ventas.csv` (mejora del listado 1.33) · [ver fichero](listados/listado_1_36_lectura_robusta.py)
+**Listado 1.36.** Cuando falla el 100 % de las filas, el fallo es tuyo · [ver fichero](listados/listado_1_36_lectura_robusta.py)
+
+La estrategia correcta al leer un fichero real no es confiar en que todo vendrá bien, ni abandonar al primer fallo. Es esta: intentar procesar cada fila, apartar las que no se puedan, seguir adelante, y **contar al final cuántas se quedaron fuera y por qué**.
+
+Ese recuento no es burocracia. Es el que te avisa cuando el problema no está en los datos, sino en tu código.
 
 ```python
-import csv
-import logging
-from pathlib import Path
-
-logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
-
-
-def a_float(texto: str) -> float:
-    """Convierte un número en formato español ('1.234,56') en float."""
-    return float(texto.replace(".", "").replace(",", "."))
+def anio_ingenuo(texto: str) -> int:
+    """Primer intento: convertir el año de contrato a entero."""
+    if texto == "":
+        raise ValueError("viene vacío")
+    return int(texto)
 
 
-def leer_ventas(ruta: Path) -> list[dict]:
-    """Devuelve las filas válidas del CSV de ventas con los tipos convertidos."""
-    validas = []
-    with ruta.open(encoding="utf-8", newline="") as f:
-        lector = csv.DictReader(f, delimiter=";")
-        for num_linea, fila in enumerate(lector, start=2):   # la línea 1 es la cabecera
+def anio_correcto(texto: str) -> int:
+    """Segundo intento, sabiendo que el CSV escribe los años como '2021.0'."""
+    if texto == "":
+        raise ValueError("viene vacío")
+    return int(float(texto))        # primero a decimal, luego se trunca
+
+
+def recorrer(convertir):
+    procesadas, descartadas, anios = 0, Counter(), []
+    with DATOS.open(encoding="utf-8", newline="") as fichero:
+        for fila in csv.DictReader(fichero):
             try:
-                fila["unidades"] = int(fila["unidades"])
-                fila["precio"] = a_float(fila["precio"])
-            except ValueError as e:
-                logging.warning("Línea %d descartada: %s", num_linea, e)
-                continue
-            validas.append(fila)
-    return validas
-
-
-try:
-    ventas = leer_ventas(Path("datos") / "ventas.csv")
-except FileNotFoundError as e:
-    logging.error("No se encuentra el fichero %s", e.filename)
-else:
-    logging.info("%d ventas válidas", len(ventas))
-finally:
-    logging.info("Proceso terminado")
+                anios.append(convertir(fila["contract_valid_until"]))
+                procesadas += 1
+            except ValueError as error:
+                descartadas[str(error)[:34]] += 1
+    return procesadas, descartadas, anios
 ```
-
-Salida con el fichero del apartado 1.6:
 
 ```text
-WARNING: Línea 5 descartada: invalid literal for int() with base 10: ''
-INFO: 4 ventas válidas
-INFO: Proceso terminado
+--- Intento ingenuo ---
+  Procesadas:       0 de 100,995 (0.0 %)
+  Descartadas: 99,662  invalid literal for int() with bas
+  Descartadas:  1,333  viene vacío
+  No ha sobrevivido ninguna fila: el fallo es del código, no de los datos.
+
+--- Intento correcto ---
+  Procesadas:  99,662 de 100,995 (98.7 %)
+  Descartadas:  1,333  viene vacío
+  Contratos entre 2014 y 2026
 ```
 
-| Bloque | Se ejecuta… |
-| --- | --- |
-| `try` | Siempre: contiene el código que puede fallar |
-| `except Tipo as e` | Solo si se produce una excepción de ese tipo; `e` contiene los detalles |
-| `else` | Solo si el `try` terminó **sin** excepciones |
-| `finally` | Siempre, haya o no excepción. Se usa para tareas de limpieza |
+Esto es lo que pasa de verdad al leer un fichero que no has escrito tú. `contract_valid_until` guarda los años como `2021.0`, porque la columna tiene huecos y el formato decimal es el único que admite el vacío. `int("2021.0")` falla, y falla en todas las filas.
+
+Un programa que se cayera en la primera fila te habría dado un `ValueError` y poco más. Este te dice que han fallado las 100.995, y esa cifra redonda es la pista: cuando falla todo, no son los datos, eres tú. `int(float(texto))` lo arregla, y entonces aparece el problema de verdad: 1.333 jugadores **sí** tienen el campo vacío, porque no tienen contrato. Ese sí es un dato que falta, y hay que decidir qué hacer con él.
+
+### Lanzar tus propias excepciones
+
+No todos los errores los detecta Python. Si tu función recibe una media de 120, el lenguaje no se queja —es un entero perfectamente válido—, pero tú sabes que ese dato es imposible. Para eso está `raise`: avisar de que algo va mal en cuanto lo detectas, en lugar de dejar que el valor erróneo contamine los cálculos de más adelante.
+
+**Listado 1.37.** Validar una media con `raise` · [ver fichero](listados/listado_1_37_validar_media.py)
+
+```python
+def validar_media(media: int) -> int:
+    """Devuelve la media si está entre 1 y 99; si no, lanza ValueError."""
+    if not 1 <= media <= 99:
+        raise ValueError(f"Media fuera de rango: {media}")
+    return media
+
+
+print(validar_media(94))
+try:
+    validar_media(120)
+except ValueError as e:
+    print("Error:", e)      # Error: Media fuera de rango: 120
+```
+
+Elige el tipo de excepción que corresponda: `ValueError` si el valor no sirve, `TypeError` si el tipo no es el esperado, `FileNotFoundError` si falta un fichero. Y escribe en el mensaje **el valor concreto que ha fallado**: `"Media fuera de rango: 120"` sirve para depurar; `"Error de validación"` no sirve para nada.
 
 > [!IMPORTANT]
-> **Regla de oro.** Captura solo las excepciones que sabes tratar y hazlo lo más cerca posible de donde se producen. Un `except:` sin tipo, o un `except Exception:` que no hace nada, esconde errores reales. Es el equivalente de un `catch (...) {}` vacío en C++.
-
-### Lanzar excepciones: `raise`
-
-Cuando una función recibe datos con los que no puede trabajar, lo correcto es **lanzar** una excepción con un mensaje claro, no devolver un valor «raro» como `-1`.
-
-**Listado 1.37.** Validar con `raise` · [ver fichero](listados/listado_1_37_validar_nota.py)
-
-```python
-def validar_nota(nota: float) -> float:
-    """Devuelve la nota si está entre 0 y 10; si no, lanza ValueError."""
-    if not 0 <= nota <= 10:
-        raise ValueError(f"Nota fuera de rango: {nota}")
-    return nota
-```
-
-### Pedir perdón en lugar de permiso
-
-En C++ es habitual comprobarlo todo antes de actuar (*Look Before You Leap*, LBYL). En Python es idiomático intentarlo y tratar el fallo si ocurre (*Easier to Ask Forgiveness than Permission*, EAFP):
-
-```python
-# LBYL: comprobar antes de actuar
-if texto.isdigit():
-    edad = int(texto)
-else:
-    edad = None
-```
-
-```python
-# EAFP: intentarlo y capturar el fallo
-try:
-    edad = int(texto)
-except ValueError:
-    edad = None
-```
-
-La versión EAFP es más robusta: `isdigit()` rechaza `"-5"`, y `int()` sí sabe interpretarlo.
-
-### `assert` y `logging`
-
-- `assert condición, "mensaje"` detiene el programa si la condición es falsa. Sirve para comprobar supuestos internos mientras desarrollas, como `assert len(ventas) > 0`. No lo uses para validar datos del usuario: las aserciones se pueden desactivar al ejecutar.
-- `logging` sustituye a los `print` de depuración. Cada mensaje tiene un nivel (`DEBUG`, `INFO`, `WARNING`, `ERROR`) y se puede silenciar o redirigir a un fichero sin tocar el código ([The Python Tutorial](https://docs.python.org/3/tutorial/stdlib2.html#logging)).
-
-### El depurador de VS Code
-
-1. Haz clic a la izquierda del número de línea para poner un **punto de interrupción** (*breakpoint*). Aparece un punto rojo.
-2. Pulsa `F5` y elige *Python Debugger: Current File*. El programa se detiene al llegar a esa línea.
-3. Avanza con `F10` (paso a paso, sin entrar en funciones) o `F11` (entrando en ellas). `F5` continúa hasta el siguiente punto.
-4. En el panel **Variables** ves el valor de todo en ese instante. En **Watch** puedes seguir expresiones, y la **consola de depuración** permite ejecutar código en ese contexto.
-5. Un clic derecho sobre el punto rojo permite añadir una **condición**, por ejemplo `num_linea == 5`, para detenerte solo en el caso que falla.
-
-En los notebooks, cada celda tiene una opción para ejecutarla línea a línea o depurarla con estas mismas herramientas.
+> Fíjate en el orden del aprendizaje: primero el código te mintió (cero filas procesadas), después te dijo la verdad (1.333 sin contrato). Si hubieras escrito `except: pass`, habrías tenido una lista vacía y ningún aviso. Capturar la excepción **y contarla** es lo que marca la diferencia.
 
 ### Para practicar
 
@@ -1299,8 +1369,8 @@ En los notebooks, cada celda tiene una opción para ejecutarla línea a línea o
    Edad (0-120): 20
    Edad registrada: 20
    ```
-3. Pon un punto de interrupción condicional dentro del bucle de `leer_ventas` que se detenga en la línea 5 del CSV. Inspecciona `fila` en el panel de variables.
-4. (A) Amplía `leer_ventas` para que descarte también las filas con precio o unidades menores o iguales que cero. Usa `raise ValueError` dentro del `try` y registra el motivo en el aviso.
+3. Pon un punto de interrupción condicional dentro del bucle del listado 1.36 que se detenga solo cuando `fila["short_name"]` empiece por `"L. Messi"`. Inspecciona `fila` en el panel de variables.
+4. (A) Amplía el listado 1.36 para que descarte también las filas con `value_eur` igual a cero, contándolas aparte de las que fallan al convertir. Usa `raise ValueError` dentro del `try` y registra el motivo.
 
 ## 1.8 Módulos y paquetes
 
@@ -1351,121 +1421,118 @@ Desde otro fichero de la misma carpeta basta con `import utilidades` y `utilidad
 
 ### Paquetes: el código del proyecto en `src/`
 
-Vamos a convertir el código de los apartados 1.6 y 1.7 en un paquete llamado `ventas`, dentro de la carpeta `src/` que preparamos en el apartado 1.1. Tienes el proyecto completo en la carpeta [`proyecto/`](proyecto/).
+Un **módulo** es un fichero `.py`. Un **paquete** es una carpeta de módulos que se importa como una unidad. En cuanto un programa pasa de un par de cientos de líneas, se organiza en paquete: cada módulo con una responsabilidad, y un sitio claro donde buscar cada cosa.
+
+Vamos a construir uno pequeño, `ojeador`, que hace dos consultas sobre el fichero de jugadores. Pequeño a propósito: lo que importa aquí es **el mecanismo**, no el contenido. El paquete grande lo construyes tú en el hito 0. Tienes el proyecto completo en [`proyecto/`](proyecto/).
 
 ```text
-python-ia/
-├── pyproject.toml
-├── datos/
-│   └── ventas.csv
-├── notebooks/
+proyecto/
+├── pyproject.toml          cómo se instala el paquete
 └── src/
-    └── ventas/
-        ├── __init__.py      convierte la carpeta en paquete
-        ├── __main__.py      se ejecuta con: python -m ventas
-        ├── lectura.py       a_float, leer_ventas
-        └── informes.py      total_por_ciudad, guardar_json
+    └── ojeador/
+        ├── __init__.py     qué ofrece el paquete al exterior
+        ├── __main__.py     se ejecuta con: python -m ojeador
+        ├── lectura.py      leer el CSV y convertir los tipos
+        └── consultas.py    las preguntas que se le hacen a los datos
 ```
 
-**Listado 1.40.** `src/ventas/lectura.py` · [ver fichero](proyecto/src/ventas/lectura.py)
+La división no es decorativa. `lectura.py` sabe de ficheros y de conversiones, y no sabe nada de qué preguntas se van a hacer. `consultas.py` recibe una lista de diccionarios y no sabe de dónde ha salido: podría venir de un CSV, de una base de datos o de un servidor. Esa independencia es la que permite cambiar una pieza sin tocar la otra, y es lo que evalúa el criterio 1e.
+
+**Listado 1.40.** `src/ojeador/lectura.py` · [ver fichero](proyecto/src/ojeador/lectura.py)
 
 ```python
-"""Lectura y conversión de los datos de ventas."""
+RAIZ = Path(__file__).resolve().parents[4]
+POR_DEFECTO = RAIZ / "datos-comunes" / "jugadores.csv"
 
-import csv
-import logging
-from pathlib import Path
-
-logger = logging.getLogger(__name__)
+NUMERICAS = ("fifa", "age", "overall", "potential", "value_eur", "wage_eur")
 
 
-def a_float(texto: str) -> float:
-    """Convierte un número en formato español ('1.234,56') en float."""
-    return float(texto.replace(".", "").replace(",", "."))
-
-
-def leer_ventas(ruta: Path) -> list[dict]:
-    """Devuelve las filas válidas del CSV de ventas con los tipos convertidos."""
-    validas = []
-    with ruta.open(encoding="utf-8", newline="") as f:
-        lector = csv.DictReader(f, delimiter=";")
-        for num_linea, fila in enumerate(lector, start=2):
+def leer_edicion(edicion: int, ruta: Path = POR_DEFECTO) -> list[dict]:
+    """Devuelve los jugadores de una edición, con los números ya convertidos."""
+    jugadores = []
+    with ruta.open(encoding="utf-8", newline="") as fichero:
+        for fila in csv.DictReader(fichero):
             try:
-                fila["unidades"] = int(fila["unidades"])
-                fila["precio"] = a_float(fila["precio"])
-            except ValueError as e:
-                logger.warning("Línea %d descartada: %s", num_linea, e)
+                convertida = {c: int(fila[c]) for c in NUMERICAS}
+            except ValueError:
                 continue
-            validas.append(fila)
-    return validas
+            if convertida["fifa"] != edicion:
+                continue
+            convertida.update({c: fila[c] for c in ("short_name", "nationality", "club")})
+            jugadores.append(convertida)
+    return jugadores
 ```
 
-Fíjate en un cambio respecto al listado 1.36: el módulo ya no llama a `logging.basicConfig`, sino que crea su propio `logger`. Una biblioteca informa de lo que pasa; decidir cómo se muestran los mensajes le corresponde al programa que la usa.
+La ruta por defecto es un **parámetro**, no una constante escondida dentro de la función. Así el paquete funciona sin configurar nada, y a la vez se le puede pasar otro fichero cuando haga falta, por ejemplo para probarlo con un CSV pequeño.
 
-**Listado 1.41.** `src/ventas/informes.py` · [ver fichero](proyecto/src/ventas/informes.py)
+**Listado 1.41.** `src/ojeador/consultas.py` · [ver fichero](proyecto/src/ojeador/consultas.py)
 
 ```python
-"""Cálculos y exportación de informes a partir de las ventas."""
+def mas_caros(jugadores: list[dict], cuantos: int = 5) -> list[dict]:
+    """Los jugadores con mayor valor de mercado, de mayor a menor.
 
-import json
-from pathlib import Path
-
-
-def total_por_ciudad(ventas: list[dict]) -> dict[str, float]:
-    """Importe total por ciudad, ordenado de mayor a menor."""
-    totales = {}
-    for v in ventas:
-        totales[v["ciudad"]] = totales.get(v["ciudad"], 0) + v["unidades"] * v["precio"]
-    ordenados = sorted(totales.items(), key=lambda par: par[1], reverse=True)
-    return {ciudad: round(total, 2) for ciudad, total in ordenados}
-
-
-def guardar_json(datos: dict, ruta: Path) -> None:
-    """Guarda un diccionario en un fichero JSON legible."""
-    with ruta.open("w", encoding="utf-8") as f:
-        json.dump(datos, f, ensure_ascii=False, indent=2)
+    Los de valor cero (agentes libres) quedan fuera: ahí el cero significa
+    «no hay dato», no «no vale nada».
+    """
+    con_valor = [j for j in jugadores if j["value_eur"] > 0]
+    return sorted(con_valor, key=lambda j: j["value_eur"], reverse=True)[:cuantos]
 ```
 
-**Listado 1.42.** `src/ventas/__init__.py`: la interfaz pública del paquete · [ver fichero](proyecto/src/ventas/__init__.py)
+Fíjate en que la decisión sobre los ceros está **escrita en el docstring**. Dentro de seis meses, ni tú ni nadie recordará por qué se filtran; ahí queda explicado.
+
+**Listado 1.42.** `src/ojeador/__init__.py`: la interfaz pública · [ver fichero](proyecto/src/ojeador/__init__.py)
 
 ```python
-"""Utilidades para leer y resumir el fichero de ventas del curso."""
+from .lectura import leer_edicion
+from .consultas import mas_caros, media_por_pais
 
-from .lectura import leer_ventas
-from .informes import total_por_ciudad, guardar_json
-
-__all__ = ["leer_ventas", "total_por_ciudad", "guardar_json"]
+__all__ = ["leer_edicion", "mas_caros", "media_por_pais"]
 ```
 
-Los puntos de `.lectura` indican una **importación relativa**: el módulo `lectura` de este mismo paquete. Gracias a este fichero, quien use el paquete puede escribir `from ventas import leer_ventas` sin conocer su organización interna.
+El punto de `.lectura` indica una **importación relativa**: el módulo `lectura` de este mismo paquete, no uno que se llame igual en otro sitio. Gracias a este fichero, quien use el paquete escribe `from ojeador import mas_caros` sin tener que saber en qué módulo está cada función. Si mañana mueves `mas_caros` a otro fichero, cambias esta línea y nadie más se entera.
 
-**Listado 1.43.** `src/ventas/__main__.py`: el programa principal · [ver fichero](proyecto/src/ventas/__main__.py)
+`__all__` declara qué nombres se consideran públicos. Es documentación para quien lea el código y, además, lo que exporta `from ojeador import *`.
+
+**Listado 1.43.** `src/ojeador/__main__.py`: el programa principal · [ver fichero](proyecto/src/ojeador/__main__.py)
 
 ```python
-"""Punto de entrada: python -m ventas"""
+from . import leer_edicion, mas_caros, media_por_pais
 
-import logging
-from pathlib import Path
-
-from ventas import guardar_json, leer_ventas, total_por_ciudad
+EDICION = 2020
 
 
 def main() -> None:
-    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
-    ventas = leer_ventas(Path("datos") / "ventas.csv")
-    totales = total_por_ciudad(ventas)
-    guardar_json({"total_por_ciudad": totales}, Path("datos") / "resumen.json")
-    for ciudad, total in totales.items():
-        print(f"{ciudad:<8} {total:>9.2f} €")
+    jugadores = leer_edicion(EDICION)
+    print(f"FIFA {EDICION}: {len(jugadores):,} jugadores\n")
+    for jugador in mas_caros(jugadores):
+        print(f"  {jugador['short_name']:<20} {jugador['club']:<22} "
+              f"{jugador['value_eur'] / 1_000_000:>6.1f} M€")
 
 
 if __name__ == "__main__":
     main()
 ```
 
-### Hacer el paquete importable desde cualquier sitio
+```text
+FIFA 2020: 18,278 jugadores
 
-Para que `import ventas` funcione desde la raíz, desde `notebooks/` o desde cualquier otra carpeta, instalamos el propio proyecto en el entorno virtual en **modo editable**. Solo hace falta un `pyproject.toml` mínimo en la raíz:
+Los cinco más caros:
+  Neymar Jr            Paris Saint-Germain     105.5 M€
+  L. Messi             FC Barcelona             95.5 M€
+  K. Mbappé            Paris Saint-Germain      93.5 M€
+  E. Hazard            Real Madrid              90.0 M€
+  K. De Bruyne         Manchester City          90.0 M€
+
+Media más alta, entre los 38 países con 100 jugadores o más:
+  Uruguay          71.6
+  Brazil           71.2
+  Portugal         70.5
+```
+
+`__main__.py` es lo que se ejecuta al escribir `python -m ojeador`. Es el único módulo que decide **qué** se hace; los demás solo ofrecen piezas. Esa separación es la que permite que el mismo paquete sirva para un programa de consola hoy y para una aplicación web en la UD7.
+
+> [!NOTE]
+> **Desde C++.** No hay cabeceras ni enlazado. `__init__.py` cumple el papel que allí hacía el `.h` que incluías: decir qué se ofrece hacia fuera. Y `__main__.py` es el equivalente del `main()`, con la diferencia de que un paquete puede tener varios puntos de entrada o ninguno.
 
 **Listado 1.44.** `pyproject.toml` · [ver fichero](proyecto/pyproject.toml)
 
@@ -1484,24 +1551,37 @@ build-backend = "setuptools.build_meta"
 
 ```bash
 python -m pip install -e .      # -e: editable; los cambios en src/ se ven al instante
-python -m ventas                # ejecuta src/ventas/__main__.py
+python -m ojeador               # ejecuta src/ojeador/__main__.py
 ```
 
 Salida:
 
 ```text
-WARNING: Línea 5 descartada: invalid literal for int() with base 10: ''
-Málaga     4845.00 €
-Granada    3059.70 €
+FIFA 2020: 18,278 jugadores
+
+Los cinco más caros:
+  Neymar Jr            Paris Saint-Germain     105.5 M€
+  L. Messi             FC Barcelona             95.5 M€
+  K. Mbappé            Paris Saint-Germain      93.5 M€
+  E. Hazard            Real Madrid              90.0 M€
+  K. De Bruyne         Manchester City          90.0 M€
+
+Media más alta, entre los 38 países con 100 jugadores o más:
+  Uruguay          71.6
+  Brazil           71.2
+  Portugal         70.5
+  Czech Republic   70.3
+  Spain            70.0
 ```
 
 Y en cualquier notebook del proyecto:
 
 ```python
 from pathlib import Path
-from ventas import leer_ventas
+from ojeador import leer_edicion, mas_caros
 
-ventas = leer_ventas(Path("../datos/ventas.csv"))
+jugadores = leer_edicion(2020)
+mas_caros(jugadores, cuantos=3)
 ```
 
 La instalación genera una carpeta `src/python_ia.egg-info`: añádela al `.gitignore` del proyecto.
@@ -1543,66 +1623,103 @@ python -m pip install -e .
 ### Para practicar
 
 1. Crea `utilidades.py` (listado 1.39), ejecútalo directamente y después impórtalo desde otro script. Comprueba que las pruebas solo se ejecutan en el primer caso.
-2. Monta el paquete `ventas` en tu proyecto, instálalo en modo editable y ejecuta `python -m ventas`.
-3. Añade al paquete un módulo `validacion.py` con `validar_nota` (listado 1.37) y exporta la función en `__init__.py`. Úsala desde un notebook.
+2. Monta el paquete `ojeador` en tu proyecto, instálalo en modo editable y ejecuta `python -m ojeador`.
+3. Añade al paquete un módulo `validacion.py` con `validar_media` (listado 1.37) y exporta la función en `__init__.py`. Úsala desde un notebook.
 4. (A) Genera tu `requirements.txt`, borra la carpeta `.venv` y reconstruye el entorno desde cero siguiendo el listado 1.46.
 
 ## Práctica de la unidad · Hito 0 del proyecto integrador
 
-La práctica de la UD1 es el primer hito del proyecto integrador. Cada alumno o equipo elige el conjunto de datos con el que trabajará todo el curso y construye, **solo con la biblioteca estándar**, un explorador que lo describe. Ese mismo conjunto de datos se limpiará en la UD3, se guardará en una base de datos en la UD4, se modelará en la UD6 y se desplegará en la UD7.
+Vas a construir un **explorador**: un programa que lee el fichero de jugadores y escribe un informe describiéndolo. Cuántas filas tiene, qué hay en cada columna, cuántos huecos, qué valores se repiten.
 
-### 1. Elegir el conjunto de datos
+Y lo vas a hacer **sin pandas**, solo con la biblioteca estándar. No es por hacerlo difícil: en la UD3 esto mismo serán cuatro líneas, y la única forma de confiar en esas cuatro líneas es haber escrito antes las cien que hay detrás.
 
-Requisitos:
+Este explorador no se tira al terminar. En la UD2 lo convertirás en un paquete instalable y en la UD3 le añadirás la limpieza. Es la base de todo el curso.
 
-- Datos reales y públicos, con licencia que permita su uso. Ningún dato personal: la aplicación final se publicará en internet.
-- Formato CSV o JSON, con al menos 1.000 filas y 6 columnas.
-- Columnas numéricas y categóricas, y al menos una que se pueda predecir: un número (regresión) o una categoría (clasificación).
+![Ruta del hito 0. Se parte de: El fichero de jugadores del curso: 100.995 filas y 37 columnas. Paso 1: Leer la página del conjunto de datos y describirlo, produce docs/ficha_dataset.md. Paso 2: Abrir el CSV con pathlib y csv, produce lectura.py. Paso 3: Inferir el tipo de cada columna, produce tipos.py. Paso 4: Contar vacíos, mínimos, máximos y frecuencias, produce estadisticas.py. Paso 5: Escribir el informe y registrar los fallos, produce datos/informe_inicial.json. Paso 6: Organizarlo como paquete ejecutable, produce src/explorador/. Se entrega: Paquete instalable, informe generado, ficha del conjunto de datos y defensa.](figuras/hito-0.svg)
 
-Portales donde buscar: [datos.gob.es](https://datos.gob.es) (catálogo de datos abiertos de las administraciones españolas), [UCI Machine Learning Repository](https://archive.ics.uci.edu) y [Kaggle Datasets](https://www.kaggle.com/datasets).
+*Figura 1.5. La ruta del hito 0: conocer el conjunto de datos y construir el explorador.*
 
-Documenta la elección en `docs/ficha_dataset.md` con: fuente y enlace, licencia, fecha de descarga, descripción de cada columna, la pregunta que quieres responder y la variable que intentarás predecir.
+### 1. Conocer los datos
 
-### 2. Construir el explorador
+Antes de escribir código, lee [la página del conjunto de datos](../datos-comunes/README.md) y escribe `docs/ficha_dataset.md` con:
 
-Crea un paquete `src/explorador/` que, ejecutado con `python -m explorador`, lea tu fichero de `datos/` y genere `datos/informe_inicial.json` con:
+- Qué son estos datos, de dónde salen y con qué licencia, en un párrafo tuyo.
+- Las columnas que te parecen más interesantes y por qué.
+- **Los tres problemas** que trae el fichero, explicados con tus palabras.
+- Una pregunta que te gustaría responder con estos datos al terminar el curso.
 
-- Número de filas y de columnas.
-- Para cada columna: número y porcentaje de valores vacíos y tipo inferido (entero, decimal o texto).
-- Para las columnas numéricas: mínimo, máximo y media.
-- Para las columnas de texto: número de valores distintos y los 5 más frecuentes.
-- Número de filas que no se han podido procesar y el motivo, registrado con `logging`.
+### 2. Leer el fichero
 
-Estructura mínima sugerida:
+Un módulo que abra `datos-comunes/jugadores.csv` con `pathlib` y `csv`, y entregue las filas. Nada de `split(",")`: la columna `player_positions` tiene comas dentro.
+
+### 3. Inferir el tipo de cada columna
+
+Para cada una de las 37 columnas, decidir si es **entero**, **decimal** o **texto**, mirando sus valores. Ojo: todo llega como texto, y una columna con huecos no puede ser entera si usas `int()` directamente.
+
+### 4. Calcular las estadísticas
+
+| Para todas las columnas | Para las numéricas | Para las de texto |
+| --- | --- | --- |
+| Valores vacíos y su porcentaje | Mínimo, máximo y media | Número de valores distintos |
+| Tipo inferido | | Los 5 más frecuentes |
+
+### 5. Escribir el informe y registrar los fallos
+
+Un `datos/informe_inicial.json` con todo lo anterior, y un recuento de las filas que no se han podido procesar y por qué, registrado con `logging`.
+
+### 6. Organizarlo como paquete
 
 ```text
 src/explorador/
 ├── __init__.py
-├── __main__.py       lee argumentos, llama a las funciones y guarda el informe
-├── lectura.py        leer el CSV o JSON con csv/json y pathlib
+├── __main__.py       se ejecuta con: python -m explorador
+├── lectura.py        abrir el CSV y entregar las filas
 ├── tipos.py          inferir el tipo de una columna
-└── estadisticas.py   vacíos, mínimos, máximos, medias y frecuencias
+├── estadisticas.py   vacíos, mínimos, máximos, medias y frecuencias
+└── informe.py        juntarlo todo y guardarlo
 ```
 
-No se permite pandas en este hito: el objetivo es que entiendas qué hace una biblioteca de datos por dentro antes de usarla.
+### Cómo saber que vas bien
 
-### 3. Entregables
+Compara tu informe con estas cifras. Las hemos sacado del mismo fichero, así que **te tienen que salir exactamente iguales**. Si una no cuadra, ahí tienes un fallo que encontrar.
 
-- Repositorio con `pyproject.toml`, `requirements.txt`, `docs/ficha_dataset.md`, el paquete `src/explorador/` y un `README.md` que explique cómo instalar y ejecutar.
+| Comprobación | Valor correcto |
+| --- | --- |
+| Filas leídas | 100.995 |
+| Columnas detectadas | 37 |
+| `overall`: mínimo, máximo y media | 40 · 94 · 65,81 |
+| `age`: mínimo, máximo y media | 16 · 47 · 25,07 |
+| Nacionalidades distintas | 179 |
+| Clubes distintos | 918 |
+| Nacionalidad más frecuente | England, con 9.555 jugadores |
+| Vacíos en `gk_diving` | 89.748 (88,9 %) |
+| Vacíos en `pace` | 11.247 (11,1 %) |
+| Vacíos en `release_clause_eur` | 51.644 (51,1 %) |
+| Vacíos en `joined` | 8.038 (8,0 %) |
+| Columnas con algún hueco | 16 de 37 |
+
+Y dos preguntas para comprobar que has entendido lo que has hecho, no solo que te salen los números:
+
+1. Los vacíos de `pace` (11,1 %) y los de `gk_diving` (88,9 %) suman 100 %. ¿Por qué?
+2. ¿Qué tipo ha deducido tu programa para `value_eur`? ¿Y qué pasaría si calcularas su media sin mirar antes la columna `fifa`?
+
+### Entregables
+
+- Repositorio con `pyproject.toml`, `docs/ficha_dataset.md`, el paquete `src/explorador/` y un `README.md` que explique cómo se instala y se ejecuta.
 - El fichero `datos/informe_inicial.json` generado.
 - Defensa oral breve (5 minutos): explicar una función del código elegida por el profesor.
 
-Fecha de entrega: a fijar por el profesor. Se propone antes del inicio de la UD3 (20/10/2026).
+Fecha de entrega: a fijar. Se propone antes del inicio de la UD3 (20/10/2026).
 
-### 4. Qué se evalúa
+### Qué se evalúa
 
 | CE | Evidencias en la práctica |
 | --- | --- |
 | 1a | Funciones con docstring y anotaciones de tipo; control de flujo claro, sin código repetido |
-| 1b | Estructura de datos adecuada a cada tarea: diccionarios para contar, conjuntos para valores distintos, listas para las filas |
-| 1c | Lectura con `csv` o `json` y `pathlib`, codificación explícita, escritura correcta del informe JSON |
+| 1b | Estructura de datos adecuada a cada tarea: diccionarios para contar, conjuntos para valores distintos |
+| 1c | Lectura con `csv` y `pathlib`, codificación explícita, escritura correcta del informe JSON |
 | 1d | Tratamiento de fichero inexistente y de valores no convertibles con excepciones concretas; uso de `logging` |
-| 1e | Paquete organizado en módulos, ejecutable con `python -m`, instalable en modo editable y con `requirements.txt` |
+| 1e | Paquete organizado en módulos, ejecutable con `python -m` e instalable en modo editable |
 
 ## Resumen de la unidad
 

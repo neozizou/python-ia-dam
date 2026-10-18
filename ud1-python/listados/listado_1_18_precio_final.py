@@ -1,18 +1,23 @@
-"""Listado 1.18. Valores por defecto y parámetros solo por nombre."""
+"""Listado 1.18. Parámetros por defecto y parámetros solo por nombre."""
 
 
-def precio_final(base: float, iva: float = 0.21, *, descuento: float = 0.0) -> float:
-    """Aplica el descuento y después el IVA.
+def coste_traspaso(valor: float, comision: float = 0.10, *,
+                   descuento: float = 0.0) -> float:
+    """Calcula lo que cuesta fichar a un jugador.
 
-    Los parámetros que siguen a * solo se pueden pasar por nombre.
+    Primero se aplica el descuento sobre el valor de mercado y después la
+    comisión del agente. Los parámetros que siguen a `*` solo se pueden pasar
+    por nombre, para que nadie escriba un 0.2 suelto sin decir qué significa.
     """
-    return round(base * (1 - descuento) * (1 + iva), 2)
+    return round(valor * (1 - descuento) * (1 + comision), 2)
 
 
-print(precio_final(100))                   # 121.0
-print(precio_final(100, 0.10))             # 110.0
-print(precio_final(100, descuento=0.2))    # 96.8
-print(precio_final(iva=0.04, base=50))     # 52.0  (por nombre, en cualquier orden)
+print(coste_traspaso(95_500_000))                      # 105050000.0
+print(coste_traspaso(95_500_000, 0.05))                # 100275000.0
+print(coste_traspaso(95_500_000, descuento=0.2))       # 84040000.0
 
-# Descomenta la línea siguiente para ver el TypeError:
-# precio_final(100, 0.21, 0.2)             # descuento debe ir por nombre
+# Esto falla a propósito: descuento no se puede pasar por posición.
+try:
+    coste_traspaso(95_500_000, 0.10, 0.2)
+except TypeError as error:
+    print("\nPor posición ->", error)

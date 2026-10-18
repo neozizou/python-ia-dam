@@ -1,17 +1,38 @@
-"""Listado 1.26. Crear, consultar, modificar y recorrer un diccionario."""
+"""Un diccionario para describir un jugador: cada dato con su nombre.
 
-alumno = {"nombre": "Ana", "nota": 6.5, "ciclo": "DAM"}
+Una lista guarda cosas en orden y se accede por posición. Un diccionario las
+guarda con una etiqueta y se accede por esa etiqueta, que es mucho más legible
+cuando cada dato significa algo distinto.
+"""
 
-print(alumno["nombre"])                   # 'Ana'
-# print(alumno["telefono"])               # descomenta para ver el KeyError
-print(alumno.get("email"))                # None: no lanza error
-print(alumno.get("email", "sin email"))   # valor alternativo
+# En una lista tendrías que acordarte de que la posición 3 es la media.
+messi_en_lista = ["L. Messi", 32, "FC Barcelona", 94]
+print("Con lista:      ", messi_en_lista[3])
 
-alumno["nota"] = 7.0                      # modificar
-alumno["email"] = "ana@example.com"       # añadir
-del alumno["email"]                       # eliminar
+# Con un diccionario, el propio código dice qué es cada cosa.
+messi = {
+    "nombre": "L. Messi",
+    "edad": 32,
+    "club": "FC Barcelona",
+    "media": 94,
+    "posiciones": ["RW", "CF", "ST"],
+}
+print("Con diccionario:", messi["media"])
 
-print("nota" in alumno)                   # True: busca entre las CLAVES
+# Leer una clave que no existe lanza KeyError; `get` devuelve None o lo que digas.
+print("\nPaís (no está):      ", messi.get("pais"))
+print("País con valor por defecto:", messi.get("pais", "desconocido"))
 
-for clave, valor in alumno.items():
-    print(f"{clave}: {valor}")
+# Añadir y modificar es asignar. No hay que declarar nada antes.
+messi["pais"] = "Argentina"
+messi["edad"] += 1
+print("\nTras un año:", messi["edad"], "años, país", messi["pais"])
+
+# Recorrer: por claves, por valores o por las dos cosas a la vez.
+print("\nFicha completa:")
+for clave, valor in messi.items():
+    print(f"  {clave:<12} {valor}")
+
+# Un valor puede ser cualquier cosa, incluida otra lista u otro diccionario.
+print("\nPrimera posición:", messi["posiciones"][0])
+print("¿Juega de portero?", "GK" in messi["posiciones"])

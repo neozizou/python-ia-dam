@@ -1,20 +1,33 @@
-"""Listado 3.2. Cargar un CSV y mirarlo por primera vez."""
+"""Cargar el fichero y mirarlo por primera vez.
+
+`read_csv` tiene más de cincuenta parámetros. En la práctica solo necesitas
+unos pocos, pero elegirlos bien ahorra mucha limpieza después.
+"""
 
 from pathlib import Path
 
 import pandas as pd
 
-ruta = Path("datos") / "ventas_2026.csv"
+RUTA = Path(__file__).resolve().parents[2] / "datos-comunes" / "jugadores.csv"
 
-ventas = pd.read_csv(
-    ruta,
-    sep=";",                    # separador español
-    decimal=",",                # coma decimal: 809,91 -> 809.91
-    parse_dates=["fecha"],      # convierte la columna a fechas
-    encoding="utf-8",
-)
+# La lectura mínima: pandas deduce el separador, los tipos y la cabecera.
+jugadores = pd.read_csv(RUTA)
+print("Filas y columnas:", jugadores.shape)
+print("Memoria:", f"{jugadores.memory_usage(deep=True).sum() / 1024**2:.1f} MB")
 
-print(ventas.shape)             # (filas, columnas)
-print(ventas.columns.tolist())
-print(ventas.head(3))
-print(ventas.dtypes)
+# Leer solo lo que hace falta: menos memoria y menos ruido.
+columnas = ["fifa", "short_name", "age", "nationality", "club",
+            "player_positions", "overall", "potential", "value_eur"]
+ligero = pd.read_csv(RUTA, usecols=columnas)
+print("\nCon usecols:", ligero.shape,
+      f"· {ligero.memory_usage(deep=True).sum() / 1024**2:.1f} MB")
+
+# Las fechas no se convierten solas: hay que pedirlo.
+con_fechas = pd.read_csv(RUTA, usecols=["short_name", "dob", "joined"],
+                         parse_dates=["dob", "joined"])
+print("\nTipos de las fechas:")
+print(con_fechas.dtypes.to_string())
+print("\nNacimiento del primer jugador:", con_fechas["dob"].iloc[0].date())
+
+# Las primeras filas, para ver qué pinta tiene.
+print("\n", ligero.head(3).to_string(index=False), sep="")

@@ -1,9 +1,15 @@
 """Listado 1.22. Ordenar con una función clave."""
 
-alumnos = [("Ana", 6.5), ("Luis", 4.0), ("Eva", 9.1)]
+jugadores = [("L. Messi", 94), ("Sergio Ramos", 89), ("J. Oblak", 91)]
 
-ranking = sorted(alumnos, key=lambda a: a[1], reverse=True)
-print(ranking)            # [('Eva', 9.1), ('Ana', 6.5), ('Luis', 4.0)]
+# key recibe cada elemento y devuelve el valor por el que se ordena.
+ranking = sorted(jugadores, key=lambda j: j[1], reverse=True)
+print(ranking)           # [('L. Messi', 94), ('J. Oblak', 91), ('Sergio Ramos', 89)]
 
-mejor = max(alumnos, key=lambda a: a[1])
-print(mejor)              # ('Eva', 9.1)
+mejor = max(jugadores, key=lambda j: j[1])
+print(mejor)             # ('L. Messi', 94)
+
+# Ordenar por dos criterios: primero por media (de mayor a menor) y, a igualdad,
+# por nombre alfabético. El menos solo vale para números.
+plantilla = [("Hazard", 91), ("De Bruyne", 91), ("Oblak", 91), ("Messi", 94)]
+print(sorted(plantilla, key=lambda j: (-j[1], j[0])))
