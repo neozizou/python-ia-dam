@@ -288,7 +288,7 @@ Con esto ya puedes leer directamente de la MariaDB del ciclo: cambia la URL y el
 ### Para practicar
 
 1. Carga la tabla `ciudad` y escribe una consulta que devuelva la facturación por provincia y canal.
-2. Mide con el `Cronometro` de la UD2 cuánto tarda la opción A y la opción B del listado 4.6. ¿Se nota con 1.200 filas?
+2. Mide con `time.perf_counter()` cuánto tarda la opción A y la opción B del listado 4.6. ¿Se nota con 1.200 filas?
 3. (A) Adapta el listado 4.7 para que lea la URL de un fichero `.env` (biblioteca `python-dotenv`) y añade ese fichero al `.gitignore`.
 
 ## 4.3 NoSQL: el modelo documental

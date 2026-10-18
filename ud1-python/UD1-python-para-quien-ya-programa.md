@@ -683,7 +683,7 @@ ranking = sorted(alumnos, key=lambda a: a[1], reverse=True)
 mejor = max(alumnos, key=lambda a: a[1])     # ('Eva', 9.1)
 ```
 
-Las funciones que reciben o devuelven otras funciones, y los decoradores que se construyen con ellas, se estudian a fondo en la UD2.
+Las funciones que reciben o devuelven otras funciones son la base de los decoradores, que verás aplicados en la UD2 (`@property`, `@dataclass`) y usarás en la UD3 con Streamlit.
 
 ### Para practicar
 

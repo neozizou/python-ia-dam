@@ -5,7 +5,7 @@ Este repositorio contiene los apuntes y el código del módulo optativo de 2.º 
 ## Contexto del módulo
 
 - 3 horas semanales (lunes 2 h, martes 1 h), del 16/09/2026 al 16/02/2027: 53 horas lectivas.
-- Unidades: UD1 Python (7 h) · UD2 POO (5 h) · UD3 Análisis de datos + Streamlit (10 h) · UD4 SQL y NoSQL (4 h) · UD5 Big Data (5 h) · UD6 Machine Learning (10 h) · UD7 Proyecto, despliegue y evaluación (9 h) · 3 h de colchón.
+- Unidades: UD1 Python (7 h) · UD2 POO (4 h) · UD3 Análisis de datos + Streamlit (10 h) · UD4 SQL y NoSQL (4 h) · UD5 Big Data (5 h) · UD6 Machine Learning (10 h) · UD7 Proyecto, despliegue y evaluación (9 h) · 4 h de colchón.
 - Proyecto integrador: cada alumno trabaja todo el curso con un mismo conjunto de datos real (hitos en el README raíz).
 - Entorno: Python 3.14, VS Code con las extensiones Python y Jupyter, un entorno virtual `.venv` por proyecto, paquetes en `src/` instalados con `pip install -e .`. Despliegue final en Streamlit Community Cloud.
 
@@ -42,11 +42,12 @@ tools/                    scripts del sitio y de las figuras
 - Las sesiones interactivas empiezan por `>>>` y no tienen fichero en `listados/`.
 - Recuadros con alertas de GitHub:
   - `> [!NOTE]` + `**Desde C++.**` para comparaciones con C++.
+  - `> [!NOTE]` + `**Desde Java.**` para comparaciones con Acceso a Datos, el módulo que el alumnado cursa en paralelo.
   - `> [!TIP]` para buenas prácticas.
   - `> [!WARNING]` para errores frecuentes.
   - `> [!IMPORTANT]` para reglas clave.
 - Tablas para comparaciones y referencias; prosa breve, frases de menos de 25 palabras.
-- Figuras: SVG en `udN-tema/figuras/`, generadas por `tools/generar_figuras.py` con los ayudantes de `tools/figuras.py`. Se insertan con `![pie](figuras/nombre.svg)` seguido de `*Figura N.M. Pie.*`, siempre después del texto que explican. Fondo claro propio, para que se lean en modo claro y oscuro.
+- Figuras: SVG en `udN-tema/figuras/`, generadas por `tools/generar_figuras.py` con los ayudantes de `tools/figuras.py`. Las que empiezan por `fig-N-M-` son copias sin modificar de las figuras del repositorio `ad-dam` (Acceso a Datos, CC0): no se regeneran y su pie cita de qué figura del otro módulo proceden. Se insertan con `![pie](figuras/nombre.svg)` seguido de `*Figura N.M. Pie.*`, siempre después del texto que explican. Fondo claro propio, para que se lean en modo claro y oscuro.
 - Enunciados de ejercicios: cuando el ejercicio tenga un resultado concreto, el enunciado incluye los datos de ejemplo y la salida esperada en un bloque de código. Un enunciado que no se pueda comprobar solo está mal escrito.
 - Todo dato tomado de la web se cita en línea con un enlace `([Fuente](url))` y se añade a la bibliografía de la unidad. Priorizar documentación oficial.
 
@@ -72,5 +73,6 @@ La carpeta `sitio/` contiene lo que personaliza el tema y **no** se copia a `doc
 ## Flujo de trabajo
 
 - El contenido de cada unidad se diseña con el profesor fuera del repositorio; aquí se incorpora ya revisado.
+- La UD2 usa como ejemplo la tienda de la UD0 de Acceso a Datos (`https://github.com/neozizou/ad-dam`). El paquete `ud2-poo/listados/tienda/` es su versión en Python y debe seguir reflejando el modelo de ese repositorio; se ejecuta con `python -m tienda.app` desde `listados/`.
 - Cambios en ramas `claude/…` y mediante pull request; nunca directamente sobre `main`.
 - No modificar los apuntes de una unidad ya impartida sin indicarlo en el mensaje de la pull request.

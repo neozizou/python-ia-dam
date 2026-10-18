@@ -89,7 +89,7 @@ Machine Learning:       datos + resultados -> reglas (el modelo)
 
 ### El vocabulario y la API
 
-Una fila es una **muestra**; las columnas con las que el modelo decide son las **características** (`X`); lo que se quiere predecir es el **objetivo** (`y`). scikit-learn mantiene la misma interfaz para todos sus modelos, la que ya construiste a mano en el listado 2.18 ([scikit-learn: Getting started](https://scikit-learn.org/stable/getting_started.html)).
+Una fila es una **muestra**; las columnas con las que el modelo decide son las **características** (`X`); lo que se quiere predecir es el **objetivo** (`y`). scikit-learn mantiene la misma interfaz para todos sus modelos, la del contrato `fit`/`transform` que ya conoces del listado 2.14 ([scikit-learn: Getting started](https://scikit-learn.org/stable/getting_started.html)).
 
 **Listado 6.1.** La API de scikit-learn · [ver fichero](listados/listado_6_01_api_sklearn.py)
 
@@ -190,7 +190,7 @@ modelo.fit(X_entrena, y_entrena)
 print(modelo.score(X_prueba, y_prueba))      # 0.619
 ```
 
-Un `Pipeline` es un objeto con `fit` y `predict` que por dentro encadena pasos: exactamente el patrón del listado 2.18. Sus ventajas no son estéticas:
+Un `Pipeline` es un objeto con `fit` y `predict` que por dentro encadena pasos: exactamente el patrón del listado 2.14, y el mismo que `ProductoService` con su repositorio. Sus ventajas no son estéticas:
 
 - Se guarda entero con el modelo, así que en producción no hay que recordar qué transformaciones se aplicaron.
 - La validación cruzada y la búsqueda de hiperparámetros lo tratan como un modelo más.

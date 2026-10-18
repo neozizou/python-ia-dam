@@ -625,7 +625,7 @@ Los elementos que necesitas para casi cualquier panel:
 | Otros | `st.download_button`, `st.warning`, `st.stop`, `st.set_page_config` |
 
 > [!TIP]
-> `@st.cache_data` es un decorador, como los de la UD2: guarda el resultado de la función y lo reutiliza mientras no cambien sus argumentos. Sin él, tu aplicación releería y limpiaría el CSV cada vez que alguien tocara un filtro.
+> `@st.cache_data` es un decorador, como el `@property` y el `@dataclass` de la UD2: envuelve la función sin tocarla. Este guarda el resultado y lo reutiliza mientras no cambien sus argumentos. Sin él, tu aplicación releería y limpiaría el CSV cada vez que alguien tocara un filtro.
 
 ### Publicar la aplicación
 
@@ -644,11 +644,11 @@ Streamlit Community Cloud publica aplicaciones desde un repositorio de GitHub de
 1. Añade al panel un filtro por producto y un cuarto indicador con las unidades totales.
 2. Sustituye `st.bar_chart` por un gráfico de seaborn mostrado con `st.pyplot(fig)`.
 3. Añade una pestaña con `st.tabs` que muestre la tabla de datos sin agregar.
-4. (A) Quita el decorador `@st.cache_data`, mide con el `Cronometro` de la UD2 cuánto tarda la carga y explica qué notas al mover los filtros.
+4. (A) Quita el decorador `@st.cache_data`, mide con `time.perf_counter()` cuánto tarda la carga y explica qué notas al mover los filtros.
 
 ## Práctica de la unidad · Hito 2 del proyecto integrador
 
-Toca aplicar todo esto a **tu** conjunto de datos, el que elegiste en el hito 0.
+Toca aplicar todo esto a **tu** conjunto de datos, el que elegiste en el hito 0. Trabajas dentro del paquete que dejaste instalado en el hito 1: los módulos nuevos de esta unidad van ahí, junto a los que ya tienes.
 
 ### 1. Limpieza reproducible
 

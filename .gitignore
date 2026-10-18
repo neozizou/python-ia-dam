@@ -26,6 +26,10 @@ dist/
 **/spark-warehouse/
 **/modelos/*.joblib
 **/datos/catalogo.json
+**/datos/catalogo_demo.csv
+**/datos/catalogo_grande.csv
+**/datos/catalogo_atomico.json*
+**/datos/prueba_with.txt
 **/salida/
 
 # Sistema y editores

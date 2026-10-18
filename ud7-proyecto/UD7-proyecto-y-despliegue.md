@@ -52,7 +52,7 @@ Los días 15 y 16 de febrero quedan de reserva: defensas orales y margen para lo
 | Hito | Unidad | Lo que produjo |
 | --- | --- | --- |
 | 0 | UD1 | Conjunto de datos elegido y explorador en Python puro |
-| 1 | UD2 | Explorador refactorizado a objetos |
+| 1 | UD2 | Explorador convertido en paquete instalable, con pruebas |
 | 2 | UD3 | Datos limpios, análisis exploratorio y primer panel publicado |
 | 3 | UD4 | Datos en una base de datos y consultas |
 | 4 | UD5 | Prueba de escala y conclusiones sobre el volumen |
@@ -120,6 +120,8 @@ Que otra persona, o tú dentro de seis meses, obtenga exactamente los mismos res
 3. (A) Borra tu entorno virtual, recréalo desde `requirements.txt` y comprueba que todo sigue funcionando. Si algo falla, falta en el fichero.
 
 ## 7.2 Del notebook al paquete
+
+Paquete ya tienes: lo montaste en el hito 1 y lo has ido ampliando desde la UD3. Lo que toca ahora es recoger dentro de él todo lo que se te ha quedado suelto por los notebooks de la UD3 y de la UD6.
 
 ### Una sola definición de cada cosa
 

@@ -730,6 +730,66 @@ def ud7_arquitectura() -> Figura:
     return f
 
 
+def ud2_java_python() -> Figura:
+    f = Figura(880, 452, "Correspondencia entre la forma de escribirlo en Java y en Python")
+    f.caja(20, 20, 395, 412, relleno=PANEL, borde=BORDE)
+    f.caja(465, 20, 395, 412, relleno=PANEL, borde=BORDE)
+    f.encabezado(40, 48, "Java · Acceso a Datos")
+    f.encabezado(485, 48, "Python · esta unidad")
+
+    filas = [
+        ("getNombre() / setPrecio()", "@property"),
+        ("record Categoria(...)", "@dataclass(frozen=True)"),
+        ("enum EstadoPedido", "class EstadoPedido(Enum)"),
+        ("equals / hashCode / toString", "__eq__ / __hash__ / __repr__"),
+        ("interface + implements", "Protocol, sin implements"),
+        ("Optional<Producto>", "Producto | None"),
+        ("BigDecimal", "decimal.Decimal"),
+        ("try (var f = ...) { }", "with ... as f:"),
+    ]
+    for i, (java, python) in enumerate(filas):
+        y = 70 + i * 44
+        f.etiqueta(40, y, 355, 36, java, AZUL, AZUL_CLARO, tam=12.5)
+        f.etiqueta(485, y, 355, 36, python, VERDE, VERDE_CLARO, tam=12.5)
+        f.flecha(420, y + 18, 460, y + 18)
+    return f
+
+
+def ud2_contrato_doble() -> Figura:
+    f = Figura(880, 400, "El mismo contrato en la tienda y en scikit-learn: "
+                         "quien lo usa no conoce ninguna clase concreta")
+    for x, titulo in ((20, "La tienda"), (460, "scikit-learn")):
+        f.caja(x, 20, 400, 360, relleno=PANEL, borde=BORDE)
+        f.encabezado(x + 20, 48, titulo)
+
+    def columna(x0: int, usuario: str, contrato: str, metodos: str,
+                izquierda: str, derecha: str) -> None:
+        f.etiqueta(x0 + 105, 68, 190, 42, usuario, AZUL, AZUL_CLARO, tam=13)
+        f.flecha(x0 + 200, 110, x0 + 200, 148)
+
+        f.caja(x0 + 45, 148, 310, 62, relleno=MORADO_CLARO, borde=MORADO, guiones="6 4")
+        f.texto(x0 + 200, 172, contrato, tam=13, anclaje="middle", mono=True, peso="600")
+        f.texto(x0 + 200, 193, metodos, tam=11.5, color=SUAVE, anclaje="middle", mono=True)
+
+        f.flecha(x0 + 200, 210, x0 + 118, 266)
+        f.flecha(x0 + 200, 210, x0 + 282, 266)
+        f.etiqueta(x0 + 40, 266, 156, 42, izquierda, VERDE, VERDE_CLARO, tam=11.5)
+        f.etiqueta(x0 + 204, 266, 156, 42, derecha, VERDE, VERDE_CLARO, tam=11.5)
+
+    columna(20, "ProductoService", "ProductoRepository",
+            "guardar · buscar · borrar · existe",
+            "...Memoria", "...Fichero")
+    columna(460, "Pipeline", "fit / transform",
+            "y fit / predict en el último paso",
+            "StandardScaler", "EscaladoPorMaximo")
+
+    f.nota(20 + 200, 345, "Cambiar de implementación", tam=12, anclaje="middle")
+    f.nota(20 + 200, 363, "no toca el código de arriba", tam=12, anclaje="middle")
+    f.nota(460 + 200, 345, "Un transformador propio encaja", tam=12, anclaje="middle")
+    f.nota(460 + 200, 363, "sin heredar de nada", tam=12, anclaje="middle")
+    return f
+
+
 def main() -> None:
     figuras = {
         (1, "variables-etiquetas"): ud1_variables,
@@ -739,6 +799,8 @@ def main() -> None:
         (2, "modelo-objetos"): ud2_modelo_objetos,
         (2, "herencia-mro"): ud2_mro,
         (2, "lista-vs-generador"): ud2_generadores,
+        (2, "java-python"): ud2_java_python,
+        (2, "contrato-doble"): ud2_contrato_doble,
         (3, "ciclo-del-dato"): ud3_ciclo,
         (3, "anatomia-dataframe"): ud3_dataframe,
         (3, "groupby"): ud3_groupby,

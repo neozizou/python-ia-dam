@@ -7,13 +7,10 @@
 ## Índice
 
 - [Presentación de la unidad](#presentación-de-la-unidad)
-- [2.1 Clases y objetos en Python](#21-clases-y-objetos-en-python)
-- [2.2 Encapsulación: propiedades y métodos de clase](#22-encapsulación-propiedades-y-métodos-de-clase)
-- [2.3 Herencia, polimorfismo y mixins](#23-herencia-polimorfismo-y-mixins)
-- [2.4 Contratos: clases abstractas y protocolos](#24-contratos-clases-abstractas-y-protocolos)
-- [2.5 El modelo de datos: métodos especiales, dataclasses y enumeraciones](#25-el-modelo-de-datos-métodos-especiales-dataclasses-y-enumeraciones)
-- [2.6 Protocolos del lenguaje: generadores, gestores de contexto y decoradores](#26-protocolos-del-lenguaje-generadores-gestores-de-contexto-y-decoradores)
-- [2.7 Diseño: composición frente a herencia](#27-diseño-composición-frente-a-herencia)
+- [2.1 Objetos ajenos: leer una API](#21-objetos-ajenos-leer-una-api)
+- [2.2 Clases propias: el modelo de la tienda](#22-clases-propias-el-modelo-de-la-tienda)
+- [2.3 Contratos sin herencia: un repositorio, dos implementaciones](#23-contratos-sin-herencia-un-repositorio-dos-implementaciones)
+- [2.4 Generadores y `with`](#24-generadores-y-with)
 - [Ampliación](#ampliación)
 - [Práctica de la unidad · Hito 1 del proyecto integrador](#práctica-de-la-unidad--hito-1-del-proyecto-integrador)
 - [Resumen de la unidad](#resumen-de-la-unidad)
@@ -22,9 +19,16 @@
 
 ## Presentación de la unidad
 
-Ya sabes qué es una clase: lo viste en C++ en 1.º. Esta unidad, de 5 horas, no repite la teoría de la orientación a objetos, sino que enseña **cómo la entiende Python**, que es bastante distinto: no hay `private`, los atributos se calculan con propiedades, la herencia múltiple es habitual y los objetos se integran en el lenguaje implementando métodos especiales.
+Ya sabes qué es una clase: lo viste en C++ en 1.º y lo estás usando en Java en Acceso a Datos. Esta unidad, de 4 horas, no repite la teoría de la orientación a objetos. Enseña dos cosas distintas:
 
-Todo lo que aparece aquí reaparece en el resto del curso. Los generadores permiten procesar ficheros grandes en la UD5, los gestores de contexto abren y cierran conexiones a bases de datos en la UD4, los decoradores son la forma de trabajar de Streamlit y el patrón `fit`/`transform` es el corazón de scikit-learn en la UD6.
+1. **Leer** los objetos de otra gente, que es lo que harás en el resto del módulo. `DataFrame`, `Pipeline` y `RandomForestRegressor` son clases ajenas, y casi todo tu trabajo a partir de la UD3 consiste en usarlas bien.
+2. **Escribir** lo poco que de verdad vas a escribir, y escribirlo como se escribe en Python, que no es como se escribe en Java.
+
+Para la segunda parte usamos un ejemplo que ya conoces: la **tienda** de la UD0 de Acceso a Datos. Allí la lees en Java; aquí la construyes en Python. El diseño está resuelto, así que puedes concentrarte en lo único que cambia: el idioma.
+
+![Dos columnas enfrentadas con flechas entre ellas. En Java: getNombre y setPrecio, record Categoria, enum EstadoPedido, equals y hashCode y toString, interface más implements, Optional de Producto, BigDecimal, y try con recursos. En Python, respectivamente: property, dataclass con frozen igual a True, una clase que hereda de Enum, los métodos especiales eq, hash y repr, Protocol sin implements, Producto o None, decimal.Decimal, y with.](figuras/java-python.svg)
+
+*Figura 2.1. Lo mismo, escrito de dos maneras. Es el mapa de la unidad.*
 
 ### Resultado de aprendizaje y criterios de evaluación
 
@@ -32,794 +36,978 @@ Todo lo que aparece aquí reaparece en el resto del curso. Los generadores permi
 
 | CE | Criterio de evaluación | Apartados |
 | --- | --- | --- |
-| 1a | Desarrolla programas en Python con variables, estructuras de control y funciones | 2.1, 2.2, 2.5 |
-| 1b | Utiliza estructuras de datos para organizar la información | 2.5, 2.6 |
-| 1e | Diseña, estructura y utiliza módulos y paquetes para organizar y reutilizar el código | 2.3, 2.4, 2.6, 2.7 |
+| 1a | Desarrolla programas en Python con variables, estructuras de control y funciones | 2.2 |
+| 1b | Utiliza estructuras de datos para organizar la información | 2.2, 2.4 |
+| 1e | Diseña, estructura y utiliza módulos y paquetes para organizar y reutilizar el código | 2.3, 2.4 |
 
-La orientación a objetos no aparece de forma explícita en los criterios, pero es el medio para cumplir 1a y 1e, y la condición para entender las bibliotecas de los RA2 y RA3.
+La orientación a objetos no aparece en los criterios. Está aquí porque sin ella no se entienden las bibliotecas de los RA2 y RA3, y porque el criterio 1e habla de organizar y reutilizar código, que es exactamente lo que resuelve el apartado 2.3.
 
 ### Temporalización
 
 | Sesión | Fecha | Horas | Contenidos |
 | --- | --- | --- | --- |
-| 1 | Lunes 05/10/2026 (2.ª hora) | 1 | 2.1 Clases y objetos |
-| 2 | Martes 06/10/2026 | 1 | 2.2 Encapsulación |
-| 3 | Martes 13/10/2026 | 1 | 2.3 Herencia y mixins · 2.4 Contratos |
-| 4 | Lunes 19/10/2026 | 2 | 2.5 Modelo de datos · 2.6 Protocolos · 2.7 Diseño |
+| 1 | Lunes 05/10/2026 (2.ª hora) | 1 | 2.1 Objetos ajenos |
+| 2 | Martes 06/10/2026 | 1 | 2.2 Producto, validación y propiedades |
+| 3 | Martes 13/10/2026 | 1 | 2.2 Dataclass, enumeraciones e igualdad · 2.3 El contrato |
+| 4 | Lunes 19/10/2026 (1.ª hora) | 1 | 2.3 Las dos implementaciones · 2.4 Generadores y `with` |
 
-El lunes 12/10 es festivo. La práctica de la unidad se trabaja de forma autónoma y se entrega junto con el hito 1 del proyecto.
+El lunes 12/10 es festivo. La 2.ª hora del lunes 19/10 queda de colchón: repaso y arranque del hito 1. La UD3 empieza el martes 20/10.
+
+### Qué se queda fuera, y por qué
+
+Python tiene herencia múltiple, mixins, sobrecarga de operadores y decoradores propios. Son interesantes y están al final, en [Ampliación](#ampliación), pero **no se dan en clase ni entran en la práctica**: en las unidades 3 a 7 de este módulo no se usan ni una vez. Lo que sí se usa constantemente es lo de los cuatro apartados de arriba.
+
+### El ejemplo: la tienda
+
+Es el mismo de Acceso a Datos. Allí, el modelo completo tiene clientes, pedidos y líneas de pedido; nosotros trabajamos la parte del catálogo, que es la que da juego para lo que queremos enseñar.
+
+![Diagrama de clases: Cliente realiza Pedido (1 a muchos); Pedido se compone de LineaPedido (1 a 1 o varias); cada LineaPedido apunta a un Producto (muchos a 1); cada Producto pertenece a una Categoria (muchos a 1). Pedido tiene un atributo estado de tipo EstadoPedido, un enumerado. Una nota explica que Pedido y Producto mantienen una relación de muchos a muchos resuelta con LineaPedido.](figuras/fig-0-12-modelo-tienda.svg)
+
+*Figura 2.2. El modelo de la tienda. Es la Figura 0.12 de Acceso a Datos, sin cambios.*
+
+> [!IMPORTANT]
+> La tienda es el ejemplo de los apuntes, no tu proyecto. Tu proyecto integrador sigue siendo el conjunto de datos que elegiste en el hito 0, y la práctica de esta unidad trabaja sobre él.
+
+### Requisitos previos
+
+- La UD1 completa: funciones, estructuras de datos, ficheros, módulos y paquetes.
+- El entorno del módulo: VS Code, un `.venv` activado y las dependencias instaladas.
+- Haber leído el apartado 0.5 de Acceso a Datos (clases y objetos en Java). No es imprescindible, pero los recuadros «Desde Java» se entienden mejor.
 
 ### Cómo usar esta carpeta
 
 | Carpeta | Contenido |
 | --- | --- |
-| [`listados/`](listados/) | Los 18 listados de la unidad como ficheros `.py`, con los datos de ejemplo en `listados/datos/` |
+| [`listados/tienda/`](listados/tienda/) | El paquete de la tienda: `modelo.py`, `formatos.py`, `repositorio.py`, `servicio.py` y `app.py` |
+| [`listados/`](listados/) | Los listados sueltos de la unidad como ficheros `.py` |
+| [`figuras/`](figuras/) | Las figuras, en SVG |
 
-Ejecuta los listados desde `ud2-poo/listados/`, con el entorno virtual activado:
+Los listados se ejecutan desde `ud2-poo/listados/`, con el entorno virtual activado:
 
 ```bash
 cd ud2-poo/listados
-python listado_2_08_abc.py
+python listado_2_04_producto_en_uso.py
+python -m tienda.app                     # el paquete completo, en marcha
 ```
 
-## 2.1 Clases y objetos en Python
+## 2.1 Objetos ajenos: leer una API
 
-Una clase se define con `class` y sus métodos reciben siempre como primer parámetro el objeto sobre el que se llaman, que por convenio se llama `self`. No hay fichero de cabecera, ni declaración de atributos: los atributos de instancia **nacen al asignarlos**, normalmente dentro de `__init__` ([The Python Tutorial](https://docs.python.org/3/tutorial/classes.html)).
+Antes de escribir una clase conviene saber leer las que ya existen, porque en este módulo vas a usar muchas más de las que escribes. La distinción fundamental es sencilla: un **atributo** es un dato que el objeto ya tiene y se escribe sin paréntesis; un **método** es algo que el objeto hace cuando se lo pides y lleva paréntesis ([The Python Tutorial: Classes](https://docs.python.org/3/tutorial/classes.html)).
 
-**Listado 2.1.** Una clase mínima: atributos de instancia y de clase · [ver fichero](listados/listado_2_01_clase_alumno.py)
+![Una clase Producto con dos instancias. La clase define los atributos y los métodos; cada instancia guarda sus propios valores y comparte los métodos de la clase.](figuras/modelo-objetos.svg)
+
+*Figura 2.3. Una clase define la forma; cada objeto guarda sus propios datos.*
+
+**Listado 2.1.** Atributo o método: cómo distinguirlos en un `DataFrame` · [ver fichero](listados/listado_2_01_objetos_ajenos.py)
 
 ```python
-class Alumno:
-    """Representa a un alumno matriculado en un ciclo."""
+import pandas as pd
 
-    centro = "C.E.S. DAM"          # atributo de CLASE: compartido por todas las instancias
+ventas = pd.DataFrame({
+    "ciudad": ["Granada", "Sevilla", "Granada", "Málaga"],
+    "unidades": [12, 7, 5, 9],
+    "importe": [240.0, 133.0, 95.0, 171.0],
+})
 
-    def __init__(self, nombre: str, nota: float):
-        self.nombre = nombre       # atributos de INSTANCIA: uno por objeto
-        self.nota = nota
+# Atributo: un dato que el objeto ya tiene. Sin paréntesis.
+print("shape   ", ventas.shape)
+print("columns ", list(ventas.columns))
 
-    def ha_aprobado(self) -> bool:
-        """Indica si la nota llega al 5."""
-        return self.nota >= 5
+# Método: algo que el objeto hace cuando se lo pides. Con paréntesis.
+print(ventas.head(2))
 
-
-ana = Alumno("Ana", 6.5)
-luis = Alumno("Luis", 4.0)
-
-print(ana.nombre, ana.ha_aprobado())     # Ana True
-print(ana.centro, luis.centro)           # C.E.S. DAM C.E.S. DAM
+# El error te dice cuál es cuál.
+try:
+    ventas.shape()
+except TypeError as error:
+    print("ventas.shape() ->", type(error).__name__, "-", error)
 ```
-
-- `__init__` no es un constructor como el de C++: el objeto ya existe cuando se llama, y `__init__` solo lo inicializa.
-- `self` es **explícito** en la definición, pero no se pasa al llamar: `ana.ha_aprobado()` equivale a `Alumno.ha_aprobado(ana)`.
-- Un atributo de clase es único y compartido. Si escribes `ana.centro = "Otro"`, no cambias el de la clase: creas un atributo de instancia que lo tapa solo para `ana`.
-- No hay destructor equivalente a `~Alumno()`. La memoria se libera sola; para liberar recursos se usan gestores de contexto (apartado 2.6).
-
-![Un atributo de clase es único y compartido; los de instancia, uno por objeto.](figuras/modelo-objetos.svg)
-
-*Figura 2.1. Un atributo de clase es único y compartido; los de instancia, uno por objeto.*
-
-> [!NOTE]
-> **Desde C++.** En Python todo es un objeto, incluidas las clases, las funciones y los módulos. No existen `struct`, plantillas ni sobrecarga de métodos por tipo de parámetro: una clase tiene un solo `__init__`, y las variantes se resuelven con valores por defecto o con constructores alternativos (apartado 2.2).
-
-### No existe `private`
-
-Python no tiene modificadores de acceso. La visibilidad se expresa con convenios que el lenguaje no impone: un guion bajo inicial significa «uso interno, no lo toques». Dos guiones bajos activan el *name mangling*, que renombra el atributo para evitar colisiones en las subclases, pero tampoco lo oculta ([The Python Tutorial](https://docs.python.org/3/tutorial/classes.html#private-variables)).
-
-**Listado 2.2.** No hay `private`: hay convenios · [ver fichero](listados/listado_2_02_visibilidad.py)
-
-```python
-class Conexion:
-    def __init__(self, servidor: str, clave: str):
-        self.servidor = servidor       # público
-        self._intentos = 0             # «no lo toques»: convenio
-        self.__clave = clave           # name mangling: pasa a _Conexion__clave
-
-    def mostrar_clave_oculta(self) -> str:
-        return "*" * len(self.__clave)
-
-
-c = Conexion("mariadb.local", "secreto")
-
-print(c._intentos)              # 0: Python te deja, pero no deberías
-# print(c.__clave)              # AttributeError
-print(c._Conexion__clave)       # 'secreto': el mangling no es seguridad
-```
-
-### Para practicar
-
-1. Escribe la clase `Modulo` con `nombre`, `horas` y una lista de `notas`. Añade los métodos `añadir_nota(nota)` y `media()`.
-2. Añade a `Alumno` un atributo de clase `total` que cuente cuántos objetos se han creado. Compruébalo creando tres alumnos.
-3. (A) Traduce a Python esta clase de C++ y explica qué se pierde y qué se gana:
-
-```cpp
-class Punto {
-private:
-    double x, y;
-public:
-    Punto(double x, double y) : x(x), y(y) {}
-    double distanciaAlOrigen() const;
-};
-```
-
-## 2.2 Encapsulación: propiedades y métodos de clase
-
-En C++ se escriben *getters* y *setters* para controlar el acceso. En Python eso se considera ruido: se empieza con atributos públicos y, si más adelante hace falta validar o calcular algo, se convierte el atributo en **propiedad** sin cambiar el código que ya lo usaba.
-
-**Listado 2.3.** Encapsulación con `@property` · [ver fichero](listados/listado_2_03_property.py)
-
-```python
-class Alumno:
-    def __init__(self, nombre: str, nota: float):
-        self.nombre = nombre
-        self.nota = nota            # pasa por el setter, así que también valida
-
-    @property
-    def nota(self) -> float:
-        """Nota entre 0 y 10."""
-        return self._nota
-
-    @nota.setter
-    def nota(self, valor: float) -> None:
-        if not 0 <= valor <= 10:
-            raise ValueError(f"Nota fuera de rango: {valor}")
-        self._nota = valor
-
-    @property
-    def calificacion(self) -> str:
-        """Atributo calculado: no se almacena, se deduce de la nota."""
-        if self._nota < 5:
-            return "Insuficiente"
-        if self._nota < 7:
-            return "Bien"
-        return "Notable o superior"
-
-
-ana = Alumno("Ana", 6.5)
-print(ana.nota, ana.calificacion)    # 6.5 Bien
-ana.nota = 9.0                       # se usa como un atributo normal
-ana.nota = 11                        # ValueError: Nota fuera de rango: 11
-```
-
-Fíjate en `calificacion`: una propiedad **sin setter** es un atributo de solo lectura que se calcula cada vez. Es el mismo mecanismo que usan pandas (`df.shape`) y scikit-learn.
-
-### Métodos de clase y métodos estáticos
-
-| Decorador | Primer parámetro | Para qué sirve |
-| --- | --- | --- |
-| *(ninguno)* | `self`, la instancia | Métodos normales, que usan los datos del objeto |
-| `@classmethod` | `cls`, la clase | Constructores alternativos: crear objetos desde otro formato |
-| `@staticmethod` | *(ninguno)* | Funciones auxiliares relacionadas con la clase, que no usan sus datos |
-
-**Listado 2.4.** Constructores alternativos y métodos estáticos · [ver fichero](listados/listado_2_04_classmethod.py)
-
-```python
-class Venta:
-    def __init__(self, ciudad: str, producto: str, unidades: int, precio: float):
-        self.ciudad = ciudad
-        self.producto = producto
-        self.unidades = unidades
-        self.precio = precio
-
-    @classmethod
-    def desde_fila_csv(cls, fila: dict) -> "Venta":
-        """Crea una Venta a partir de una fila de csv.DictReader."""
-        return cls(
-            ciudad=fila["ciudad"],
-            producto=fila["producto"],
-            unidades=int(fila["unidades"]),
-            precio=cls.a_float(fila["precio"]),
-        )
-
-    @staticmethod
-    def a_float(texto: str) -> float:
-        """Convierte un número en formato español ('1.234,56') en float."""
-        return float(texto.replace(".", "").replace(",", "."))
-
-    @property
-    def importe(self) -> float:
-        return round(self.unidades * self.precio, 2)
-
-
-fila = {"ciudad": "Granada", "producto": "monitor", "unidades": "2", "precio": "180,00"}
-venta = Venta.desde_fila_csv(fila)
-print(venta.importe)                    # 360.0
-```
-
-Un `@classmethod` es la alternativa pythónica a la sobrecarga de constructores de C++: en lugar de varios `Venta(...)`, tienes `Venta.desde_fila_csv(...)`, `Venta.desde_json(...)`, y cada uno dice en su nombre lo que hace. Usa `cls(...)` y no `Venta(...)` para que siga funcionando en las subclases.
-
-### Para practicar
-
-1. Convierte `horas` de la clase `Modulo` en una propiedad que rechace valores negativos.
-2. Añade a `Modulo` la propiedad de solo lectura `aprobados`, que devuelva cuántas notas llegan al 5.
-3. Añade un `@classmethod` llamado `desde_texto` que cree un `Modulo` a partir de una cadena como `"Programación;192"`.
-4. (A) Busca en la documentación de pandas tres propiedades de un `DataFrame` (por ejemplo, `shape`, `columns` y `dtypes`) y explica por qué son propiedades y no métodos.
-
-## 2.3 Herencia, polimorfismo y mixins
-
-La sintaxis es más corta que en C++ y no hay que declarar los métodos como virtuales: **todos** se pueden sobrescribir.
-
-**Listado 2.5.** Herencia y `super()` · [ver fichero](listados/listado_2_05_herencia.py)
-
-```python
-class Persona:
-    def __init__(self, nombre: str, dni: str):
-        self.nombre = nombre
-        self.dni = dni
-
-    def presentarse(self) -> str:
-        return f"Soy {self.nombre}"
-
-
-class Alumno(Persona):
-    def __init__(self, nombre: str, dni: str, ciclo: str):
-        super().__init__(nombre, dni)     # llama al __init__ de Persona
-        self.ciclo = ciclo
-
-    def presentarse(self) -> str:         # sobrescribe el método
-        return f"{super().presentarse()} y estudio {self.ciclo}"
-```
-
-- `super()` da acceso a la implementación de la clase padre, tanto en `__init__` como en cualquier otro método.
-- `isinstance(objeto, Clase)` e `issubclass(A, B)` responden a las preguntas de parentesco.
-
-### Polimorfismo sin herencia: *duck typing*
-
-En C++ el polimorfismo exige una jerarquía común. En Python basta con que el objeto tenga el método que vas a llamar: «si camina como un pato y grazna como un pato, es un pato».
-
-**Listado 2.6.** *Duck typing* · [ver fichero](listados/listado_2_06_duck_typing.py)
-
-```python
-class LectorCSV:
-    def leer(self) -> list[dict]:
-        return [{"ciudad": "Granada", "importe": 2699.7}]
-
-
-class ApiSimulada:                 # no hereda de nada, pero sirve igual
-    def leer(self) -> list[dict]:
-        return [{"ciudad": "Sevilla", "importe": 899.9}]
-
-
-def cargar(origen) -> list[dict]:
-    """Funciona con cualquier objeto que tenga un método leer()."""
-    return origen.leer()
-```
-
-Esto explica por qué en la UD6 podrás cambiar `LinearRegression()` por `RandomForestRegressor()` sin tocar el resto del programa: todos los modelos de scikit-learn tienen `fit` y `predict`.
-
-### Herencia múltiple, MRO y mixins
-
-Python permite heredar de varias clases. Para evitar ambigüedades, calcula el **MRO** (*Method Resolution Order*), el orden en que busca cada atributo ([The Python Tutorial](https://docs.python.org/3/tutorial/classes.html#multiple-inheritance)). El uso más frecuente son los **mixins**: clases pequeñas que aportan una capacidad concreta y no se usan solas.
-
-**Listado 2.7.** Herencia múltiple, mixins y MRO · [ver fichero](listados/listado_2_07_mixin_mro.py)
-
-```python
-import json
-
-
-class ExportableJSONMixin:
-    """Añade exportación a JSON a cualquier clase con __dict__."""
-
-    def a_json(self) -> str:
-        return json.dumps(self.__dict__, ensure_ascii=False)
-
-
-class Registrable:
-    def describir(self) -> str:
-        return f"{type(self).__name__} con {len(self.__dict__)} atributos"
-
-
-class Venta(ExportableJSONMixin, Registrable):
-    def __init__(self, ciudad: str, importe: float):
-        self.ciudad = ciudad
-        self.importe = importe
-
-
-v = Venta("Granada", 3059.7)
-print(v.a_json())          # {"ciudad": "Granada", "importe": 3059.7}
-print(Venta.__mro__)       # Venta -> ExportableJSONMixin -> Registrable -> object
-```
-
-![Con herencia múltiple, el MRO fija el orden en el que Python busca cada método.](figuras/herencia-mro.svg)
-
-*Figura 2.2. Con herencia múltiple, el MRO fija el orden en el que Python busca cada método.*
-
-> [!TIP]
-> Un mixin se nombra con el sufijo `Mixin`, no define `__init__` y resuelve una sola cosa. scikit-learn está construido así: sus transformadores heredan de `BaseEstimator` y de `TransformerMixin`, que es quien les regala el método `fit_transform`.
-
-### Para practicar
-
-1. Crea `Vehiculo` con `matricula` y `ruedas`, y las subclases `Coche` y `Moto`. Sobrescribe un método `describir()` en cada una.
-2. Escribe una función que reciba una lista de objetos cualesquiera con método `describir()` y los imprima. Comprueba que funciona con clases sin parentesco.
-3. Escribe un mixin `ComparablePorImporteMixin` que añada el método `mas_caro_que(otro)`.
-4. (A) Ejecuta el listado 2.7 y explica el MRO que imprime. ¿Qué pasaría si las dos clases padre tuvieran un método con el mismo nombre?
-
-## 2.4 Contratos: clases abstractas y protocolos
-
-Cuando varias clases deben ofrecer la misma interfaz, conviene escribirlo en el código. Python tiene dos formas de hacerlo.
-
-### Clases abstractas (`abc`)
-
-Una clase que hereda de `ABC` y marca métodos con `@abstractmethod` **no se puede instanciar**, y obliga a sus subclases a implementarlos. Es el equivalente a una clase con métodos virtuales puros en C++ ([docs.python.org, abc](https://docs.python.org/3/library/abc.html)).
-
-**Listado 2.8.** El contrato de un lector de datos · [ver fichero](listados/listado_2_08_abc.py)
-
-```python
-from abc import ABC, abstractmethod
-
-
-class Lector(ABC):
-    """Contrato común: todo lector sabe leer y devolver filas."""
-
-    def __init__(self, ruta: Path):
-        self.ruta = ruta
-
-    @abstractmethod
-    def leer(self) -> list[dict]:
-        """Devuelve las filas del fichero como lista de diccionarios."""
-
-    def resumen(self) -> str:                 # método concreto heredado por todos
-        return f"{self.ruta.name}: {len(self.leer())} filas"
-
-
-class LectorCSV(Lector):
-    def __init__(self, ruta: Path, delimitador: str = ";"):
-        super().__init__(ruta)
-        self.delimitador = delimitador
-
-    def leer(self) -> list[dict]:
-        with self.ruta.open(encoding="utf-8", newline="") as f:
-            return list(csv.DictReader(f, delimiter=self.delimitador))
-```
-
-Al intentar `Lector(ruta)` Python responde:
 
 ```text
-TypeError: Can't instantiate abstract class Lector without an implementation for abstract method 'leer'
+shape    (4, 3)
+columns  ['ciudad', 'unidades', 'importe']
+    ciudad  unidades  importe
+0  Granada        12    240.0
+1  Sevilla         7    133.0
+ventas.shape() -> TypeError - 'tuple' object is not callable
 ```
 
-Una clase abstracta puede mezclar métodos abstractos, que cada subclase escribe, y métodos concretos como `resumen()`, que todas heredan. Ese reparto es el patrón plantilla, y lo verás otra vez en el listado 2.18.
-
-### Protocolos (`typing.Protocol`)
-
-Un protocolo describe la interfaz **sin herencia**: cualquier clase que tenga esos métodos encaja. Es el *duck typing* puesto por escrito para que el editor pueda comprobarlo ([docs.python.org, typing](https://docs.python.org/3/library/typing.html#typing.Protocol)).
-
-**Listado 2.9.** `typing.Protocol` · [ver fichero](listados/listado_2_09_protocol.py)
-
-```python
-from typing import Protocol
-
-
-class Leible(Protocol):
-    """Cualquier objeto con este método encaja, herede o no de aquí."""
-
-    def leer(self) -> list[dict]: ...
-
-
-class LectorMemoria:                       # no hereda de Leible
-    def leer(self) -> list[dict]:
-        return [{"ciudad": "Granada", "importe": 2699.7}]
-
-
-def cargar(origen: Leible) -> int:
-    """El editor avisa si le pasas algo sin método leer()."""
-    return len(origen.leer())
-```
-
-| Usa… | Cuando… |
-| --- | --- |
-| Clase abstracta | Las clases son tuyas, comparten código y quieres obligar a implementar métodos |
-| `Protocol` | Solo te importa la forma del objeto, y puede venir de otra biblioteca |
-
-### Para practicar
-
-1. Añade `LectorJSON` a la jerarquía del listado 2.8 y comprueba que `resumen()` funciona sin escribirlo de nuevo.
-2. Crea una clase abstracta `Exportador` con el método abstracto `exportar(datos, ruta)` e impleméntala para CSV y para JSON.
-3. (A) Escribe un `Protocol` llamado `Modelo` con `fit(x, y)` y `predict(x)`, y una clase que lo cumpla sin heredar de él. Explica qué relación tiene con scikit-learn.
-
-## 2.5 El modelo de datos: métodos especiales, dataclasses y enumeraciones
-
-Los **métodos especiales** o *dunder* (por *double underscore*) conectan tus objetos con la sintaxis del lenguaje: `print`, `+`, `==`, `len()`, `for`, `in`. No se llaman directamente; Python los llama por ti ([docs.python.org, Data model](https://docs.python.org/3/reference/datamodel.html#special-method-names)).
-
-| Método | Lo invoca… | Equivalente en C++ |
-| --- | --- | --- |
-| `__init__` | Crear el objeto | Constructor |
-| `__repr__` | `repr(obj)`, la consola | — |
-| `__str__` | `print(obj)`, `str(obj)` | `operator<<` |
-| `__eq__`, `__lt__` | `==`, `<`, `sorted` | `operator==`, `operator<` |
-| `__add__` | `+` | `operator+` |
-| `__len__` | `len(obj)` | `size()` |
-| `__getitem__` | `obj[i]` | `operator[]` |
-| `__iter__` | `for x in obj` | Iteradores |
-| `__contains__` | `x in obj` | — |
-| `__call__` | `obj(...)` | `operator()` |
-
-**Listado 2.10.** Que tus objetos se comporten como los nativos · [ver fichero](listados/listado_2_10_dunder_dinero.py)
-
-```python
-from functools import total_ordering
-
-
-@total_ordering                      # genera <=, >, >= a partir de __eq__ y __lt__
-class Importe:
-    def __init__(self, euros: float):
-        self.euros = round(euros, 2)
-
-    def __repr__(self) -> str:       # para el programador (depuración)
-        return f"Importe({self.euros})"
-
-    def __str__(self) -> str:        # para el usuario (print)
-        return f"{self.euros:.2f} €"
-
-    def __eq__(self, otro) -> bool:
-        return isinstance(otro, Importe) and self.euros == otro.euros
-
-    def __lt__(self, otro) -> bool:
-        return self.euros < otro.euros
-
-    def __add__(self, otro) -> "Importe":
-        return Importe(self.euros + otro.euros)
-
-
-print(Importe(899.90) + Importe(180.00))     # 1079.90 €
-print(sorted([Importe(899.9), Importe(180.0)]))   # [Importe(180.0), Importe(899.9)]
-```
-
-**Listado 2.11.** Una clase que se comporta como una colección · [ver fichero](listados/listado_2_11_coleccion.py)
-
-```python
-class Dataset:
-    """Colección de filas (diccionarios) con la interfaz de una secuencia."""
-
-    def __init__(self, filas: list[dict]):
-        self._filas = filas
-
-    def __len__(self) -> int:
-        return len(self._filas)
-
-    def __getitem__(self, indice):
-        return self._filas[indice]          # admite índices y rebanadas
-
-    def __iter__(self):
-        return iter(self._filas)
-
-    def __contains__(self, ciudad: str) -> bool:
-        return any(f["ciudad"] == ciudad for f in self._filas)
-
-    def __repr__(self) -> str:
-        return f"Dataset({len(self)} filas)"
-```
-
-Con esos cuatro métodos, `Dataset` ya admite `len(datos)`, `datos[0]`, `datos[:2]`, `for fila in datos` y `"Málaga" in datos`. Es exactamente la sensación que da un `DataFrame` de pandas: se comporta como una colección del lenguaje porque implementa estos métodos.
-
-### `dataclasses`: clases de datos sin código repetitivo
-
-Muchas clases solo agrupan datos. El decorador `@dataclass` genera por ti `__init__`, `__repr__` y `__eq__` a partir de las anotaciones de tipo ([docs.python.org, dataclasses](https://docs.python.org/3/library/dataclasses.html)).
-
-**Listado 2.12.** `dataclasses` · [ver fichero](listados/listado_2_12_dataclass.py)
-
-```python
-from dataclasses import asdict, dataclass, field
-
-
-@dataclass(order=True)
-class Venta:
-    ciudad: str
-    producto: str
-    unidades: int
-    precio: float
-    etiquetas: list[str] = field(default_factory=list)   # nunca una lista literal
-
-    @property
-    def importe(self) -> float:
-        return round(self.unidades * self.precio, 2)
-
-
-v1 = Venta("Granada", "portátil", 3, 899.90)
-print(v1)             # Venta(ciudad='Granada', producto='portátil', unidades=3, …)
-print(asdict(v1))     # dict listo para json.dump
-```
-
-- `order=True` genera además las comparaciones, que ordenan campo por campo.
-- `frozen=True` crea objetos inmutables, que pueden usarse como claves de un diccionario.
-- `field(default_factory=list)` es la solución correcta a la trampa del listado 1.20: cada objeto recibe su propia lista.
-
-### Enumeraciones
-
-Cuando un valor solo puede tomar unos pocos valores fijos, una enumeración evita las cadenas sueltas y los errores de escritura ([docs.python.org, enum](https://docs.python.org/3/library/enum.html)).
-
-**Listado 2.13.** Enumeraciones · [ver fichero](listados/listado_2_13_enum.py)
-
-```python
-from enum import Enum
-
-
-class Estado(Enum):
-    MATRICULADO = "matriculado"
-    APROBADO = "aprobado"
-    SUSPENSO = "suspenso"
-
-
-estado = Estado.APROBADO
-print(estado.name, estado.value)      # APROBADO aprobado
-print(Estado("suspenso"))             # Estado.SUSPENSO: desde el valor
-```
-
-### Para practicar
-
-1. Añade a `Importe` el método `__sub__` y comprueba que `Importe(10) - Importe(3)` funciona.
-2. Reescribe la clase `Venta` del listado 2.4 como `dataclass` y comprueba que el resultado es equivalente.
-3. Amplía `Dataset` con un método `filtrar(ciudad)` que devuelva otro `Dataset`, y comprueba que se puede encadenar.
-4. (A) Explica la diferencia entre `__str__` y `__repr__` con un ejemplo en el que ambos devuelvan cosas distintas. ¿Cuál se usa dentro de una lista?
-
-## 2.6 Protocolos del lenguaje: generadores, gestores de contexto y decoradores
-
-Tres mecanismos que ya has usado sin saber cómo funcionaban y que ahora vas a escribir tú.
-
-### Generadores
-
-Una función con `yield` no devuelve un valor: devuelve un **generador**, que produce los valores de uno en uno y solo cuando se le piden. Es la base del procesamiento de ficheros grandes, porque no carga nada en memoria.
-
-**Listado 2.14.** Iteradores y generadores · [ver fichero](listados/listado_2_14_generadores.py)
-
-```python
-import csv
-from pathlib import Path
-from typing import Iterator
-
-
-def filas_csv(ruta: Path) -> Iterator[dict]:
-    """Devuelve las filas de una en una; no carga el fichero entero."""
-    with ruta.open(encoding="utf-8", newline="") as f:
-        for fila in csv.DictReader(f, delimiter=";"):
-            yield fila          # yield: entrega un valor y espera al siguiente next()
-
-
-generador = filas_csv(Path("datos") / "ventas.csv")
-print(next(generador)["ciudad"])          # Granada: solo se ha leído una línea
-
-# Expresión generadora: como una comprensión, pero perezosa
-unidades = (f["unidades"] for f in filas_csv(ruta) if f["unidades"])
-print(sum(int(u) for u in unidades))      # 19
-```
+`'tuple' object is not callable` es uno de los errores que más vas a ver este curso, y siempre significa lo mismo: has puesto paréntesis a algo que no es una función.
 
 > [!TIP]
-> La diferencia entre `[f for f in filas]` y `(f for f in filas)` es enorme con ficheros grandes: los corchetes construyen la lista completa en memoria; los paréntesis no construyen nada hasta que recorres el resultado. En la UD5 usaremos esta idea para tratar volúmenes que no caben en el ordenador.
+> `dir(objeto)` lista todo lo que tiene dentro y `help(objeto.metodo)` muestra su documentación sin salir del intérprete. En VS Code, `Ctrl+Espacio` hace lo mismo mientras escribes.
 
-![Una lista guarda todas las filas a la vez; un generador entrega una y olvida la anterior.](figuras/lista-vs-generador.svg)
+### El convenio de scikit-learn
 
-*Figura 2.3. Una lista guarda todas las filas a la vez; un generador entrega una y olvida la anterior.*
+Las bibliotecas serias son predecibles. En scikit-learn, **lo que tú decides va en el constructor** y **lo que el objeto aprende aparece después, con un guion bajo final** ([Developing scikit-learn estimators](https://scikit-learn.org/stable/developers/develop.html)). Reconocer ese convenio te ahorra media UD6.
 
-### Gestores de contexto
-
-`with` funciona con cualquier objeto que implemente `__enter__` y `__exit__`. Es el equivalente de RAII en C++: garantiza que la liberación ocurre aunque salte una excepción ([docs.python.org, contextlib](https://docs.python.org/3/library/contextlib.html)).
-
-**Listado 2.15.** `with` para tus propios objetos · [ver fichero](listados/listado_2_15_context_manager.py)
+**Listado 2.2.** Parámetros al construir, atributos al aprender · [ver fichero](listados/listado_2_02_estimador.py)
 
 ```python
-import time
-from contextlib import contextmanager
+from sklearn.ensemble import RandomForestRegressor
+
+bosque = RandomForestRegressor(n_estimators=50, max_depth=4, random_state=42)
+print("n_estimators:", bosque.n_estimators)
+
+print("¿Tiene feature_importances_ antes de fit?", hasattr(bosque, "feature_importances_"))
+bosque.fit(X, y)
+print("¿Y después?", hasattr(bosque, "feature_importances_"))
+print("Importancia de cada variable:", bosque.feature_importances_.round(3))
+```
+
+```text
+n_estimators: 50
+¿Tiene feature_importances_ antes de fit? False
+¿Y después? True
+Importancia de cada variable: [0.297 0.005 0.022 0.676]
+```
+
+> [!WARNING]
+> Pedir un atributo terminado en `_` antes de llamar a `fit` lanza `NotFittedError`. Si te pasa, no es un fallo de la biblioteca: es que te has saltado el entrenamiento.
+
+### Para practicar
+
+1. Con el `DataFrame` del Listado 2.1, clasifica estos cinco miembros en atributos o métodos y escribe la línea correcta para cada uno: `size`, `describe`, `T`, `sort_values`, `empty`. Comprueba tu respuesta en el intérprete.
+
+   ```text
+   ventas.size      4 valores por 3 columnas -> 12
+   ventas.empty     False
+   ventas.describe()  devuelve un DataFrame con count, mean, std...
+   ```
+
+2. Crea `RandomForestRegressor(n_estimators=5, random_state=0)` y, **sin llamar a `fit`**, escribe `bosque.feature_importances_`. Copia el nombre de la excepción y explica en una línea qué te está diciendo.
+
+3. (A) Busca en la documentación de pandas tres propiedades de un `DataFrame` que no sean las del listado y tres métodos. Explica en una frase por qué `shape` es una propiedad y `head` un método.
+
+## 2.2 Clases propias: el modelo de la tienda
+
+Una clase en Python se declara con `class`, sus métodos reciben siempre el objeto como primer parámetro (`self`, por convenio) y los atributos **nacen al asignarlos**, normalmente dentro de `__init__`. No hay fichero de cabecera ni declaración previa de atributos.
+
+![La clase Producto en notación UML: el nombre arriba; los atributos con su visibilidad, nombre y tipo, como codigo de tipo String y de solo lectura; y los métodos con sus parámetros y el tipo que devuelven. Un método subrayado indica que es estático. Una leyenda recuerda los símbolos de visibilidad: más para público, menos para privado, almohadilla para protegido y virgulilla para el paquete.](figuras/fig-0-8-uml-clase.svg)
+
+*Figura 2.4. `Producto` en UML. Es la Figura 0.8 de Acceso a Datos: la misma clase que vas a escribir ahora en Python.*
+
+### `Producto`: validar al crear, validar al cambiar
+
+**Listado 2.3.** `tienda/modelo.py` · la clase `Producto` · [ver fichero](listados/tienda/modelo.py)
+
+```python
+class Producto:
+    """Producto del catálogo.
+
+    Dos productos son iguales si tienen el mismo código.
+    """
+
+    def __init__(self, codigo: str, nombre: str, precio: Decimal, stock: int = 0) -> None:
+        if not codigo or not codigo.strip():
+            raise ValueError("El código es obligatorio")
+        if stock < 0:
+            raise ValueError(f"Stock no válido: {stock}")
+        self._codigo = codigo          # no cambia una vez creado
+        self.nombre = nombre
+        self.precio = precio           # pasa por el setter de la propiedad
+        self._stock = stock
+
+    @classmethod
+    def desde_linea(cls, linea: str) -> "Producto":
+        """Crea un producto a partir de «codigo;nombre;precio;stock»."""
+        codigo, nombre, precio, stock = linea.split(";")
+        return cls(codigo, nombre, Decimal(precio), int(stock))
+
+    @property
+    def codigo(self) -> str:
+        """Identificador del producto. Solo lectura."""
+        return self._codigo
+
+    @property
+    def precio(self) -> Decimal:
+        return self._precio
+
+    @precio.setter
+    def precio(self, valor: Decimal) -> None:
+        if valor is None or valor < 0:
+            raise ValueError(f"Precio no válido: {valor}")
+        self._precio = valor
+
+    def reponer(self, unidades: int) -> None:
+        """Suma unidades al stock."""
+        if unidades <= 0:
+            raise ValueError("Las unidades deben ser positivas")
+        self._stock += unidades
+```
+
+Tres decisiones que conviene mirar de cerca.
+
+**El constructor no deja crear objetos incorrectos.** Es la regla de oro del modelo: si un objeto existe, sus datos son válidos. Las reglas de negocio —que no haya dos códigos iguales, por ejemplo— van en el servicio, no aquí.
+
+**`nombre` es público y `precio` es una propiedad.** En Python los atributos son públicos hasta que haga falta otra cosa. Cuando un dato necesita validarse o calcularse, se convierte en propiedad **sin cambiar el código que ya lo usaba**: `producto.precio` se sigue escribiendo igual. Por eso aquí no se escriben *getters* y *setters* por si acaso.
+
+**El guion bajo no es `private`.** `self._codigo` es accesible desde fuera; el guion bajo es un aviso entre programadores: «esto es interior, no lo toques». Lo que impide cambiar el código es que la propiedad `codigo` no tenga *setter*.
+
+> [!NOTE]
+> **Desde C++.** No hay `private` ni `public`: todo es accesible. No hay constructores sobrecargados: se usan parámetros por defecto o métodos de clase. Y no hay destructor que te interese: la memoria se libera sola.
+
+> [!NOTE]
+> **Desde Java.** Tu `Producto.java` tiene `getNombre()`, `setNombre()`, `getPrecio()` y `setPrecio()`. En Python todo eso desaparece: `nombre` es un atributo normal y `precio` es una propiedad que valida. Escribir `get_nombre()` en Python se considera un error de estilo, porque obliga a todo el mundo a usar paréntesis para leer un dato. Tu segundo constructor, `Producto(codigo, nombre, precio)`, aquí es el valor por defecto `stock: int = 0`; cuando el constructor alternativo hace algo más que rellenar huecos, como `desde_linea`, se escribe como `@classmethod`.
+
+**Listado 2.4.** La clase en uso · [ver fichero](listados/listado_2_04_producto_en_uso.py)
+
+```python
+teclado = Producto("T-100", "Teclado mecánico", Decimal("79.90"), 12)
+teclado.precio = Decimal("69.90")        # pasa por el setter, que valida
+print("Rebajado:", teclado.precio, "€")
+
+try:
+    teclado.precio = Decimal("-5")
+except ValueError as error:
+    print("Precio negativo ->", error)
+
+try:
+    teclado.codigo = "T-999"
+except AttributeError as error:
+    print("Cambiar el código ->", error)
+
+raton = Producto.desde_linea("R-200;Ratón inalámbrico;24.50;30")
+print("Desde una línea de CSV:", raton)
+```
+
+```text
+Rebajado: 69.90 €
+Precio negativo -> Precio no válido: -5
+Cambiar el código -> property 'codigo' of 'Producto' object has no setter
+Desde una línea de CSV: Producto[R-200, Ratón inalámbrico, 24.50 €, stock 30]
+```
+
+> [!WARNING]
+> El dinero nunca se guarda en `float`: `0.1 + 0.2` no es `0.3`. Usa `decimal.Decimal` y constrúyelo **desde una cadena**, `Decimal("79.90")`, no desde un número ([decimal — Decimal fixed-point and floating-point arithmetic](https://docs.python.org/3/library/decimal.html)). Es el mismo motivo por el que en Java usas `BigDecimal`.
+
+### `Categoria` y `LineaPedido`: clases de datos sin código repetitivo
+
+Cuando una clase es sobre todo datos, `@dataclass` escribe por ti el constructor, la comparación y la representación ([dataclasses](https://docs.python.org/3/library/dataclasses.html), [PEP 557](https://peps.python.org/pep-0557/)). Con `frozen=True` el objeto no se puede modificar después de crearlo.
+
+**Listado 2.5.** `tienda/modelo.py` · las piezas inmutables y la enumeración · [ver fichero](listados/tienda/modelo.py)
+
+```python
+@dataclass(frozen=True)
+class Categoria:
+    """Categoría de productos. Inmutable."""
+
+    id: int
+    nombre: str
 
 
-class Cronometro:
-    """Mide el tiempo de un bloque with."""
+@dataclass(frozen=True)
+class LineaPedido:
+    """Una línea de un pedido: qué producto, cuántas unidades y a qué precio."""
 
-    def __init__(self, etiqueta: str):
-        self.etiqueta = etiqueta
+    producto: Producto
+    cantidad: int
+    precio_unitario: Decimal
 
-    def __enter__(self) -> "Cronometro":
-        self.inicio = time.perf_counter()
-        return self                      # lo que recibe la variable tras «as»
+    def __post_init__(self) -> None:
+        if self.cantidad <= 0:
+            raise ValueError(f"Cantidad no válida: {self.cantidad}")
 
-    def __exit__(self, tipo_exc, valor_exc, traza) -> bool:
-        self.segundos = time.perf_counter() - self.inicio
-        print(f"{self.etiqueta}: {self.segundos:.4f} s")
-        return False                     # False: si hubo excepción, se propaga
-
-
-with Cronometro("suma de un millón de enteros"):
-    total = sum(range(1_000_000))
+    @property
+    def importe(self) -> Decimal:
+        return self.precio_unitario * self.cantidad
 
 
-@contextmanager                          # la versión corta, con un generador
-def cronometro(etiqueta: str):
-    inicio = time.perf_counter()
+class EstadoPedido(Enum):
+    """Estados por los que pasa un pedido."""
+
+    PENDIENTE = "pendiente"
+    PAGADO = "pagado"
+    ENVIADO = "enviado"
+    ENTREGADO = "entregado"
+    CANCELADO = "cancelado"
+
+    def es_final(self) -> bool:
+        """Un pedido entregado o cancelado ya no puede cambiar de estado."""
+        return self in (EstadoPedido.ENTREGADO, EstadoPedido.CANCELADO)
+```
+
+`__post_init__` es el sitio donde una `dataclass` valida: se ejecuta justo después del constructor generado. Y una enumeración de Python es una clase normal, así que puede tener métodos ([enum](https://docs.python.org/3/library/enum.html)).
+
+> [!NOTE]
+> **Desde Java.** `Categoria` y `LineaPedido` son `record` en tu proyecto; aquí son `@dataclass(frozen=True)`. El constructor compacto del `record`, donde pones las validaciones, es `__post_init__`. El método `importe()` de Java aquí es una propiedad: se lee `linea.importe`, sin paréntesis, porque no hace trabajo ni cambia nada. Tu `enum EstadoPedido` con su método `esFinal()` se traduce casi letra por letra.
+
+**Listado 2.6.** Inmutabilidad y enumeraciones en marcha · [ver fichero](listados/listado_2_06_pedido.py)
+
+```python
+linea = LineaPedido(monitor, cantidad=2, precio_unitario=Decimal("219.00"))
+print("Importe de la línea:", linea.importe, "€")
+
+try:
+    linea.cantidad = 3
+except Exception as error:
+    print("Modificar la línea ->", type(error).__name__, "-", error)
+
+print("Copia con otra cantidad:", replace(linea, cantidad=3).importe, "€")
+
+print("Estados:", [estado.name for estado in EstadoPedido])
+for estado in (EstadoPedido.PENDIENTE, EstadoPedido.ENTREGADO):
+    print(f"  {estado.name:<10} ¿final? {estado.es_final()}")
+```
+
+```text
+Importe de la línea: 438.00 €
+Modificar la línea -> FrozenInstanceError - cannot assign to field 'cantidad'
+Copia con otra cantidad: 657.00 €
+Estados: ['PENDIENTE', 'PAGADO', 'ENVIADO', 'ENTREGADO', 'CANCELADO']
+  PENDIENTE  ¿final? False
+  ENTREGADO  ¿final? True
+```
+
+### Igualdad: `__eq__`, `__hash__` y `__repr__`
+
+Por omisión, dos objetos solo son iguales si son el mismo objeto. En la tienda queremos otra cosa: dos productos con el mismo código son el mismo producto, vengan de donde vengan.
+
+![Dos variables, a y b, apuntan a dos objetos de texto distintos que contienen la misma palabra. Comparar las referencias da falso porque son objetos distintos; comparar el contenido da verdadero.](figuras/fig-0-7-igualdad.svg)
+
+*Figura 2.5. Identidad frente a igualdad. Es la Figura 0.7 de Acceso a Datos: allí son `==` y `equals`; aquí, `is` y `==`.*
+
+**Listado 2.7.** Lo que cambia al definir `__eq__` y `__hash__` · [ver fichero](listados/listado_2_07_igualdad.py)
+
+```python
+uno = Producto("T-100", "Teclado mecánico", Decimal("79.90"), 12)
+otro = Producto("T-100", "Teclado mecánico retroiluminado", Decimal("89.90"), 3)
+
+print("uno == otro ", uno == otro)     # True: comparamos por código
+print("uno is otro ", uno is otro)     # False: son dos objetos distintos
+
+catalogo = {uno, otro}
+print("Productos distintos en el conjunto:", len(catalogo))
+
+existencias = {uno: 12}
+print("Existencias consultadas con otro objeto:", existencias[otro])
+```
+
+```text
+uno == otro  True
+uno is otro  False
+Productos distintos en el conjunto: 1
+Existencias consultadas con otro objeto: 12
+```
+
+> [!IMPORTANT]
+> `__eq__` y `__hash__` van siempre juntos y sobre los mismos campos. Si defines solo `__eq__`, Python deja el objeto sin `__hash__` y deja de poder usarse en un `set` o como clave de un diccionario.
+
+> [!NOTE]
+> **Desde Java.** `equals` es `__eq__`, `hashCode` es `__hash__` y `toString` es `__repr__`. La regla «si redefines `equals`, redefine `hashCode`» es idéntica. La diferencia es que en Java `==` compara referencias y en Python lo hace `is`: en Python el operador `==` llama a tu `__eq__`.
+
+### Para practicar
+
+1. Añade a `Producto` la propiedad de solo lectura `valor_en_almacen`, que devuelva el precio por las unidades en stock.
+
+   ```python
+   Producto("T-100", "Teclado mecánico", Decimal("79.90"), 12).valor_en_almacen
+   # Decimal('958.80')
+   ```
+
+2. Añade a `EstadoPedido` el método `siguiente()`, que devuelva el estado que viene después en el orden `PENDIENTE`, `PAGADO`, `ENVIADO`, `ENTREGADO`, y lance `ValueError` si el estado ya es final.
+
+   ```python
+   EstadoPedido.PENDIENTE.siguiente()   # EstadoPedido.PAGADO
+   EstadoPedido.ENVIADO.siguiente()     # EstadoPedido.ENTREGADO
+   EstadoPedido.ENTREGADO.siguiente()   # ValueError: ENTREGADO es un estado final
+   ```
+
+3. Escribe `Cliente` como `@dataclass(frozen=True)` con `id`, `nombre` y `email`, validando en `__post_init__` que el correo contiene una arroba.
+
+   ```python
+   Cliente(1, "Ana Ruiz", "ana@ejemplo.es")   # Cliente(id=1, nombre='Ana Ruiz', email='ana@ejemplo.es')
+   Cliente(2, "Luis Gil", "luis.ejemplo.es")  # ValueError: correo no válido: luis.ejemplo.es
+   ```
+
+4. (A) Quita el método `__hash__` de `Producto`, ejecuta el Listado 2.7 y copia el error. Explica en dos líneas por qué `__eq__` sin `__hash__` rompe los conjuntos y los diccionarios.
+
+## 2.3 Contratos sin herencia: un repositorio, dos implementaciones
+
+Este es el apartado central de la unidad, y la idea que más veces vas a reconocer en el resto del módulo: **separar qué se puede hacer de cómo se hace**.
+
+![La interfaz ProductoRepository, usada por ProductoService, con seis implementaciones: en memoria, en fichero con JSON, CSV o XML, con JDBC sobre PostgreSQL, con JPA e Hibernate, con una base de datos de objetos y con MongoDB.](figuras/fig-0-10-interfaz-implementaciones.svg)
+
+*Figura 2.6. Un contrato y una implementación por unidad. Es la Figura 0.10 de Acceso a Datos; en Python construiremos las dos primeras.*
+
+### El contrato
+
+En Java esto es una `interface` y las clases la implementan con `implements`. En Python se describe con un `Protocol`: una lista de los métodos que hace falta tener, **sin que nadie tenga que heredar de ella** ([typing.Protocol](https://docs.python.org/3/library/typing.html#typing.Protocol), [PEP 544](https://peps.python.org/pep-0544/)).
+
+**Listado 2.8.** `tienda/repositorio.py` · el contrato · [ver fichero](listados/tienda/repositorio.py)
+
+```python
+@runtime_checkable
+class ProductoRepository(Protocol):
+    """Operaciones de almacenamiento de productos."""
+
+    def guardar(self, producto: Producto) -> None:
+        """Da de alta el producto, o lo reemplaza si su código ya existía."""
+        ...
+
+    def buscar_por_codigo(self, codigo: str) -> Producto | None:
+        """Devuelve el producto, o `None` si no existe."""
+        ...
+
+    def buscar_todos(self) -> list[Producto]:
+        """Devuelve todos los productos guardados; nunca `None`."""
+        ...
+
+    def borrar(self, codigo: str) -> bool:
+        """Elimina un producto. Devuelve `True` si existía."""
+        ...
+
+    def existe(self, codigo: str) -> bool:
+        """Indica si hay un producto con ese código."""
+        ...
+```
+
+Los tres puntos, `...`, son el cuerpo vacío: el protocolo describe la forma, no el comportamiento.
+
+> [!NOTE]
+> **Desde C++.** Lo más parecido a un `Protocol` es una plantilla: `template <typename T>` acepta cualquier tipo que tenga las operaciones que el código usa, sin que herede de nada. La diferencia está en cuándo se comprueba: el compilador de C++ lo verifica al compilar y Python, al ejecutar, salvo que uses el analizador de tipos del editor.
+
+> [!NOTE]
+> **Desde Java.** Tu `ProductoRepository` devuelve `Optional<Producto>`; en Python se escribe `Producto | None`, y quien lo recibe comprueba `if producto is None`. Tu interfaz tiene un método `default existe()` con cuerpo: un `Protocol` no reparte código, así que cada implementación escribe su `existe`, que es una línea. Si lo que quieres es precisamente compartir código, entonces el equivalente no es `Protocol` sino `ABC`, que sí es herencia de verdad (está en [Ampliación](#ampliación)).
+
+### La primera implementación: en memoria
+
+**Listado 2.9.** `tienda/repositorio.py` · `ProductoRepositoryMemoria` · [ver fichero](listados/tienda/repositorio.py)
+
+```python
+class ProductoRepositoryMemoria:
+    """Implementación en memoria: los datos se pierden al cerrar el programa."""
+
+    def __init__(self) -> None:
+        self._productos: dict[str, Producto] = {}
+
+    def guardar(self, producto: Producto) -> None:
+        self._productos[producto.codigo] = producto
+
+    def buscar_por_codigo(self, codigo: str) -> Producto | None:
+        return self._productos.get(codigo)
+
+    def buscar_todos(self) -> list[Producto]:
+        return list(self._productos.values())
+
+    def borrar(self, codigo: str) -> bool:
+        return self._productos.pop(codigo, None) is not None
+
+    def existe(self, codigo: str) -> bool:
+        return codigo in self._productos
+```
+
+Fíjate en que **no pone `implements` en ningún sitio**, ni hereda de `ProductoRepository`. Cumple el contrato porque tiene los métodos que el contrato pide. A eso se le llama *duck typing*: si camina como un pato y grazna como un pato, es un pato.
+
+> [!NOTE]
+> **Desde Java.** El `LinkedHashMap` de tu implementación aquí es un `dict` normal: desde Python 3.7 los diccionarios conservan el orden de inserción, así que no hace falta una clase especial. `productos.remove(codigo) != null` es `self._productos.pop(codigo, None) is not None`.
+
+### El servicio: composición
+
+El servicio tiene las reglas de negocio y recibe el repositorio **por el constructor**. No lo crea: se lo dan. Así se puede cambiar de almacenamiento sin tocar ni una línea de reglas, y se pueden escribir pruebas pasándole un repositorio en memoria.
+
+![Arquitectura en capas: la presentación llama al servicio, que usa el contrato del repositorio. Debajo están las implementaciones de cada unidad y sus almacenamientos. El modelo lo usan todas las capas, y el módulo principal crea y conecta las piezas.](figuras/fig-0-13-capas.svg)
+
+*Figura 2.7. Las capas del proyecto. Es la Figura 0.13 de Acceso a Datos; en Python, `app.py` hace el papel de `App.java`.*
+
+**Listado 2.10.** `tienda/servicio.py` · las reglas de negocio · [ver fichero](listados/tienda/servicio.py)
+
+```python
+class ProductoService:
+    """Qué se puede hacer con los productos, y qué no."""
+
+    def __init__(self, repositorio: ProductoRepository) -> None:
+        self._repositorio = repositorio
+
+    def alta(self, producto: Producto) -> None:
+        """Da de alta un producto nuevo."""
+        if self._repositorio.existe(producto.codigo):
+            raise ValueError(f"Ya existe un producto con código {producto.codigo}")
+        self._repositorio.guardar(producto)
+
+    def listar(self) -> list[Producto]:
+        """Devuelve los productos ordenados por nombre."""
+        return sorted(self._repositorio.buscar_todos(), key=lambda p: p.nombre)
+
+    def buscar(self, codigo: str) -> Producto:
+        """Devuelve un producto o lanza `ProductoNoEncontradoError`."""
+        producto = self._repositorio.buscar_por_codigo(codigo)
+        if producto is None:
+            raise ProductoNoEncontradoError(codigo)
+        return producto
+
+    def valor_inventario(self) -> Decimal:
+        """Suma de precio × stock de todos los productos."""
+        return sum((p.precio * p.stock for p in self._repositorio.buscar_todos()),
+                   start=Decimal("0"))
+```
+
+> [!NOTE]
+> **Desde Java.** `repositorio.buscarTodos().stream().sorted(Comparator.comparing(Producto::getNombre)).toList()` es `sorted(lista, key=lambda p: p.nombre)`. Y `.map(...).reduce(BigDecimal.ZERO, BigDecimal::add)` es `sum(..., start=Decimal("0"))`. Los *streams* de Java y las comprensiones de Python resuelven el mismo problema.
+
+### El segundo contrato: los formatos
+
+El repositorio en fichero no sabe nada de CSV ni de JSON. Delega el formato en otro objeto, que cumple su propio contrato. Es la misma idea, un nivel más abajo.
+
+![Tres paneles con dos productos. En CSV, una cabecera y una línea por producto con los campos separados por punto y coma. En JSON, una lista de objetos con pares nombre y valor. En XML, un elemento catalogo con elementos producto.](figuras/fig-1-7-formatos.svg)
+
+*Figura 2.8. Los mismos productos en tres formatos. Es la Figura 1.7 de Acceso a Datos; aquí escribimos los dos primeros.*
+
+**Listado 2.11.** `tienda/formatos.py` · el contrato de los formatos y el de CSV · [ver fichero](listados/tienda/formatos.py)
+
+```python
+@dataclass(frozen=True)
+class ProductoDto:
+    """Un producto tal como se guarda en un fichero: datos planos, sin comportamiento."""
+
+    codigo: str
+    nombre: str
+    precio: str                       # texto, para no perder decimales al serializar
+    stock: int
+
+    @classmethod
+    def desde(cls, producto: Producto) -> "ProductoDto":
+        return cls(producto.codigo, producto.nombre, str(producto.precio), producto.stock)
+
+    def a_producto(self) -> Producto:
+        """Crea un producto del modelo; su constructor valida los datos leídos."""
+        return Producto(self.codigo, self.nombre, Decimal(self.precio), self.stock)
+
+
+@runtime_checkable
+class FormatoProductos(Protocol):
+    """Un formato de fichero capaz de leer y escribir una lista de productos."""
+
+    def leer(self, ruta: Path) -> list[ProductoDto]: ...
+
+    def escribir(self, ruta: Path, productos: list[ProductoDto]) -> None: ...
+
+
+class FormatoCsv:
+    """Texto separado por punto y coma, con una línea de cabecera. Codificación UTF-8."""
+
+    CAMPOS = ("codigo", "nombre", "precio", "stock")
+
+    def leer(self, ruta: Path) -> list[ProductoDto]:
+        with ruta.open(encoding="utf-8", newline="") as fichero:
+            lector = csv.DictReader(fichero, delimiter=";")
+            productos = []
+            for numero, fila in enumerate(lector, start=2):
+                try:
+                    productos.append(ProductoDto(fila["codigo"], fila["nombre"],
+                                                 fila["precio"], int(fila["stock"])))
+                except (KeyError, TypeError, ValueError) as error:
+                    raise ValueError(f"Línea {numero} de {ruta.name}: {error}") from error
+            return productos
+
+    def escribir(self, ruta: Path, productos: list[ProductoDto]) -> None:
+        with ruta.open("w", encoding="utf-8", newline="") as fichero:
+            escritor = csv.DictWriter(fichero, fieldnames=self.CAMPOS, delimiter=";")
+            escritor.writeheader()
+            escritor.writerows(asdict(dto) for dto in productos)
+```
+
+El `ProductoDto` existe para que el formato del fichero y la clase del modelo puedan cambiar por separado. `asdict` convierte cualquier `dataclass` en un diccionario, que es justo lo que necesitan `csv` y `json`.
+
+### La segunda implementación: en fichero
+
+**Listado 2.12.** `tienda/repositorio.py` · `ProductoRepositoryFichero` · [ver fichero](listados/tienda/repositorio.py)
+
+```python
+class ProductoRepositoryFichero:
+    """Implementación en fichero.
+
+    Al crearse lee el fichero entero y, tras cada cambio, lo reescribe de forma
+    segura: primero un fichero temporal y después un único movimiento.
+    """
+
+    def __init__(self, ruta: Path, formato: FormatoProductos) -> None:
+        self._ruta = ruta
+        self._formato = formato
+        self._datos: dict[str, ProductoDto] = {}
+        self._cargar()
+
+    def guardar(self, producto: Producto) -> None:
+        self._datos[producto.codigo] = ProductoDto.desde(producto)
+        self._escribir()
+
+    def buscar_por_codigo(self, codigo: str) -> Producto | None:
+        dto = self._datos.get(codigo)
+        return dto.a_producto() if dto else None
+
+    def borrar(self, codigo: str) -> bool:
+        if self._datos.pop(codigo, None) is None:
+            return False
+        self._escribir()
+        return True
+```
+
+Recibe **la ruta y el formato**: dos piezas que no fabrica, sino que le dan hechas. Con eso, el mismo repositorio sirve para CSV y para JSON.
+
+**Listado 2.13.** El mismo código, con los dos repositorios · [ver fichero](listados/listado_2_13_mismo_contrato.py)
+
+```python
+def inventario(repositorio: ProductoRepository) -> str:
+    """Resume el catálogo. Solo usa el contrato, nunca una clase concreta."""
+    servicio = ProductoService(repositorio)
+    productos = servicio.listar()
+    nombres = ", ".join(p.nombre for p in productos)
+    return f"{len(productos)} productos ({nombres}) por {servicio.valor_inventario()} €"
+
+
+print("En memoria:", inventario(llenar(ProductoRepositoryMemoria())))
+print("En fichero:", inventario(llenar(ProductoRepositoryFichero(RUTA, FormatoCsv()))))
+
+print("¿Memoria hereda del contrato?",
+      ProductoRepository in ProductoRepositoryMemoria.__mro__)
+print("¿Memoria lo cumple?", isinstance(ProductoRepositoryMemoria(), ProductoRepository))
+```
+
+```text
+En memoria: 2 productos (Ratón inalámbrico, Teclado mecánico) por 1693.80 €
+En fichero: 2 productos (Ratón inalámbrico, Teclado mecánico) por 1693.80 €
+
+Contenido de datos/catalogo_demo.csv
+codigo;nombre;precio;stock
+T-100;Teclado mecánico;79.90;12
+R-200;Ratón inalámbrico;24.50;30
+
+¿Memoria hereda del contrato? False
+¿Memoria lo cumple? True
+```
+
+Ahí está la idea completa: **no hereda y lo cumple**.
+
+> [!TIP]
+> `@runtime_checkable` permite usar `isinstance` con un protocolo, pero solo comprueba que los **nombres** de los métodos existan, no sus parámetros ni lo que devuelven. Para comprobar eso de verdad está el analizador de tipos de VS Code, que te avisa mientras escribes.
+
+### El mismo patrón, en scikit-learn
+
+No es un invento de esta asignatura. `Pipeline` encadena pasos sin conocer ninguna clase concreta: le basta con que cada paso tenga `fit` y `transform`, y el último, `fit` y `predict` ([Pipelines and composite estimators](https://scikit-learn.org/stable/modules/compose.html)).
+
+![Dos columnas. En la tienda, ProductoService usa el contrato ProductoRepository, con dos implementaciones debajo: en memoria y en fichero. En scikit-learn, Pipeline usa el contrato fit y transform, con dos implementaciones debajo: StandardScaler y un transformador propio.](figuras/contrato-doble.svg)
+
+*Figura 2.9. El mismo patrón en los dos sitios. Cambiar la pieza de abajo no toca el código de arriba.*
+
+**Listado 2.14.** Un transformador propio, sin heredar de nada · [ver fichero](listados/listado_2_14_contrato_sklearn.py)
+
+```python
+class EscaladoPorMaximo:
+    """Un transformador propio: no hereda de scikit-learn, solo cumple el contrato."""
+
+    def fit(self, X, y=None) -> "EscaladoPorMaximo":
+        self.maximos_ = np.abs(X).max(axis=0)
+        return self                      # devolver self permite encadenar
+
+    def transform(self, X):
+        return X / self.maximos_
+
+
+propio = Pipeline([
+    ("escalado", EscaladoPorMaximo()),
+    ("regresion", LinearRegression()),
+])
+propio.fit(X, y)
+print("R² con el transformador propio:", round(propio.score(X, y), 3))
+```
+
+```text
+R² del pipeline: 0.993
+R² con el transformador propio: 0.993
+```
+
+Dos convenios que se repiten en toda la biblioteca: **`fit` devuelve `self`**, para poder encadenar, y **lo aprendido se guarda con un guion bajo final**, como viste en el Listado 2.2. Volverás a esto en la UD6.
+
+### Para practicar
+
+1. Escribe `FormatoTexto`, un tercer formato que guarde un producto por línea con el aspecto de abajo, y úsalo con `ProductoRepositoryFichero` sin cambiar ni una línea del repositorio.
+
+   ```text
+   T-100 | Teclado mecánico     |  79.90 € |  12 uds
+   R-200 | Ratón inalámbrico    |  24.50 € |  30 uds
+   ```
+
+2. Añade a `ProductoService` el método `sin_stock()`, que devuelva los productos con cero unidades, ordenados por código.
+
+   ```python
+   servicio.alta(Producto("T-100", "Teclado mecánico", Decimal("79.90"), 12))
+   servicio.alta(Producto("R-200", "Ratón inalámbrico", Decimal("24.50")))
+   servicio.alta(Producto("M-300", "Monitor 27 pulgadas", Decimal("219.00")))
+   [p.codigo for p in servicio.sin_stock()]   # ['M-300', 'R-200']
+   ```
+
+3. Escribe una clase `ProductoRepositoryRoto` a la que le falte el método `borrar`. Pásasela a `ProductoService` y a `isinstance`, y anota qué pasa en cada caso y en qué momento.
+
+   ```python
+   isinstance(ProductoRepositoryRoto(), ProductoRepository)   # False
+   ProductoService(ProductoRepositoryRoto()).baja("T-100")    # AttributeError, solo al llamarlo
+   ```
+
+4. (A) Escribe un transformador propio `RecortaAtipicos(limite)` con `fit` y `transform` que sustituya por el límite los valores que lo superen, y mételo en un `Pipeline` antes de `LinearRegression`. Explica en tres líneas qué tiene en común con `ProductoRepositoryFichero`.
+
+## 2.4 Generadores y `with`
+
+Dos herramientas del lenguaje que vas a usar en todas las unidades siguientes, y que conviene entender bien porque son fáciles de escribir mal.
+
+### Generadores: procesar sin cargar
+
+Una función con `yield` no devuelve una lista: devuelve un **generador**, que entrega los valores de uno en uno según se le piden. El fichero se recorre igual, pero nunca está entero en memoria ([The Python Tutorial: Generators](https://docs.python.org/3/tutorial/classes.html#generators)).
+
+![Comparación entre una lista, que ocupa memoria con todos sus elementos a la vez, y un generador, que produce un elemento cada vez que se le pide.](figuras/lista-vs-generador.svg)
+
+*Figura 2.10. La lista guarda; el generador produce.*
+
+**Listado 2.15.** Un catálogo de 200.000 productos, con lista y con generador · [ver fichero](listados/listado_2_15_catalogo_generador.py)
+
+```python
+def cargar_lista(ruta: Path) -> list[Producto]:
+    """Lee el fichero entero y devuelve una lista con todos los productos."""
+    with ruta.open(encoding="utf-8", newline="") as fichero:
+        return [Producto(f["codigo"], f["nombre"], Decimal(f["precio"]), int(f["stock"]))
+                for f in csv.DictReader(fichero, delimiter=";")]
+
+
+def recorrer(ruta: Path) -> Iterator[Producto]:
+    """Entrega los productos de uno en uno, según se van leyendo."""
+    with ruta.open(encoding="utf-8", newline="") as fichero:
+        for f in csv.DictReader(fichero, delimiter=";"):
+            yield Producto(f["codigo"], f["nombre"], Decimal(f["precio"]), int(f["stock"]))
+```
+
+```text
+cargar_lista devuelve: list
+recorrer devuelve:     generator (todavía no ha leído nada)
+
+Valor del inventario con la lista:     132390350.00 € ( 64.2 MB de memoria)
+Valor del inventario con el generador: 132390350.00 € (  0.1 MB de memoria)
+```
+
+El mismo resultado con 640 veces menos memoria. Esa diferencia es la que hace posible la UD5.
+
+> [!WARNING]
+> Un generador **se agota**: cuando lo recorres una vez, ya no quedan elementos. Si necesitas pasar dos veces por los datos, o lo vuelves a crear o conviertes el resultado en una lista. Y `len()` no funciona sobre un generador, porque todavía no sabe cuántos elementos va a producir.
+
+### `with`: lo que se abre, se cierra
+
+Un gestor de contexto garantiza que la segunda mitad de una pareja de acciones se ejecute siempre: cerrar el fichero, soltar la conexión, confirmar o deshacer la transacción. También si salta una excepción en medio.
+
+**Listado 2.16.** El `with` cumple aunque falle el bloque · [ver fichero](listados/listado_2_16_with_recursos.py)
+
+```python
+try:
+    with RUTA.open("a", encoding="utf-8") as f:
+        f.write("segunda línea\n")
+        raise RuntimeError("algo ha ido mal a mitad de la escritura")
+except RuntimeError as error:
+    print("Excepción:", error)
+print("¿Cerrado por el with?", f.closed)
+
+# El mismo patrón con una conexión a una base de datos (UD4).
+with sqlite3.connect(":memory:") as conexion:
+    conexion.execute("CREATE TABLE producto (codigo TEXT, nombre TEXT)")
+    conexion.execute("INSERT INTO producto VALUES ('T-100', 'Teclado mecánico')")
+    print("Filas:", conexion.execute("SELECT * FROM producto").fetchall())
+```
+
+```text
+Excepción: algo ha ido mal a mitad de la escritura
+¿Cerrado por el with? True
+Filas: [('T-100', 'Teclado mecánico')]
+```
+
+> [!NOTE]
+> **Desde C++.** Es el RAII que conoces: en C++ el destructor libera el recurso al salir del ámbito, de forma automática. Python no tiene destructores fiables —no sabes cuándo se ejecuta `__del__`—, así que la liberación se marca a mano, y el sitio donde se marca es el `with`.
+
+> [!NOTE]
+> **Desde Java.** Es el `try-with-resources` que usas en `FormatoCsv.leer`. La diferencia es que en Java la clase tiene que implementar `AutoCloseable`; en Python basta con que tenga `__enter__` y `__exit__`, que es otra vez el mismo *duck typing* del apartado anterior.
+
+### Por qué el repositorio en fichero escribe en un temporal
+
+Ahora se entiende el método `_escribir` del Listado 2.12. Si abres el fichero de destino en modo escritura, lo primero que haces es **vaciarlo**: si el programa se corta a mitad, el catálogo entero se ha perdido.
+
+![Primero se escriben todos los datos en un fichero temporal; después se mueve de un solo paso encima del fichero bueno. Si algo falla durante la escritura, el temporal se borra y el fichero original conserva la versión anterior completa.](figuras/fig-1-11-escritura-segura.svg)
+
+*Figura 2.11. Escritura segura. Es la Figura 1.11 de Acceso a Datos; allí es `Files.move` con `ATOMIC_MOVE`, aquí es `Path.replace`.*
+
+**Listado 2.17.** Escribir encima frente a escribir en un temporal · [ver fichero](listados/listado_2_17_escritura_atomica.py)
+
+```python
+def escribir_mal(ruta: Path, contenido: str) -> None:
+    """Abre el fichero de destino y lo vacía antes de tener el contenido nuevo."""
+    with ruta.open("w", encoding="utf-8") as fichero:
+        fichero.write(contenido[:10])
+        raise RuntimeError("corte de luz")
+
+
+def escribir_bien(ruta: Path, contenido: str) -> None:
+    """Escribe en un temporal y lo mueve de un solo paso."""
+    temporal = ruta.with_name(ruta.name + ".tmp")
     try:
-        yield                            # aquí se ejecuta el cuerpo del with
+        temporal.write_text(contenido, encoding="utf-8")
+        raise RuntimeError("corte de luz")
+        temporal.replace(ruta)            # no se llega aquí: el original sigue intacto
     finally:
-        print(f"{etiqueta}: {time.perf_counter() - inicio:.4f} s")
+        temporal.unlink(missing_ok=True)
 ```
 
-En la UD4 usarás esto mismo para abrir y cerrar conexiones a MariaDB sin dejar conexiones colgadas.
-
-### Decoradores
-
-Un decorador es una función que recibe otra función y devuelve una versión envuelta. `@medir` encima de una función equivale a `funcion = medir(funcion)`. `functools.wraps` conserva el nombre y el docstring del original ([docs.python.org, functools](https://docs.python.org/3/library/functools.html#functools.wraps)).
-
-**Listado 2.16.** Escribir un decorador · [ver fichero](listados/listado_2_16_decoradores.py)
-
-```python
-import functools
-import time
-
-
-def medir(func):
-    """Decorador que muestra cuánto tarda la función."""
-
-    @functools.wraps(func)               # conserva nombre y docstring del original
-    def envoltorio(*args, **kwargs):
-        inicio = time.perf_counter()
-        resultado = func(*args, **kwargs)
-        print(f"{func.__name__} tardó {time.perf_counter() - inicio:.4f} s")
-        return resultado
-
-    return envoltorio
-
-
-@medir                      # equivale a: suma_cuadrados = medir(suma_cuadrados)
-def suma_cuadrados(n: int) -> int:
-    """Suma los cuadrados de los n primeros enteros."""
-    return sum(i * i for i in range(n))
+```text
+Tras fallar escribiendo encima: [{"codigo"
+Tras fallar con temporal:       [{"codigo": "T-100"}]
+¿Queda basura en la carpeta? no
 ```
 
-Ya conoces varios decoradores: `@property`, `@classmethod`, `@staticmethod`, `@dataclass` y `@contextmanager`. En la UD3, Streamlit usará `@st.cache_data` para no recalcular un análisis en cada recarga de la página, y funciona exactamente así.
+El fichero de la izquierda se ha quedado a medias y ya no es JSON válido. El de la derecha conserva la versión anterior entera.
 
 ### Para practicar
 
-1. Escribe un generador `lineas_no_vacias(ruta)` que entregue solo las líneas con contenido de un fichero de texto.
-2. Convierte el `Cronometro` en un gestor de contexto que, además, guarde el tiempo en un fichero de registro.
-3. Escribe un decorador `@reintentar(veces=3)` que vuelva a llamar a la función si lanza una excepción. Pista: necesitas una función que devuelva el decorador.
-4. (A) Compara el consumo de memoria de `sum([i * i for i in range(10_000_000)])` y `sum(i * i for i in range(10_000_000))`. Explica la diferencia.
+1. Escribe el generador `caros(ruta, minimo)`, que entregue solo los productos que superen un precio, leyendo el fichero una sola vez. Usa el CSV que deja el Listado 2.13 al ejecutarse.
 
-## 2.7 Diseño: composición frente a herencia
+   ```python
+   list(caros(Path("datos/catalogo_demo.csv"), Decimal("50")))
+   # [Producto[T-100, Teclado mecánico, 79.90 €, stock 12]]
+   ```
 
-La herencia crea una dependencia fuerte: si cambia la clase padre, cambian todas las hijas. La **composición** —que un objeto contenga a otros y les delegue trabajo— suele ser más flexible. La regla práctica: hereda cuando la subclase **es** una variante del padre; compón cuando el objeto simplemente **usa** a otro.
+2. Mide con el Listado 2.15 cuánta memoria hace falta para quedarse solo con los diez productos más caros usando `sorted(recorrer(ruta), key=...)` y usando `heapq.nlargest(10, recorrer(ruta), key=...)`. Explica la diferencia en dos líneas.
 
-**Listado 2.17.** Composición · [ver fichero](listados/listado_2_17_composicion.py)
+3. Ejecuta el Listado 2.17 cambiando `escribir_bien` para que haga `temporal.replace(ruta)` **antes** del `raise`. Anota qué queda en el fichero y por qué ese orden lo cambia todo.
 
-```python
-class Informe:
-    """No hereda de LectorCSV ni de Calculadora: los USA."""
-
-    def __init__(self, lector: LectorCSV, calculadora: Calculadora):
-        self.lector = lector
-        self.calculadora = calculadora
-
-    def unidades_por_ciudad(self) -> dict[str, float]:
-        filas = self.lector.leer()
-        return self.calculadora.total_por_clave(filas, "ciudad", "unidades")
-
-
-informe = Informe(LectorCSV(Path("datos") / "ventas.csv"), Calculadora())
-print(informe.unidades_por_ciudad())     # {'Granada': 5.0, 'Málaga': 14.0}
-```
-
-Pasar los colaboradores por el constructor permite cambiarlos sin tocar `Informe`: para leer JSON basta con darle otro lector. En la UD6, un `Pipeline` de scikit-learn hace justo esto con una lista de transformadores.
-
-### Cómo están diseñadas las bibliotecas que vas a usar
-
-El siguiente listado reúne casi todo lo de la unidad: una clase base que define el contrato y escribe el método común, una subclase que lo implementa, y el convenio de scikit-learn de guardar lo aprendido en atributos terminados en guion bajo ([scikit-learn, Developing estimators](https://scikit-learn.org/stable/developers/develop.html)).
-
-**Listado 2.18.** Un transformador con la interfaz de scikit-learn · [ver fichero](listados/listado_2_18_transformador.py)
-
-```python
-class TransformadorBase:
-    """Todo transformador aprende con fit y aplica con transform."""
-
-    def fit(self, valores: list[float]) -> "TransformadorBase":
-        raise NotImplementedError
-
-    def transform(self, valores: list[float]) -> list[float]:
-        raise NotImplementedError
-
-    def fit_transform(self, valores: list[float]) -> list[float]:
-        """Patrón plantilla: se escribe una vez y lo heredan todos."""
-        return self.fit(valores).transform(valores)
-
-
-class NormalizadorMinMax(TransformadorBase):
-    """Lleva los valores al rango [0, 1] con el mínimo y el máximo aprendidos."""
-
-    def fit(self, valores: list[float]) -> "NormalizadorMinMax":
-        self.minimo_ = min(valores)          # el guion bajo final marca lo aprendido
-        self.maximo_ = max(valores)
-        return self                          # devolver self permite encadenar
-
-    def transform(self, valores: list[float]) -> list[float]:
-        recorrido = self.maximo_ - self.minimo_
-        return [round((v - self.minimo_) / recorrido, 3) for v in valores]
-
-
-normalizador = NormalizadorMinMax()
-print(normalizador.fit_transform([845.0, 2699.7, 899.9, 3059.7]))   # [0.0, 0.837, 0.025, 1.0]
-print(normalizador.transform([1000.0]))                             # [0.07]
-```
-
-Que `fit` devuelva `self` es lo que permite escribir `modelo.fit(X, y).predict(X_nuevo)`. Y separar `fit` de `transform` es lo que evita la fuga de datos que estudiaremos en la UD6: lo aprendido con los datos de entrenamiento se aplica después a los de prueba.
-
-### Para practicar
-
-1. Reescribe el listado 2.17 para que `Informe` acepte cualquier objeto con método `leer()`, y pásale un lector de JSON.
-2. Añade `EstandarizadorZ`, que reste la media y divida por la desviación típica. Pista: `statistics.mean` y `statistics.pstdev`.
-3. (A) Busca en la documentación de scikit-learn qué métodos exige a un transformador y compáralos con el listado 2.18.
+4. (A) Recorre un generador dos veces seguidas con un `for` y anota qué imprime el segundo. Después arréglalo de dos formas distintas y explica cuándo usarías cada una.
 
 ## Ampliación
 
-Estos tres mecanismos no entran en la evaluación, pero aparecen al leer código de bibliotecas.
+Nada de este apartado entra en la práctica ni en la prueba. Está aquí porque te lo vas a encontrar leyendo código ajeno, y porque alguna de estas cosas la reconocerás de Java.
 
-- **Descriptores.** Son la maquinaria que hay debajo de `@property`, `@classmethod` y los campos de un ORM: clases que definen `__get__`, `__set__` o `__delete__` y controlan el acceso a un atributo de otra clase.
-- **`__slots__`.** Declarar `__slots__ = ("ciudad", "importe")` impide crear atributos nuevos y ahorra memoria al no guardar el `__dict__` de cada objeto. Se usa cuando hay millones de instancias.
-- **Metaclases.** Una metaclase es la clase de una clase: permite modificar las clases cuando se definen. Es la herramienta con la que están hechos los modelos de Django o de Pydantic. La regla habitual: si dudas de si necesitas una metaclase, no la necesitas.
+**Herencia y clases abstractas.** Cuando varias clases comparten de verdad un comportamiento, la herencia sigue siendo la respuesta. `ABC` es el equivalente de una clase abstracta de Java: obliga a implementar los métodos marcados con `@abstractmethod` y, a diferencia de un `Protocol`, sí reparte código ([abc](https://docs.python.org/3/library/abc.html)).
+
+**Listado 2.18.** Las formas de pago de la tienda, en Python · [ver fichero](listados/listado_2_18_herencia.py)
+
+```python
+class MetodoPago(ABC):
+    """Clase abstracta: no se pueden crear objetos de ella, solo de sus hijas."""
+
+    def __init__(self, titular: str) -> None:
+        self.titular = titular
+
+    @abstractmethod
+    def comision(self, importe: Decimal) -> Decimal:
+        """Cada forma de pago calcula su propia comisión."""
+
+
+class Tarjeta(MetodoPago):
+
+    def comision(self, importe: Decimal) -> Decimal:
+        return (importe * Decimal("0.015")).quantize(Decimal("0.01"), ROUND_HALF_UP)
+```
+
+```text
+Tarjeta(Ana): 1.20 €
+Bizum(Luis): 0.00 €
+Crear MetodoPago -> Can't instantiate abstract class MetodoPago without an implementation for abstract method 'comision'
+```
+
+Es el Listado 0.22 de Acceso a Datos, con los mismos números.
+
+**Herencia múltiple y mixins.** Python permite heredar de varias clases a la vez. Un *mixin* es una clase pequeña que añade una capacidad suelta, y el **MRO** es el orden en que Python busca un método. Java no tiene mixins: lo más parecido son los métodos `default` de una interfaz.
+
+![Una clase que hereda de un mixin y de una clase base, con el orden de resolución de métodos de izquierda a derecha.](figuras/herencia-mro.svg)
+
+*Figura 2.12. Herencia múltiple y orden de resolución (MRO).*
+
+**Listado 2.19.** Un mixin y el MRO · [ver fichero](listados/listado_2_19_mixins_mro.py)
+
+**Métodos especiales.** Definir `__len__`, `__getitem__`, `__iter__` o `__add__` integra tus objetos en la sintaxis del lenguaje. Es lo que hace que `len(df)` funcione sobre un `DataFrame`. Úsalo poco: solo cuando el símbolo signifique de verdad lo que parece.
+
+**Listado 2.20.** Un `Pedido` que se comporta como una secuencia · [ver fichero](listados/listado_2_20_operadores.py)
+
+**Decoradores.** Un decorador recibe una función y devuelve otra que la envuelve. Ya has usado tres: `@property`, `@classmethod` y `@dataclass`. Escribir los tuyos es menos frecuente de lo que parece ([functools](https://docs.python.org/3/library/functools.html)).
+
+**Listado 2.21.** Un decorador que mide cuánto tarda una función · [ver fichero](listados/listado_2_21_decorador.py)
+
+**Gestores de contexto propios.** Si una pareja de acciones va siempre junta, `@contextmanager` la envuelve en un `with` con muy poco código ([contextlib](https://docs.python.org/3/library/contextlib.html)).
+
+**Listado 2.22.** Deshacer los cambios si falla el bloque · [ver fichero](listados/listado_2_22_gestor_contexto.py)
 
 ## Práctica de la unidad · Hito 1 del proyecto integrador
 
-Vas a **refactorizar** el explorador del hito 0: mismo resultado, mejor diseño. Es el trabajo real de un programador que recibe código que funciona y tiene que dejarlo mantenible.
+Vas a convertir el explorador del hito 0 en un **paquete instalable y probado**. Mismo resultado, mejor organización: este paquete es el que seguirás usando a partir de la UD3, así que merece la pena dejarlo bien.
 
 ### 1. Punto de partida
 
-Tu paquete `explorador` de la UD1, con su `informe_inicial.json` ya generado. Ese fichero es tu prueba: al terminar el refactor, el programa debe producir **exactamente el mismo JSON**.
+Tu explorador de la UD1, con su `informe_inicial.json` ya generado. Ese fichero es tu prueba: al terminar, el programa debe producir **exactamente el mismo JSON**.
 
 ### 2. Qué hay que construir
 
 | Elemento | Requisito |
 | --- | --- |
-| `Lector` | Clase abstracta (`ABC`) con el método abstracto `leer()`, y las subclases `LectorCSV` y `LectorJSON` |
-| `Columna` | Clase con el nombre, los valores y propiedades de solo lectura: `vacios`, `porcentaje_vacios`, `tipo` y, si es numérica, `minimo`, `maximo` y `media` |
-| `Dataset` | Colección de filas con `__len__`, `__getitem__`, `__iter__` y `__repr__`, y un método `informe()` que devuelva el diccionario del informe |
-| `ResumenColumna` | `dataclass` con los datos de cada columna, convertida a diccionario con `asdict` |
-| Generador | La lectura de filas debe hacerse con `yield`, sin cargar el fichero entero |
-| Gestor de contexto | Abrir el fichero dentro de un `with`, propio o el de `open` |
-| Decorador | `@medir` aplicado al método que genera el informe, que registre el tiempo con `logging` |
+| Estructura | `src/<tu_paquete>/` con los módulos separados por responsabilidad: lectura, resumen e informe |
+| Instalable | Un `pyproject.toml` y `pip install -e .`, de forma que `import <tu_paquete>` funcione desde cualquier carpeta |
+| Configuración | Una `dataclass` `Configuracion` con la ruta de los datos, el separador y la codificación |
+| Lectura | Un generador con `yield` que entregue las filas de una en una, sin cargar el fichero entero |
+| Ficheros | Toda apertura de fichero dentro de un `with` |
+| Interfaz pública | Todas las funciones públicas con anotaciones de tipo y docstring |
+| Pruebas | Al menos cuatro con `pytest`, entre ellas una que compruebe que el informe generado es idéntico al de la UD1 |
+
+No hace falta ninguna clase más que la `dataclass` de configuración. Si al terminar tienes una clase con un solo método y ningún estado, conviértela en una función: es la señal de que sobra.
 
 ### 3. Entregables
 
-- El paquete refactorizado en `src/explorador/`, con los módulos separados por responsabilidad.
-- `datos/informe_inicial.json` regenerado y **idéntico** al de la UD1. Incluye en el `README.md` cómo lo has comprobado.
-- Un apartado en el `README.md` de tres a cinco líneas: qué decisiones de diseño has tomado y por qué elegiste herencia o composición en cada caso.
-- Defensa oral breve (5 minutos): justificar una clase y explicar qué pasaría si se cambiara el formato de entrada.
+- El paquete en `src/`, con `pyproject.toml`, instalado con `pip install -e .`.
+- `datos/informe_inicial.json` regenerado e **idéntico** al de la UD1. Explica en el `README.md` cómo lo has comprobado.
+- Las pruebas en `tests/`, pasando con `pytest`.
+- Un apartado de tres a cinco líneas en el `README.md`: qué módulos has creado, qué responsabilidad tiene cada uno y por qué.
+- Defensa oral breve (5 minutos): justificar la separación en módulos y explicar qué habría que tocar para leer los datos de otro formato.
 
 ### 4. Qué se evalúa
 
 | CE | Evidencias en la práctica |
 | --- | --- |
-| 1a | Clases con responsabilidad única, propiedades en lugar de getters y validación de datos |
-| 1b | Uso adecuado de `dataclass`, diccionarios y colecciones propias para organizar la información |
-| 1e | Paquete reorganizado por responsabilidades, contrato explícito con `ABC` y reutilización sin duplicar código |
+| 1a | Funciones con parámetros y anotaciones de tipo, control de flujo y validación de la entrada |
+| 1b | `dataclass` y diccionarios para organizar la información del informe |
+| 1e | Paquete instalable, módulos separados por responsabilidad y reutilizable sin copiar código en la UD3 |
 
 ## Resumen de la unidad
 
 | Apartado | Idea clave |
 | --- | --- |
-| 2.1 Clases y objetos | `self` es explícito, los atributos nacen al asignarlos y no hay `private`: hay convenios `_` y `__` |
-| 2.2 Encapsulación | Atributos públicos hasta que hagan falta propiedades. `@classmethod` sustituye a la sobrecarga de constructores |
-| 2.3 Herencia y mixins | Todos los métodos son sobrescribibles. El *duck typing* permite polimorfismo sin jerarquía, y los mixins añaden capacidades sueltas |
-| 2.4 Contratos | `ABC` obliga a implementar métodos; `Protocol` describe la forma del objeto sin herencia |
-| 2.5 Modelo de datos | Los métodos especiales integran tus objetos en el lenguaje. `dataclass` escribe por ti `__init__`, `__repr__` y `__eq__` |
-| 2.6 Protocolos | `yield` procesa sin cargar en memoria, `__enter__`/`__exit__` garantizan la liberación y un decorador envuelve una función sin tocarla |
-| 2.7 Diseño | Hereda si **es**; compón si **usa**. `fit`/`transform` y devolver `self` son el patrón de scikit-learn |
+| 2.1 Objetos ajenos | Atributo sin paréntesis, método con paréntesis. En scikit-learn, los parámetros van en el constructor y lo aprendido termina en guion bajo |
+| 2.2 Clases propias | El constructor no deja crear objetos inválidos. Atributos públicos hasta que haga falta una propiedad, `dataclass` para los datos y `__eq__` con `__hash__` siempre juntos |
+| 2.3 Contratos | Un `Protocol` describe la forma sin exigir herencia. El servicio recibe el repositorio: cambiar de almacenamiento no toca las reglas. Es el patrón de `Pipeline` |
+| 2.4 Generadores y `with` | `yield` procesa sin cargar en memoria; `with` garantiza que lo que se abre se cierre, también si falla |
 
 ## Bibliografía de la UD2
 
-Todas las fuentes web se consultaron el 21 de septiembre de 2026.
+Todas las fuentes web se consultaron el 18 de octubre de 2026.
 
 ### Documentación oficial de Python
 
-- Python Software Foundation. (2026). *The Python Tutorial, capítulo 9: Classes*. <https://docs.python.org/3/tutorial/classes.html>. Apartados citados: [9.6 Private Variables](https://docs.python.org/3/tutorial/classes.html#private-variables) y [9.5.1 Multiple Inheritance](https://docs.python.org/3/tutorial/classes.html#multiple-inheritance).
-- Python Software Foundation. (2026). *The Python Language Reference: Special method names*. <https://docs.python.org/3/reference/datamodel.html#special-method-names>
+- Python Software Foundation. (2026). *The Python Tutorial: Classes*. <https://docs.python.org/3/tutorial/classes.html>
 - Python Software Foundation. (2026). *dataclasses — Data Classes*. <https://docs.python.org/3/library/dataclasses.html>
-- Python Software Foundation. (2026). *abc — Abstract Base Classes*. <https://docs.python.org/3/library/abc.html>
-- Python Software Foundation. (2026). *typing.Protocol*. <https://docs.python.org/3/library/typing.html#typing.Protocol>
 - Python Software Foundation. (2026). *enum — Support for enumerations*. <https://docs.python.org/3/library/enum.html>
+- Python Software Foundation. (2026). *typing.Protocol*. <https://docs.python.org/3/library/typing.html#typing.Protocol>
+- Python Software Foundation. (2026). *abc — Abstract Base Classes*. <https://docs.python.org/3/library/abc.html>
 - Python Software Foundation. (2026). *contextlib — Utilities for with-statement contexts*. <https://docs.python.org/3/library/contextlib.html>
-- Python Software Foundation. (2026). *functools.wraps*. <https://docs.python.org/3/library/functools.html#functools.wraps>
+- Python Software Foundation. (2026). *functools*. <https://docs.python.org/3/library/functools.html>
+- Python Software Foundation. (2026). *decimal — Decimal fixed-point and floating-point arithmetic*. <https://docs.python.org/3/library/decimal.html>
+- Python Software Foundation. (2026). *csv — CSV File Reading and Writing*. <https://docs.python.org/3/library/csv.html>
+
+### Propuestas de mejora de Python (PEP)
+
+- Smith, E. V. (2017). *PEP 557 – Data Classes*. <https://peps.python.org/pep-0557/>
+- Levkivskyi, I. et al. (2017). *PEP 544 – Protocols: Structural subtyping (static duck typing)*. <https://peps.python.org/pep-0544/>
 
 ### Bibliotecas del curso
 
-- scikit-learn developers. *Developing scikit-learn estimators*. <https://scikit-learn.org/stable/developers/develop.html>
+- scikit-learn developers. (2026). *Developing scikit-learn estimators*. <https://scikit-learn.org/stable/developers/develop.html>
+- scikit-learn developers. (2026). *Pipelines and composite estimators*. <https://scikit-learn.org/stable/modules/compose.html>
+- pandas development team. (2026). *DataFrame: API reference*. <https://pandas.pydata.org/docs/reference/frame.html>
+
+### Material del módulo de Acceso a Datos
+
+- *Acceso a Datos · 2.º DAM* (2026), UD0 «Java para quien ya programa en C++» y UD1 «Ficheros». Materiales del propio módulo. <https://neozizou.github.io/ad-dam/>. El modelo de la tienda, las Figuras 0.7, 0.8, 0.10, 0.12, 0.13, 1.7 y 1.11 y los Listados 0.18 a 0.30 proceden de ahí, bajo licencia CC0.
 
 ### Lectura complementaria
 
-- Vadillo, J. *Aprende Python desde cero a experto*. Licencia CC BY-NC-SA 4.0. <https://github.com/jvadillo/aprende-python-desde-cero-a-experto>. Capítulo 9 (Clases y objetos) para los apartados 2.1 y 2.2, y capítulo 10 (Herencia) para el 2.3.
+- Vadillo, J. *Aprende Python desde cero a experto*. Licencia CC BY-NC-SA 4.0. <https://github.com/jvadillo/aprende-python-desde-cero-a-experto>. Capítulo 9 (Clases y objetos) para el apartado 2.2.
 
 ---
 

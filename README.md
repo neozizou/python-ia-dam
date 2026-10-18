@@ -11,7 +11,7 @@ Materiales del módulo: apuntes de cada unidad, listados de código ejecutables 
 | UD | Contenido | Horas | Fechas aprox. | Estado |
 | --- | --- | --- | --- | --- |
 | [UD1](ud1-python/UD1-python-para-quien-ya-programa.md) | Python para quien ya programa | 7 | 21/09 – 05/10 | Disponible |
-| [UD2](ud2-poo/UD2-programacion-orientada-a-objetos.md) | Programación orientada a objetos en Python | 5 | 05/10 – 19/10 | Disponible |
+| [UD2](ud2-poo/UD2-programacion-orientada-a-objetos.md) | Programación orientada a objetos en Python | 4 | 05/10 – 19/10 | Disponible |
 | [UD3](ud3-datos/UD3-analisis-de-datos.md) | Análisis de datos con Python y primer despliegue con Streamlit | 10 | 20/10 – 16/11 | Disponible |
 | [UD4](ud4-bd/UD4-sql-y-nosql.md) | SQL y NoSQL desde Python | 4 | 17/11 – 24/11 | Disponible |
 | [UD5](ud5-bigdata/UD5-big-data.md) | Big Data | 5 | 30/11 – 14/12 | Disponible |
@@ -56,7 +56,7 @@ A lo largo del curso cada alumno o equipo trabaja siempre con el mismo conjunto 
 | Hito | Unidad | Qué se hace con el conjunto de datos |
 | --- | --- | --- |
 | 0 | UD1 | Elegirlo y describirlo con Python puro |
-| 1 | UD2 | Refactorizar el explorador a objetos, sin cambiar el resultado |
+| 1 | UD2 | Convertir el explorador en un paquete instalable y probado |
 | 2 | UD3 | Limpiarlo, explorarlo y publicar un primer panel con Streamlit |
 | 3 | UD4 | Guardarlo en una base de datos y consultarlo |
 | 4 | UD5 | Tratarlo como problema de escala |
