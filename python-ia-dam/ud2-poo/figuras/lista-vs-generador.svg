@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 310" width="840" height="310" role="img" aria-label="Lista frente a generador">
+  <title>Lista frente a generador</title>
+  <defs>
+    <marker id="punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+            markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+  <rect width="840" height="310" rx="14" fill="#ffffff" stroke="#c7cedb"/>
+  <rect x="20" y="20" width="390" height="270" rx="10" fill="#f4f6fa" stroke="#c7cedb" stroke-width="1.5"/>
+  <rect x="430" y="20" width="390" height="270" rx="10" fill="#f4f6fa" stroke="#c7cedb" stroke-width="1.5"/>
+  <text x="40" y="48" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#1f2430" text-anchor="start" font-weight="700">Lista: [f for f in filas]</text>
+  <text x="450" y="48" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#1f2430" text-anchor="start" font-weight="700">Generador: (f for f in filas)</text>
+  <rect x="40" y="65" width="350" height="150" rx="10" fill="#ffffff" stroke="#c0392b" stroke-width="1.5"/>
+  <rect x="55" y="80" width="320" height="20" rx="4" fill="#fadbd8" stroke="#c0392b" stroke-width="1"/>
+  <text x="65" y="95" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11" fill="#1f2430" text-anchor="start" font-weight="400">fila 1</text>
+  <rect x="55" y="106" width="320" height="20" rx="4" fill="#fadbd8" stroke="#c0392b" stroke-width="1"/>
+  <text x="65" y="121" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11" fill="#1f2430" text-anchor="start" font-weight="400">fila 2</text>
+  <rect x="55" y="132" width="320" height="20" rx="4" fill="#fadbd8" stroke="#c0392b" stroke-width="1"/>
+  <text x="65" y="147" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11" fill="#1f2430" text-anchor="start" font-weight="400">fila 3</text>
+  <rect x="55" y="158" width="320" height="20" rx="4" fill="#fadbd8" stroke="#c0392b" stroke-width="1"/>
+  <text x="65" y="173" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11" fill="#1f2430" text-anchor="start" font-weight="400">fila 4</text>
+  <rect x="55" y="184" width="320" height="20" rx="4" fill="#fadbd8" stroke="#c0392b" stroke-width="1"/>
+  <text x="65" y="199" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11" fill="#1f2430" text-anchor="start" font-weight="400">fila 5</text>
+  <text x="40" y="235" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#5b6472" text-anchor="start" font-weight="400">Todas las filas, a la vez, en memoria.</text>
+  <text x="40" y="257" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#c0392b" text-anchor="start" font-weight="400">Con un fichero de 50 GB, no cabe.</text>
+  <rect x="450" y="65" width="350" height="150" rx="10" fill="#ffffff" stroke="#1f9d6b" stroke-width="1.5"/>
+  <rect x="465" y="120" width="320" height="22" rx="4" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1"/>
+  <text x="475" y="136" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11" fill="#1f2430" text-anchor="start" font-weight="400">fila 3</text>
+  <text x="465" y="100" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#1f9d6b" text-anchor="start" font-weight="400">yield entrega una y espera</text>
+  <path d="M 620 160 L 620 205" fill="none" stroke="#5b6472" stroke-width="2" marker-end="url(#punta)"/>
+  <text x="540" y="232" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#5b6472" text-anchor="start" font-weight="400">Una fila cada vez: memoria constante.</text>
+  <text x="540" y="254" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#1f9d6b" text-anchor="start" font-weight="400">Es la base de la UD5.</text>
+</svg>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" width="820" height="320" role="img" aria-label="Anatomía de un DataFrame">
+  <title>Anatomía de un DataFrame</title>
+  <defs>
+    <marker id="punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+            markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+  <rect width="820" height="320" rx="14" fill="#ffffff" stroke="#c7cedb"/>
+  <rect x="50" y="50" width="670" height="40" rx="6" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5"/>
+  <text x="195.0" y="70" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="13" fill="#1f2430" text-anchor="middle" font-weight="700">short_name</text>
+  <text x="195.0" y="85" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="10" fill="#5b6472" text-anchor="middle" font-weight="400">str</text>
+  <text x="345.0" y="70" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="13" fill="#1f2430" text-anchor="middle" font-weight="700">club</text>
+  <text x="345.0" y="85" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="10" fill="#5b6472" text-anchor="middle" font-weight="400">str</text>
+  <text x="495.0" y="70" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="13" fill="#1f2430" text-anchor="middle" font-weight="700">overall</text>
+  <text x="495.0" y="85" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="10" fill="#5b6472" text-anchor="middle" font-weight="400">int64</text>
+  <text x="645.0" y="70" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="13" fill="#1f2430" text-anchor="middle" font-weight="700">value_eur</text>
+  <text x="645.0" y="85" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="10" fill="#5b6472" text-anchor="middle" font-weight="400">Int64</text>
+  <rect x="50" y="100" width="70" height="38" rx="0" fill="#f4f6fa" stroke="#c7cedb" stroke-width="1"/>
+  <text x="85" y="124" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#5b6472" text-anchor="middle" font-weight="400">0</text>
+  <rect x="120" y="100" width="150" height="38" rx="0" fill="#ffffff" stroke="#c7cedb" stroke-width="1"/>
+  <text x="195.0" y="124" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">L. Messi</text>
+  <rect x="270" y="100" width="150" height="38" rx="0" fill="#ffffff" stroke="#c7cedb" stroke-width="1"/>
+  <text x="345.0" y="124" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">FC Barcelona</text>
+  <rect x="420" y="100" width="150" height="38" rx="0" fill="#d8f1e6" stroke="#c7cedb" stroke-width="1"/>
+  <text x="495.0" y="124" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">94</text>
+  <rect x="570" y="100" width="150" height="38" rx="0" fill="#ffffff" stroke="#c7cedb" stroke-width="1"/>
+  <text x="645.0" y="124" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">95500000</text>
+  <rect x="50" y="138" width="70" height="38" rx="0" fill="#f4f6fa" stroke="#c7cedb" stroke-width="1"/>
+  <text x="85" y="162" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#5b6472" text-anchor="middle" font-weight="400">1</text>
+  <rect x="120" y="138" width="150" height="38" rx="0" fill="#ffffff" stroke="#c7cedb" stroke-width="1"/>
+  <text x="195.0" y="162" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">Neymar Jr</text>
+  <rect x="270" y="138" width="150" height="38" rx="0" fill="#ffffff" stroke="#c7cedb" stroke-width="1"/>
+  <text x="345.0" y="162" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">Paris S-G</text>
+  <rect x="420" y="138" width="150" height="38" rx="0" fill="#d8f1e6" stroke="#c7cedb" stroke-width="1"/>
+  <text x="495.0" y="162" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">92</text>
+  <rect x="570" y="138" width="150" height="38" rx="0" fill="#ffffff" stroke="#c7cedb" stroke-width="1"/>
+  <text x="645.0" y="162" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">105500000</text>
+  <rect x="50" y="176" width="70" height="38" rx="0" fill="#f4f6fa" stroke="#c7cedb" stroke-width="1"/>
+  <text x="85" y="200" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#5b6472" text-anchor="middle" font-weight="400">2</text>
+  <rect x="120" y="176" width="150" height="38" rx="0" fill="#ffffff" stroke="#c7cedb" stroke-width="1"/>
+  <text x="195.0" y="200" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">J. Oblak</text>
+  <rect x="270" y="176" width="150" height="38" rx="0" fill="#ffffff" stroke="#c7cedb" stroke-width="1"/>
+  <text x="345.0" y="200" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">Atlético</text>
+  <rect x="420" y="176" width="150" height="38" rx="0" fill="#d8f1e6" stroke="#c7cedb" stroke-width="1"/>
+  <text x="495.0" y="200" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">91</text>
+  <rect x="570" y="176" width="150" height="38" rx="0" fill="#ffffff" stroke="#c7cedb" stroke-width="1"/>
+  <text x="645.0" y="200" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">77500000</text>
+  <text x="85" y="35" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" fill="#2f6fd0" text-anchor="middle" font-weight="700">índice</text>
+  <path d="M 495.0 255 L 495.0 230" fill="none" stroke="#5b6472" stroke-width="2" marker-end="url(#punta)"/>
+  <text x="495.0" y="275" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#1f9d6b" text-anchor="middle" font-weight="700">una columna es una Series</text>
+  <text x="230" y="30" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#1f2430" text-anchor="start" font-weight="700">df.shape = (3, 4)   ·   df.columns   ·   df.dtypes</text>
+  <text x="30" y="300" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12.5" fill="#5b6472" text-anchor="start" font-weight="400">df.loc[0, &#x27;club&#x27;] usa etiquetas; df.iloc[0, 1], posiciones.</text>
+</svg>

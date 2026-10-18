@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 482" width="900" height="482" role="img" aria-label="Ruta del hito 3. Se parte de: Los datos limpios en Parquet del hito 2. Paso 1: Diseñar el esquema, con claves, tipos e índice, produce esquema.sql. Paso 2: Cargar los datos desde Python, produce bd.py. Paso 3: Seis consultas parametrizadas que respondan, produce consultas.py. Paso 4: Guardar una parte como documentos y comparar, produce README: SQL frente a NoSQL. Paso 5: Hacer que el panel lea de la base de datos, produce app/app.py. Se entrega: Base de datos cargada, seis consultas, comparativa y panel desplegado.">
+  <title>Ruta del hito 3. Se parte de: Los datos limpios en Parquet del hito 2. Paso 1: Diseñar el esquema, con claves, tipos e índice, produce esquema.sql. Paso 2: Cargar los datos desde Python, produce bd.py. Paso 3: Seis consultas parametrizadas que respondan, produce consultas.py. Paso 4: Guardar una parte como documentos y comparar, produce README: SQL frente a NoSQL. Paso 5: Hacer que el panel lea de la base de datos, produce app/app.py. Se entrega: Base de datos cargada, seis consultas, comparativa y panel desplegado.</title>
+  <defs>
+    <marker id="punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+            markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+  <rect width="900" height="482" rx="14" fill="#ffffff" stroke="#c7cedb"/>
+  <rect x="24" y="24" width="852" height="54" rx="10" fill="#e8ecf3" stroke="#8b95a6" stroke-width="1.5"/>
+  <text x="44" y="45" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="10" fill="#5b6472" text-anchor="start" font-weight="700">PARTES DE</text>
+  <text x="44" y="65" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#1f2430" text-anchor="start" font-weight="500">Los datos limpios en Parquet del hito 2</text>
+  <text x="90" y="92" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="10" fill="#5b6472" text-anchor="start" font-weight="700">QUÉ HAY QUE HACER</text>
+  <text x="716" y="92" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="10" fill="#5b6472" text-anchor="middle" font-weight="700">QUÉ PRODUCE</text>
+  <circle cx="58" cy="127" r="15" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5" fill-opacity="1.0"/>
+  <text x="58" y="132" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#2f6fd0" text-anchor="middle" font-weight="700">1</text>
+  <text x="90" y="132" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13.5" fill="#1f2430" text-anchor="start" font-weight="500">Diseñar el esquema, con claves, tipos e índice</text>
+  <rect x="556" y="112" width="320" height="31" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="716.0" y="131.33333333333334" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11.5" fill="#1f2430" text-anchor="middle" font-weight="500">esquema.sql</text>
+  <line x1="58" y1="128" x2="58" y2="169" stroke="#c7cedb" stroke-width="1.5" stroke-dasharray="3 4"/>
+  <circle cx="58" cy="185" r="15" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5" fill-opacity="1.0"/>
+  <text x="58" y="190" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#2f6fd0" text-anchor="middle" font-weight="700">2</text>
+  <text x="90" y="190" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13.5" fill="#1f2430" text-anchor="start" font-weight="500">Cargar los datos desde Python</text>
+  <rect x="556" y="170" width="320" height="31" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="716.0" y="189.33333333333334" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11.5" fill="#1f2430" text-anchor="middle" font-weight="500">bd.py</text>
+  <line x1="58" y1="186" x2="58" y2="227" stroke="#c7cedb" stroke-width="1.5" stroke-dasharray="3 4"/>
+  <circle cx="58" cy="243" r="15" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5" fill-opacity="1.0"/>
+  <text x="58" y="248" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#2f6fd0" text-anchor="middle" font-weight="700">3</text>
+  <text x="90" y="248" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13.5" fill="#1f2430" text-anchor="start" font-weight="500">Seis consultas parametrizadas que respondan</text>
+  <rect x="556" y="228" width="320" height="31" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="716.0" y="247.33333333333334" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11.5" fill="#1f2430" text-anchor="middle" font-weight="500">consultas.py</text>
+  <line x1="58" y1="244" x2="58" y2="285" stroke="#c7cedb" stroke-width="1.5" stroke-dasharray="3 4"/>
+  <circle cx="58" cy="301" r="15" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5" fill-opacity="1.0"/>
+  <text x="58" y="306" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#2f6fd0" text-anchor="middle" font-weight="700">4</text>
+  <text x="90" y="306" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13.5" fill="#1f2430" text-anchor="start" font-weight="500">Guardar una parte como documentos y comparar</text>
+  <rect x="556" y="286" width="320" height="31" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="716.0" y="305.3333333333333" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11.5" fill="#1f2430" text-anchor="middle" font-weight="500">README: SQL frente a NoSQL</text>
+  <line x1="58" y1="302" x2="58" y2="343" stroke="#c7cedb" stroke-width="1.5" stroke-dasharray="3 4"/>
+  <circle cx="58" cy="359" r="15" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5" fill-opacity="1.0"/>
+  <text x="58" y="364" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#2f6fd0" text-anchor="middle" font-weight="700">5</text>
+  <text x="90" y="364" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13.5" fill="#1f2430" text-anchor="start" font-weight="500">Hacer que el panel lea de la base de datos</text>
+  <rect x="556" y="344" width="320" height="31" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="716.0" y="363.3333333333333" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11.5" fill="#1f2430" text-anchor="middle" font-weight="500">app/app.py</text>
+  <rect x="24" y="404" width="852" height="54" rx="10" fill="#e8dffa" stroke="#7b55c0" stroke-width="1.5"/>
+  <text x="44" y="425" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="10" fill="#5b6472" text-anchor="start" font-weight="700">ENTREGAS</text>
+  <text x="44" y="445" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#1f2430" text-anchor="start" font-weight="500">Base de datos cargada, seis consultas, comparativa y panel desplegado</text>
+</svg>

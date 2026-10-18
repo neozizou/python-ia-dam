@@ -1,0 +1,16 @@
+posicion,nombre_es,linea,orden
+GK,Guardameta,Portería,1
+CB,Defensa central,Defensa,2
+LB,Lateral izquierdo,Defensa,3
+RB,Lateral derecho,Defensa,4
+LWB,Carrilero izquierdo,Defensa,5
+RWB,Carrilero derecho,Defensa,6
+CDM,Mediocentro defensivo,Centro del campo,7
+CM,Mediocentro,Centro del campo,8
+CAM,Mediapunta,Centro del campo,9
+LM,Interior izquierdo,Centro del campo,10
+RM,Interior derecho,Centro del campo,11
+LW,Extremo izquierdo,Ataque,12
+RW,Extremo derecho,Ataque,13
+CF,Segundo delantero,Ataque,14
+ST,Delantero centro,Ataque,15

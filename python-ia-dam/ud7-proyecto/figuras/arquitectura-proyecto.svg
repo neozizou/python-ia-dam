@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 330" width="860" height="330" role="img" aria-label="Cómo se reparte el código del proyecto">
+  <title>Cómo se reparte el código del proyecto</title>
+  <defs>
+    <marker id="punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+            markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+  <rect width="860" height="330" rx="14" fill="#ffffff" stroke="#c7cedb"/>
+  <rect x="300" y="100" width="250" height="120" rx="10" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5"/>
+  <text x="425" y="130" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="15" fill="#1f2430" text-anchor="middle" font-weight="700">src/paquete/</text>
+  <text x="425" y="156" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">datos.py · modelo.py</text>
+  <text x="425" y="178" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12" fill="#1f2430" text-anchor="middle" font-weight="400">evaluacion.py</text>
+  <text x="425" y="202" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="#5b6472" text-anchor="middle" font-weight="400">una sola definición de todo</text>
+  <rect x="30" y="35" width="200" height="68" rx="10" fill="#e8dffa" stroke="#7b55c0" stroke-width="1.5"/>
+  <text x="130" y="65" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="700">notebooks/</text>
+  <text x="130" y="87" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="#5b6472" text-anchor="middle" font-weight="400">exploran y explican</text>
+  <rect x="30" y="230" width="200" height="68" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="130" y="260" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="700">tests/</text>
+  <text x="130" y="282" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="#5b6472" text-anchor="middle" font-weight="400">vigilan que no se rompa</text>
+  <rect x="640" y="35" width="200" height="68" rx="10" fill="#fbe9d4" stroke="#d9822b" stroke-width="1.5"/>
+  <text x="740" y="65" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="700">scripts/entrenar.py</text>
+  <text x="740" y="87" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="#5b6472" text-anchor="middle" font-weight="400">produce el modelo</text>
+  <rect x="640" y="230" width="200" height="68" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="740" y="260" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="700">app/app.py</text>
+  <text x="740" y="282" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="#5b6472" text-anchor="middle" font-weight="400">lo usa quien decide</text>
+  <path d="M 235 80 L 320 108" fill="none" stroke="#5b6472" stroke-width="2" marker-end="url(#punta)"/>
+  <path d="M 235 258 L 320 212" fill="none" stroke="#5b6472" stroke-width="2" marker-end="url(#punta)"/>
+  <path d="M 545 112 L 635 82" fill="none" stroke="#5b6472" stroke-width="2" marker-end="url(#punta)"/>
+  <path d="M 545 208 L 635 252" fill="none" stroke="#5b6472" stroke-width="2" marker-end="url(#punta)"/>
+  <rect x="300" y="250" width="250" height="52" rx="10" fill="#ffffff" stroke="#5b6472" stroke-width="1.5"/>
+  <text x="425" y="282" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="12.5" fill="#1f2430" text-anchor="middle" font-weight="400">modelos/modelo.joblib</text>
+  <path d="M 740 108 L 740 225" fill="none" stroke="#5b6472" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#punta)"/>
+  <text x="25" y="322" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" fill="#5b6472" text-anchor="start" font-weight="400">Los notebooks exploran; los módulos producen. Si la limpieza está en tres sitios, dejan de coincidir.</text>
+</svg>

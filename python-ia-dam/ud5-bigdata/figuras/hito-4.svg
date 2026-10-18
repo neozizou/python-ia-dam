@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 482" width="900" height="482" role="img" aria-label="Ruta del hito 4. Se parte de: Tus datos, ya en una base de datos. Paso 1: Multiplicar los datos hasta dos millones de filas, produce escalar.py. Paso 2: Medir memoria y tiempo de la versión ingenua, produce tabla de medidas. Paso 3: Optimizar: tipos, columnas y Parquet, produce datos/procesado/. Paso 4: Procesar por trozos o en flujo, produce flujo.py. Paso 5: Escribir conclusiones, incluido el impacto social, produce README. Se entrega: Script de escalado, medidas antes y después, conclusiones y defensa.">
+  <title>Ruta del hito 4. Se parte de: Tus datos, ya en una base de datos. Paso 1: Multiplicar los datos hasta dos millones de filas, produce escalar.py. Paso 2: Medir memoria y tiempo de la versión ingenua, produce tabla de medidas. Paso 3: Optimizar: tipos, columnas y Parquet, produce datos/procesado/. Paso 4: Procesar por trozos o en flujo, produce flujo.py. Paso 5: Escribir conclusiones, incluido el impacto social, produce README. Se entrega: Script de escalado, medidas antes y después, conclusiones y defensa.</title>
+  <defs>
+    <marker id="punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+            markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+  <rect width="900" height="482" rx="14" fill="#ffffff" stroke="#c7cedb"/>
+  <rect x="24" y="24" width="852" height="54" rx="10" fill="#e8ecf3" stroke="#8b95a6" stroke-width="1.5"/>
+  <text x="44" y="45" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="10" fill="#5b6472" text-anchor="start" font-weight="700">PARTES DE</text>
+  <text x="44" y="65" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#1f2430" text-anchor="start" font-weight="500">Tus datos, ya en una base de datos</text>
+  <text x="90" y="92" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="10" fill="#5b6472" text-anchor="start" font-weight="700">QUÉ HAY QUE HACER</text>
+  <text x="716" y="92" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="10" fill="#5b6472" text-anchor="middle" font-weight="700">QUÉ PRODUCE</text>
+  <circle cx="58" cy="127" r="15" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5" fill-opacity="1.0"/>
+  <text x="58" y="132" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#2f6fd0" text-anchor="middle" font-weight="700">1</text>
+  <text x="90" y="132" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13.5" fill="#1f2430" text-anchor="start" font-weight="500">Multiplicar los datos hasta dos millones de filas</text>
+  <rect x="556" y="112" width="320" height="31" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="716.0" y="131.33333333333334" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11.5" fill="#1f2430" text-anchor="middle" font-weight="500">escalar.py</text>
+  <line x1="58" y1="128" x2="58" y2="169" stroke="#c7cedb" stroke-width="1.5" stroke-dasharray="3 4"/>
+  <circle cx="58" cy="185" r="15" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5" fill-opacity="1.0"/>
+  <text x="58" y="190" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#2f6fd0" text-anchor="middle" font-weight="700">2</text>
+  <text x="90" y="190" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13.5" fill="#1f2430" text-anchor="start" font-weight="500">Medir memoria y tiempo de la versión ingenua</text>
+  <rect x="556" y="170" width="320" height="31" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="716.0" y="189.33333333333334" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11.5" fill="#1f2430" text-anchor="middle" font-weight="500">tabla de medidas</text>
+  <line x1="58" y1="186" x2="58" y2="227" stroke="#c7cedb" stroke-width="1.5" stroke-dasharray="3 4"/>
+  <circle cx="58" cy="243" r="15" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5" fill-opacity="1.0"/>
+  <text x="58" y="248" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#2f6fd0" text-anchor="middle" font-weight="700">3</text>
+  <text x="90" y="248" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13.5" fill="#1f2430" text-anchor="start" font-weight="500">Optimizar: tipos, columnas y Parquet</text>
+  <rect x="556" y="228" width="320" height="31" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="716.0" y="247.33333333333334" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11.5" fill="#1f2430" text-anchor="middle" font-weight="500">datos/procesado/</text>
+  <line x1="58" y1="244" x2="58" y2="285" stroke="#c7cedb" stroke-width="1.5" stroke-dasharray="3 4"/>
+  <circle cx="58" cy="301" r="15" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5" fill-opacity="1.0"/>
+  <text x="58" y="306" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#2f6fd0" text-anchor="middle" font-weight="700">4</text>
+  <text x="90" y="306" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13.5" fill="#1f2430" text-anchor="start" font-weight="500">Procesar por trozos o en flujo</text>
+  <rect x="556" y="286" width="320" height="31" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="716.0" y="305.3333333333333" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11.5" fill="#1f2430" text-anchor="middle" font-weight="500">flujo.py</text>
+  <line x1="58" y1="302" x2="58" y2="343" stroke="#c7cedb" stroke-width="1.5" stroke-dasharray="3 4"/>
+  <circle cx="58" cy="359" r="15" fill="#dbe8fb" stroke="#2f6fd0" stroke-width="1.5" fill-opacity="1.0"/>
+  <text x="58" y="364" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#2f6fd0" text-anchor="middle" font-weight="700">5</text>
+  <text x="90" y="364" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13.5" fill="#1f2430" text-anchor="start" font-weight="500">Escribir conclusiones, incluido el impacto social</text>
+  <rect x="556" y="344" width="320" height="31" rx="10" fill="#d8f1e6" stroke="#1f9d6b" stroke-width="1.5"/>
+  <text x="716.0" y="363.3333333333333" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace" font-size="11.5" fill="#1f2430" text-anchor="middle" font-weight="500">README</text>
+  <rect x="24" y="404" width="852" height="54" rx="10" fill="#e8dffa" stroke="#7b55c0" stroke-width="1.5"/>
+  <text x="44" y="425" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="10" fill="#5b6472" text-anchor="start" font-weight="700">ENTREGAS</text>
+  <text x="44" y="445" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" fill="#1f2430" text-anchor="start" font-weight="500">Script de escalado, medidas antes y después, conclusiones y defensa</text>
+</svg>
