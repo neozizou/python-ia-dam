@@ -7,6 +7,7 @@ on:
       - "**/*.md"
       - "mkdocs.yml"
       - "tools/**"
+      - "sitio/**"
       - ".github/workflows/publicar-sitio.yml"
   workflow_dispatch:          # permite lanzarlo a mano desde la pestaña Actions
 
